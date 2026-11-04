@@ -26,7 +26,7 @@ export const GET: APIRoute = async () => {
     `- [Commercial grounds care](${u('/commercial/')}): one contract for mowing, beds, irrigation and snow`,
     `- [Plan your year](${u('/plan-your-year/')}): build a season by season plan for a property`,
     `- [All service areas](${u('/service-areas/')})`,
-    `- [Get a free estimate](${u('/get-an-estimate/')})`,
+    `- [Get an estimate](${u('/get-an-estimate/')})`,
     `- [About](${u('/about/')})`,
     `- [Contact](${u('/contact/')})`,
     '',

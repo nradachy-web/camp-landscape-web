@@ -9,7 +9,7 @@
 import type { PhotoId } from './photos';
 
 export type ServiceId =
-  | 'landscaping' | 'retaining-walls' | 'patios' | 'landscape-lighting'
+  | 'landscaping' | 'retaining-walls' | 'sod-seed'
   | 'landscape-management' | 'lawn-mowing' | 'bed-maintenance' | 'lawn-treatment'
   | 'irrigation' | 'irrigation-start-up' | 'irrigation-winterization'
   | 'snow-removal';
@@ -35,25 +35,24 @@ export interface Service {
 }
 
 export const GROUPS: { id: GroupId; name: string; blurb: string; photo: PhotoId; path: string }[] = [
-  { id: 'build', name: 'Landscape installation', blurb: 'New yards, plantings, walls, steps and patios, planned for the site and built by our crew.', photo: 'wall-lakeside', path: '/landscaping/' },
+  { id: 'build', name: 'Landscape installation', blurb: 'New yards, plantings, lawns, walls and steps, planned for the site and built by our crew.', photo: 'wall-lakeside', path: '/landscaping/' },
   { id: 'care', name: 'Landscape management', blurb: 'Mowing, edging, beds, mulch and lawn treatments on a schedule you never have to chase.', photo: 'ai-crew-mow', path: '/landscape-management/' },
   { id: 'water', name: 'Irrigation', blurb: 'Sprinkler systems designed, installed, started in spring and blown out before the freeze.', photo: 'ai-irrigation', path: '/irrigation/' },
-  { id: 'winter', name: 'Snow and ice', blurb: 'Plowing and salting for commercial lots, walks and entries, all winter.', photo: 'ai-plow-night', path: '/snow-and-ice-removal/' },
+  { id: 'winter', name: 'Snow and ice', blurb: 'Plowing and salting for commercial lots, walks and entries, all winter.', photo: 'real-fleet', path: '/snow-and-ice-removal/' },
 ];
 
 const ALL: Service[] = [
-  { id: 'landscaping', name: 'Landscape installation', noun: 'landscape installation', path: '/landscaping/', townSlug: 'landscaping', group: 'build', photo: 'ai-home-summer', band: 'ai-patio', teaser: 'Grading, topsoil, hydroseed, plantings, edging and mulch, from a bare lot to a finished yard.', page: true, for: 'both' },
-  { id: 'retaining-walls', name: 'Retaining walls and steps', noun: 'retaining walls', path: '/landscaping/#walls', townSlug: 'retaining-walls', group: 'build', photo: 'wall-lakeside', band: 'wall-lakeside', teaser: 'Walls and steps that hold a slope, stop erosion and make a hill usable.', for: 'both' },
-  { id: 'patios', name: 'Patios and outdoor living', noun: 'patios', path: '/landscaping/#patios', townSlug: 'patios', group: 'build', photo: 'ai-patio', band: 'ai-patio', teaser: 'Brick, concrete and stone patios, fire pits and outdoor kitchens.', for: 'both' },
-  { id: 'landscape-lighting', name: 'Landscape lighting', noun: 'landscape lighting', path: '/landscaping/#patios', townSlug: 'landscape-lighting', group: 'build', photo: 'ai-patio', band: 'ai-patio', teaser: 'Paths, beds and trees lit so the property works and looks finished after dark.', for: 'both' },
+  { id: 'landscaping', name: 'Landscape installation', noun: 'landscape installation', path: '/landscaping/', townSlug: 'landscaping', group: 'build', photo: 'ai-home-summer', band: 'ai-home-spring', teaser: 'Grading, topsoil, seed, plantings, edging and mulch, from a bare lot to a finished yard.', page: true, for: 'both' },
+  { id: 'retaining-walls', name: 'Retaining walls and steps', noun: 'retaining walls', path: '/landscaping/#walls', townSlug: 'retaining-walls', group: 'build', photo: 'real-wall-front-after', band: 'wall-lakeside', teaser: 'Walls and steps that hold a slope, stop erosion and make a hill usable.', for: 'both' },
+  { id: 'sod-seed', name: 'Sod, seed and grading', noun: 'sod and seeding', path: '/landscaping/#lawns', townSlug: 'sod-installation', group: 'build', photo: 'ai-lawn-clean', band: 'ai-home-spring', teaser: 'Grading, topsoil, sod or hydroseed, so a new lawn starts level and takes.', for: 'both' },
   { id: 'landscape-management', name: 'Landscape management', noun: 'landscape management', path: '/landscape-management/', townSlug: 'landscape-management', group: 'care', photo: 'ai-crew-mow', band: 'ai-park-spring', teaser: 'Weekly care for apartment communities, offices and homes: mowing, edging, beds and seasonal upkeep.', page: true, for: 'both' },
   { id: 'lawn-mowing', name: 'Lawn mowing and edging', noun: 'lawn mowing', path: '/landscape-management/#mowing', townSlug: 'lawn-mowing', group: 'care', photo: 'ai-crew-mow', band: 'ai-crew-mow', teaser: 'A consistent mow with sharp edges along walks, curbs and beds.', for: 'both' },
   { id: 'bed-maintenance', name: 'Bed maintenance and mulch', noun: 'bed maintenance', path: '/landscape-management/#beds', townSlug: 'bed-maintenance', group: 'care', photo: 'ai-bed-kept', band: 'ai-bed-kept', teaser: 'Pruning, cutbacks, weeding and fresh mulch so beds look kept, not just mowed around.', for: 'both' },
   { id: 'lawn-treatment', name: 'Fertilizer and pest control', noun: 'lawn fertilizer and pest control', path: '/landscape-management/#treatment', townSlug: 'lawn-fertilization', group: 'care', photo: 'ai-park-spring', band: 'ai-park-spring', teaser: 'Timed fertilizer and targeted pest control that keep turf thick and green.', for: 'both' },
-  { id: 'irrigation', name: 'Irrigation installation and service', noun: 'irrigation', path: '/irrigation/', townSlug: 'irrigation', group: 'water', photo: 'ai-irrigation', band: 'ai-home-summer', teaser: 'New systems on Rain Bird, Hunter and Toro parts, and service for the one you have.', page: true, for: 'both' },
+  { id: 'irrigation', name: 'Irrigation installation and service', noun: 'irrigation', path: '/irrigation/', townSlug: 'irrigation', group: 'water', photo: 'ai-irrigation', band: 'ai-home-summer', teaser: 'New systems designed for the site, and service and repair for the one you have.', page: true, for: 'both' },
   { id: 'irrigation-start-up', name: 'Spring start up', noun: 'sprinkler start up', path: '/irrigation/#spring', townSlug: 'sprinkler-start-up', group: 'water', photo: 'ai-irrigation', band: 'ai-irrigation', teaser: 'April and May: every zone run, checked and adjusted before the heat.', for: 'both' },
-  { id: 'irrigation-winterization', name: 'Winterization', noun: 'sprinkler winterization', path: '/irrigation/#winter', townSlug: 'sprinkler-winterization', group: 'water', photo: 'ai-home-fall', band: 'ai-home-fall', teaser: 'Lines and backflow blown clear with commercial equipment before the first hard freeze.', for: 'both' },
-  { id: 'snow-removal', name: 'Snow and ice removal', noun: 'snow and ice removal', path: '/snow-and-ice-removal/', townSlug: 'snow-removal', group: 'winter', photo: 'ai-plow-night', band: 'ai-park-winter', teaser: 'Plowing, salting and walks for commercial properties, storm after storm.', page: true, for: 'commercial' },
+  { id: 'irrigation-winterization', name: 'Sprinkler winterization', noun: 'sprinkler winterization', path: '/irrigation/#winter', townSlug: 'sprinkler-winterization', group: 'water', photo: 'ai-home-fall', band: 'ai-home-fall', teaser: 'Lines and backflow blown clear with commercial equipment before the first hard freeze.', for: 'both' },
+  { id: 'snow-removal', name: 'Snow and ice removal', noun: 'snow and ice removal', path: '/snow-and-ice-removal/', townSlug: 'snow-removal', group: 'winter', photo: 'real-fleet', band: 'ai-park-winter', teaser: 'Plowing, salting and walks for commercial properties, storm after storm.', page: true, for: 'commercial' },
 ];
 
 /** Every service the content may name. Content validates against this list. */

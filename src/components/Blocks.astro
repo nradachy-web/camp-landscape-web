@@ -8,6 +8,7 @@ import Faq from './Faq.astro';
 import Reviews from './Reviews.astro';
 import SeasonDial from './SeasonDial.astro';
 import ZoneCheck from './ZoneCheck.astro';
+import Pairs from './Pairs.astro';
 import RevealPanel from './RevealPanel.astro';
 import RevealScript from './RevealScript.astro';
 import PlanTeaser from './PlanTeaser.astro';
@@ -147,6 +148,13 @@ const link = (h: string) => (h.startsWith('#') || /^(https?:|tel:|sms:)/.test(h)
             <>
               <Head id={hid} eyebrow={b.eyebrow} title={b.title} intro={b.intro} />
               <SeasonDial set={b.set} id={`sd${i}`} />
+            </>
+          )}
+
+          {b.type === 'pairs' && (
+            <>
+              <Head id={hid} eyebrow={b.eyebrow} title={b.title} intro={b.intro} />
+              <Pairs ids={b.ids as any} />
             </>
           )}
 

@@ -45,7 +45,7 @@ const body = (r: Review) => `${r.text}${full && r.more ? r.more : r.excerpt ? ' 
   {
     !full && reviews.map((r) => (
       <li class="rv__card card pad">
-        <Stars />
+        {r.stars && <Stars />}
         <blockquote class="rv__text">
           <p>{body(r)}</p>
         </blockquote>

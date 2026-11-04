@@ -5,13 +5,14 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { makeSchemas } from './content.schema.mjs';
-import { PHOTO_IDS } from './data/photos';
+import { PHOTO_IDS, PAIRS } from './data/photos';
 import { REVIEWS } from './data/reviews';
 import { ALL_SERVICES } from './data/services';
 import { ALL_CITIES } from './data/cities';
 
 const schemas = makeSchemas(z, {
   photos: PHOTO_IDS,
+  pairs: Object.keys(PAIRS),
   reviews: REVIEWS.map((r) => r.id),
   services: ALL_SERVICES.map((s) => s.id),
   cities: ALL_CITIES.map((c) => c.id),

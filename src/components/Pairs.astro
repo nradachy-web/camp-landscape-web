@@ -1,0 +1,89 @@
+---
+/* Real before and after pairs, side by side. The two photos of a pair were not
+   taken from the same spot, so there is no slider pretending they line up. */
+import Photo from './Photo.astro';
+import { PAIRS, type PairId } from '../data/photos';
+
+interface Props {
+  ids: PairId[];
+}
+const { ids } = Astro.props;
+---
+
+<ul class:list={['pairs', `pairs--${ids.length}`]}>
+  {
+    ids.map((id) => {
+      const p = PAIRS[id];
+      return (
+        <li class="pair">
+          <div class="pair__pics">
+            <figure class="frame pair__f">
+              <Photo id={p.before} ratio={6 / 5} widths={[240, 360, 468]} sizes="(min-width: 60rem) 22vw, 46vw" />
+              <figcaption class="pair__tag">Before</figcaption>
+            </figure>
+            <figure class="frame pair__f">
+              <Photo id={p.after} ratio={6 / 5} widths={[240, 360, 468]} sizes="(min-width: 60rem) 22vw, 46vw" />
+              <figcaption class="pair__tag pair__tag--after">After</figcaption>
+            </figure>
+          </div>
+          <h3 class="h3">{p.title}</h3>
+          <p class="small muted">{p.note}</p>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .pairs {
+    display: grid;
+    gap: 2.25rem 1.75rem;
+  }
+
+  @media (min-width: 60rem) {
+    .pairs--2,
+    .pairs--4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pairs--3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .pair {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+  }
+
+  .pair__pics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 0.3rem;
+  }
+
+  .pair__f {
+    aspect-ratio: 6 / 5;
+    margin: 0;
+  }
+
+  .pair__tag {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--r-sm);
+    background: rgb(14 18 15 / 0.78);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .pair__tag--after {
+    background: var(--btn-ink);
+  }
+</style>

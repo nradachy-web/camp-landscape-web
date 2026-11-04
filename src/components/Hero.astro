@@ -43,7 +43,7 @@ interface Props {
   next?: 'paper' | 'white' | 'ink';
 }
 
-const { image, tall, kicker, title, lede, chips = [], primary = { label: 'Get a free estimate', href: '#quote' }, size = 'page', crumbs = [], note = image.note, next = 'paper' } = Astro.props;
+const { image, tall, kicker, title, lede, chips = [], primary = { label: 'Get an estimate', href: '#quote' }, size = 'page', crumbs = [], note = image.note, next = 'paper' } = Astro.props;
 
 const titleHtml = heading(title, 'accent');
 const primaryHref = primary.href.startsWith('#') ? primary.href : href(primary.href);
@@ -111,12 +111,12 @@ const primaryHref = primary.href.startsWith('#') ? primary.href : href(primary.h
     {
       RATING.value ? (
         <a class="rating hero__rating small rise d4" href={LINKS.google} target="_blank" rel="noopener">
-          <Stars />
+          <Stars value={Number(RATING.value)} />
           <span>{RATING.value} from {RATING.countLabel} Google reviews</span>
         </a>
       ) : (
         <ul class="hero__trust small rise d4">
-          <li>Locally owned in {BRAND.city}</li>
+          <li>Shop in {BRAND.city}</li>
           <li>Commercial and residential</li>
           <li>Twelve months a year</li>
         </ul>

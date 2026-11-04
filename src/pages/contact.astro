@@ -14,12 +14,12 @@ const head = await heroImage('ai-home-fall', { sizes: '(min-width: 60rem) 48vw, 
 
 <Base
   title="Contact CAMP Landscape Management | Grand Rapids, MI"
-  description="Call or text CAMP Landscape Management at (616) 308-4862 or send a request for a free estimate. Shop at 1661 Blaine Ave SE, Grand Rapids, MI."
+  description="Call or text CAMP Landscape Management at (616) 308-4862 or send a request for an estimate. Shop at 1661 Blaine Ave SE, Grand Rapids, MI."
   path={path}
   preload={{ ...head.preload, media: '(min-width: 60rem)' }}
   schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Contact', path }])]}
 >
-  <PageHead image={head} eyebrow="Contact" title="Call, text, or **tell us about the property.**" lede="A real person at the CAMP office answers. Texting a photo of the property is a fast way to start." crumbs={[{ name: 'Contact', path }]} next="ink">
+  <PageHead image={head} eyebrow="Contact" title="Call, text, or **tell us about the property.**" lede="Call or text the CAMP office. Texting a photo of the property is a fast way to start." crumbs={[{ name: 'Contact', path }]} next="ink">
     <ul class="ways">
       <li><a class="way" href={BRAND.phoneHref} data-loc="contact"><Icon name="phone" /><span>Call {BRAND.phone}</span></a></li>
       <li><a class="way" href={BRAND.smsHref} data-loc="contact-text"><Icon name="text" /><span>Text a photo</span></a></li>
@@ -28,7 +28,7 @@ const head = await heroImage('ai-home-fall', { sizes: '(min-width: 60rem) 48vw, 
       {SOCIAL.length > 0 && <li class="soc">{SOCIAL.map((x) => <a href={x.href} target="_blank" rel="noopener">{x.name}</a>)}</li>}
     </ul>
   </PageHead>
-  <QuoteBand from="ink" eyebrow="Free estimate" title="Or send a request here." />
+  <QuoteBand from="ink" title="Or send a request here." />
 </Base>
 
 <style>

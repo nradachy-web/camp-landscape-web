@@ -33,7 +33,7 @@ export const SEASONS: Season[] = [
     months: 'June to August',
     span: [6, 7, 8],
     title: 'Keep it sharp every week.',
-    items: ['Mowing and trimming on a set schedule', 'Weeding, pruning and shrub shaping', 'Sprinklers checked and adjusted as the heat comes', 'New plantings, patios and walls installed'],
+    items: ['Mowing and trimming on a set schedule', 'Weeding, pruning and shrub shaping', 'Sprinklers checked and adjusted as the heat comes', 'New beds, lawns and walls installed'],
     link: { label: 'Landscape installation', path: '/landscaping/' },
   },
   {

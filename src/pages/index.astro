@@ -28,6 +28,7 @@ import SeasonDial from '../components/SeasonDial.astro';
 import RevealPanel from '../components/RevealPanel.astro';
 import RevealScript from '../components/RevealScript.astro';
 import ZoneCheck from '../components/ZoneCheck.astro';
+import Pairs from '../components/Pairs.astro';
 import { BRAND } from '../data/site';
 import { GROUPS, inGroup, TREE_PARTNER } from '../data/services';
 import { AREAS, AREA_NAMES, inArea, hubPath } from '../data/cities';
@@ -52,7 +53,7 @@ const doors = [
   {
     eyebrow: 'Homes',
     title: 'A yard built right, then kept that way',
-    body: 'New plantings, walls, steps and patios, then the weekly care and the sprinkler service that keep it looking like the day it was finished.',
+    body: 'New beds, lawns, walls and steps, then the weekly care and the sprinkler service that keep it looking like the day it was finished.',
     photo: 'ai-home-summer' as const,
     path: '/landscaping/',
     cta: 'Landscape installation',
@@ -67,7 +68,7 @@ const steps = [
 ];
 
 const faq = [
-  { q: 'What does CAMP Landscape Management do?', a: 'CAMP installs and maintains landscapes for businesses, apartment communities, HOAs and homes across greater Grand Rapids. That covers landscape installation, retaining walls and steps, patios and outdoor living, landscape lighting, lawn mowing and edging, bed maintenance and mulch, lawn fertilizer and pest control, irrigation installation and service, and commercial snow and ice removal.' },
+  { q: 'What does CAMP Landscape Management do?', a: 'CAMP installs and maintains landscapes for businesses, apartment communities, HOAs and homes across greater Grand Rapids. That covers landscape installation, retaining walls and steps, sod and seed, lawn mowing and edging, bed maintenance and mulch, lawn fertilizer and pest control, irrigation installation and service, and commercial snow and ice removal.' },
   { q: 'Do you work on commercial properties?', a: 'Yes. Much of our work is for property managers: apartment communities, offices and HOAs that need mowing, beds, irrigation and snow handled on a schedule. See [commercial grounds care](/commercial/).' },
   { q: 'Do you do snow removal for homes?', a: 'Our snow and ice service is for commercial properties: lots, drives, walks and entries. Call us about your property and we will tell you straight whether it is a fit.' },
   { q: 'Who does your tree work?', a: `Tree removals, trimming and stump grinding are done by our sister company, [Ole Man RB's Tree Service](${TREE_PARTNER.href}). Same ownership, so one call covers the grounds and the trees.` },
@@ -165,7 +166,7 @@ const faq = [
           <li>Lots and drive lanes plowed, the snow stacked where it will not block a stall</li>
           <li>Walks, entries and steps cleared and salted</li>
           <li>Snow stakes set along curbs and islands before the first storm</li>
-          <li>The same crew that keeps the grounds all summer</li>
+          <li>The same company that keeps the grounds all summer</li>
         </ul>
         <a class="arrow" href={href('/snow-and-ice-removal/')}>Commercial snow and ice removal</a>
       </div>
@@ -184,7 +185,7 @@ const faq = [
 
   <section class="band has-edge ink" aria-labelledby="zone-h">
     <div class="wrap">
-      <Head id="zone-h" eyebrow="Irrigation" title="Run the sprinklers. **Find the problem.**" intro="Most systems we are called to have one of three things wrong. Run each zone, then flip it to see the same yard after a tune up." />
+      <Head id="zone-h" eyebrow="Irrigation" title="Run the sprinklers. **Find the problem.**" intro="Three things go wrong with a tired system. Run each zone to find them, then flip it to see the same yard after a tune up." />
       <ZoneCheck id="home-zc" />
       <p class="zone-more"><a class="arrow" href={href('/irrigation/')}>Irrigation installation, start up and winterization</a></p>
     </div>
@@ -192,23 +193,41 @@ const faq = [
   </section>
 
   <section class="band has-edge white" aria-labelledby="work-h">
-    <div class="wrap two wide-left real">
-      <figure>
-        <div class="frame real__img">
-          <Photo id="wall-lakeside" ratio={1126 / 720} widths={[640, 960, 1126]} sizes="(min-width: 60rem) 56vw, 92vw" />
+    <div class="wrap">
+      <div class="two wide-left real">
+        <figure>
+          <div class="frame real__img">
+            <Photo id="wall-lakeside" ratio={16 / 9} widths={[640, 960, 1280]} sizes="(min-width: 60rem) 56vw, 92vw" />
+          </div>
+          <figcaption class="note cap">{photo('wall-lakeside').caption}. A CAMP job.</figcaption>
+        </figure>
+        <div class="stack" style="--gap:1.3rem">
+          <Head id="work-h" layout="left" eyebrow="Real CAMP jobs" title="A lake lot that **finally works.**" />
+          <p class="lede">A slope down to the water, held by a curved natural stone wall, with wide stone steps from the lawn to the beach and new turf on top.</p>
+          <ul class="checks">
+            <li>Retaining walls and steps that hold the grade and stop erosion</li>
+            <li>Grading, topsoil and sod or seed to finish the lawn</li>
+            <li>Planned for how the property is used, then built by CAMP</li>
+          </ul>
+          <a class="arrow" href={href('/landscaping/')}>Landscape installation</a>
         </div>
-        <figcaption class="note cap">{photo('wall-lakeside').caption}. A CAMP job.</figcaption>
-      </figure>
-      <div class="stack" style="--gap:1.3rem">
-        <Head id="work-h" layout="left" eyebrow="Real work" title="A lake lot that **finally works.**" />
-        <p class="lede">A slope down to the water, held by a curved natural stone wall, with wide stone steps from the lawn to the beach and new turf on top.</p>
-        <ul class="checks">
-          <li>Retaining walls and steps that hold the grade and stop erosion</li>
-          <li>Grading, topsoil and hydroseed or sod to finish the lawn</li>
-          <li>Planned for how the property is used, then built by our crew</li>
-        </ul>
-        <a class="arrow" href={href('/landscaping/')}>Landscape installation</a>
       </div>
+      <div class="real__more">
+        <Head layout="left" small eyebrow="Before and after" title="From CAMP's own job photos." />
+        <Pairs ids={['wall-front', 'wall-apt', 'leaf']} />
+      </div>
+      <ul class="real__strip">
+        {
+          (['real-fleet', 'real-lot-cleared', 'real-steps'] as const).map((id) => (
+            <li>
+              <figure>
+                <div class="frame real__s"><Photo id={id} ratio={4 / 3} widths={[320, 480, 640]} sizes="(min-width: 60rem) 30vw, 92vw" /></div>
+                <figcaption class="note cap">{photo(id).caption}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
     </div>
     <Edge to="paper" flip />
   </section>
@@ -409,7 +428,29 @@ const faq = [
   }
 
   .real__img {
-    aspect-ratio: 1126 / 720;
+    aspect-ratio: 16 / 9;
+  }
+
+  .real__more {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: clamp(2.5rem, 5vw, 3.5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .real__strip {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    .real__strip {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .real__s {
+    aspect-ratio: 4 / 3;
   }
 
   .areas {

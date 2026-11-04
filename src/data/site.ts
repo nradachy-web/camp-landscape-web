@@ -10,7 +10,7 @@ export const BRAND = {
   phoneHref: 'tel:+16163084862',
   smsHref: 'sms:+16163084862',
   phoneE164: '+16163084862',
-  email: 'Ops@camplandscape.com',
+  email: 'ops@camplandscape.com',
   /* The shop. Already public on the current site and the Google listing. */
   street: '1661 Blaine Ave SE',
   city: 'Grand Rapids',
@@ -20,16 +20,19 @@ export const BRAND = {
   origin: 'https://camplandscape.com',
 };
 
+/* Read from the Google listing on 2026-11-03 (signed out view): 26 five star and
+   2 one star. Always show the count; never say every review is five stars. */
 export const RATING = {
-  value: '',
-  count: 0,
-  countLabel: '',
-  asOf: '',
+  value: '4.7',
+  count: 28,
+  countLabel: '28',
+  asOf: '2026-11-03',
 };
 
 export const LINKS = {
-  google: '',
-  facebook: '',
+  google: 'https://www.google.com/maps/place/Camp+Landscape+Management+LLC/data=!4m2!3m1!1s0x8357bbadbbc0983d:0x5f6e51d424b8c1e7',
+  facebook: 'https://www.facebook.com/profile.php?id=100063595242839',
+  /* @camplandscape on Instagram is a different company in Washington DC: never link it. */
   instagram: '',
   /* The sister company that does CAMP's tree work. */
   treePartner: 'https://olemanrb.com/',

@@ -23,7 +23,7 @@ interface Props {
   from?: 'paper' | 'white' | 'ink';
 }
 const {
-  eyebrow = 'Free estimate',
+  eyebrow = 'On-site estimate',
   title = 'Tell us about the property.',
   lede = 'We walk the site with you, listen to what you need handled, and come back with a plan and an estimate for the season or the project.',
   service,
@@ -34,7 +34,7 @@ const {
 } = Astro.props;
 
 /* A different background per page, and never one the page has already used. */
-const OPTIONS: PhotoId[] = ['ai-park-fall', 'ai-home-fall', 'ai-patio', 'ai-park-winter', 'ai-home-spring'];
+const OPTIONS: PhotoId[] = ['ai-park-fall', 'ai-home-fall', 'ai-park-winter', 'ai-home-spring', 'ai-park-spring'];
 const seed = [...Astro.url.pathname].reduce((a, c) => a + c.charCodeAt(0), 0);
 const open = OPTIONS.filter((o) => !avoid.includes(o));
 const bg = open[seed % open.length] ?? 'ai-park-fall';

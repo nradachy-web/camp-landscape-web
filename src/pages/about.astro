@@ -22,7 +22,7 @@ const values = [
   { title: 'Initiative', body: 'We solve problems before they become costly: the head that is about to fail, the bed about to get away from you, the curb that needs a stake before the first storm.' },
   { title: 'Integrity', body: 'Honest advice. We only recommend plants and features that will thrive here and make sense for how the property is used, so you never pay for something it does not need.' },
   { title: 'Thoroughness', body: 'Every detail, start to finish: edges cut, clippings blown off, every zone checked, the walk salted to the door. No patches, just real fixes.' },
-  { title: 'Professionalism', body: 'The polish of a big outfit with the attention you would expect from people who live here. You reach a real person, and the office follows through.' },
+  { title: 'Professionalism', body: 'The polish of a big outfit with the attention you would expect from people who live here. Calls get answered, and the office follows through.' },
 ];
 ---
 
@@ -33,21 +33,21 @@ const values = [
   preload={hero.preload}
   schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'About', path }])]}
 >
-  <Hero image={hero} kicker="About CAMP Landscape Management" title="Every property, treated **like a neighbor's.**" lede={`CAMP is a ${BRAND.city} landscape company owned by ${BRAND.owner}, with a shop on Blaine Ave SE and a crew that works across Kent County and into Ottawa County.`} crumbs={[{ name: 'About', path }]} />
+  <Hero image={hero} kicker="About CAMP Landscape Management" title="Every property, treated **like a neighbor's.**" lede={`CAMP is a ${BRAND.city} landscape company owned by ${BRAND.owner}, working out of a shop on Blaine Ave SE across Kent County and into Ottawa County.`} crumbs={[{ name: 'About', path }]} />
 
   <section class="band has-edge" aria-labelledby="who-h">
     <div class="wrap two wide-left">
       <div class="stack" style="--gap:1.4rem">
         <Head id="who-h" layout="left" eyebrow="Who we are" title="Local knowledge. **Better results.**" />
         <div class="prose">
-          <p>We have spent years learning what works in West Michigan soil, and what turns into a costly mistake after one hard winter. Every recommendation is based on what you want and how you will actually use the property.</p>
+          <p>We know what works in West Michigan soil, and what turns into a costly mistake after one hard winter. Every recommendation is based on what you want and how you will actually use the property.</p>
           <p>You can hand us the whole year. We design and build the landscape, keep it up week to week, start the sprinklers in spring and blow them out in fall, and on commercial sites we plow and salt when it snows. One company, one number, whatever the season.</p>
           <p>Tree work stays in the family. Removals, trimming and stump grinding are done by our sister company, <a href={TREE_PARTNER.href} target="_blank" rel="noopener">{TREE_PARTNER.name}</a>, under the same ownership.</p>
         </div>
       </div>
       <figure>
-        <div class="frame tall"><Photo id="wall-lakeside" ratio={4 / 5} widths={[420, 640, 860]} sizes="(min-width: 60rem) 36vw, 92vw" focus="right" /></div>
-        <figcaption class="note cap">{photo('wall-lakeside').caption}. A CAMP job.</figcaption>
+        <div class="frame tall"><Photo id="real-shop" ratio={4 / 5} widths={[420, 640, 860]} sizes="(min-width: 60rem) 36vw, 92vw" /></div>
+        <figcaption class="note cap">{photo('real-shop').caption}</figcaption>
       </figure>
     </div>
     <Edge to="ink" />

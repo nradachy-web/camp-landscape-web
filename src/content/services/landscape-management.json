@@ -8,7 +8,11 @@
     "kicker": "Landscape management and lawn care in Grand Rapids",
     "title": "Week after week, **no chasing.**",
     "lede": "CAMP keeps lawns cut, edges sharp and beds kept for apartment communities, offices, HOAs and homes across greater Grand Rapids, on a schedule you never have to follow up on.",
-    "chips": ["Mowing and edging", "Beds and mulch", "Fertilizer and pest control"],
+    "chips": [
+      "Mowing and edging",
+      "Beds and mulch",
+      "Fertilizer and pest control"
+    ],
     "photo": "ai-crew-mow"
   },
   "blocks": [
@@ -24,7 +28,7 @@
       "checks": [
         "A consistent mowing schedule with sharp edges on walks, curbs and beds",
         "Seasonal pruning, perennial cutbacks and weed control in the beds",
-        "Organic mulch that holds moisture and keeps weeds down",
+        "Fresh mulch that holds moisture and keeps weeds down",
         "Fertilizer and targeted pest control, timed to work"
       ],
       "photo": "ai-park-spring"
@@ -46,12 +50,36 @@
       "intro": "Take the whole list or the parts your property needs. Each is priced and scheduled up front.",
       "columns": 3,
       "items": [
-        { "tag": "Every visit", "title": "Lawn mowing and edging", "body": "A clean, even mow on a consistent schedule, with precise edges along walkways, curbs and beds and the clippings blown off the hard surfaces." },
-        { "tag": "Through the season", "title": "Bed maintenance", "body": "Seasonal pruning, perennial cutbacks, weed control and attention to soil health, using selective treatments and organic products where possible." },
-        { "tag": "Spring and as needed", "title": "Mulch", "body": "A fresh layer of quality organic mulch regulates soil temperature, holds moisture and blocks weeds, and gives the beds a finished look." },
-        { "tag": "On a program", "title": "Fertilizer and pest control", "body": "Routine fertilization and targeted pest control keep turf green, strong and ready for visitors, applied with care and timed to work." },
-        { "tag": "Your frequency", "title": "Personal groundskeeper", "body": "For properties that need a closer eye: hand pruning, selective weeding, organic treatments and site-specific care. You choose how often, we handle the rest." },
-        { "tag": "Spring and fall", "title": "Cleanups", "body": "Beds cleared and cut back in spring, leaves gone and the property reset in fall, so the year starts and ends clean." }
+        {
+          "tag": "Every visit",
+          "title": "Lawn mowing and edging",
+          "body": "A clean, even mow on a consistent schedule, with precise edges along walkways, curbs and beds and the clippings blown off the hard surfaces."
+        },
+        {
+          "tag": "Through the season",
+          "title": "Bed maintenance",
+          "body": "Seasonal pruning, perennial cutbacks, weed control and attention to soil health."
+        },
+        {
+          "tag": "Spring and as needed",
+          "title": "Mulch",
+          "body": "A fresh layer of quality mulch regulates soil temperature, holds moisture and blocks weeds, and gives the beds a finished look."
+        },
+        {
+          "tag": "On a program",
+          "title": "Fertilizer and pest control",
+          "body": "Routine fertilization and targeted pest control keep turf green, strong and ready for visitors, applied with care and timed to work."
+        },
+        {
+          "tag": "Your frequency",
+          "title": "Personal groundskeeper",
+          "body": "For properties that need a closer eye: hand pruning, selective weeding and site-specific care. You choose how often, we handle the rest."
+        },
+        {
+          "tag": "Spring and fall",
+          "title": "Cleanups",
+          "body": "Beds cleared and cut back in spring, leaves gone and the property reset in fall, so the year starts and ends clean."
+        }
       ]
     },
     {
@@ -80,33 +108,62 @@
       ],
       "photo": "ai-bed-kept",
       "flip": true,
-      "cta": { "label": "Commercial grounds care", "href": "/commercial/" }
+      "cta": {
+        "label": "Commercial grounds care",
+        "href": "/commercial/"
+      }
     },
     {
-      "type": "reveal",
-      "kind": "leaf",
-      "plane": "ink",
+      "type": "pairs",
+      "plane": "white",
       "eyebrow": "Fall cleanup",
       "title": "Clear the leaves **before the snow.**",
-      "intro": "Drag across the lawn. Leaves left over winter smother the grass and the beds. A fall cleanup sends the property into winter clean."
+      "intro": "A real CAMP cleanup. Leaves left over winter smother the grass and the beds; a fall cleanup sends the property into winter clean.",
+      "ids": [
+        "leaf"
+      ]
     },
     {
       "type": "reviews",
       "plane": "paper",
       "eyebrow": "In their words",
       "title": "Kept **top notch.**",
-      "ids": ["chris-b", "renee-a"]
+      "ids": [
+        "lavelle-l",
+        "chris-b",
+        "renee-a"
+      ]
     }
   ],
   "faq": [
-    { "q": "What does landscape management include?", "a": "Lawn mowing and edging on a set schedule, bed maintenance with seasonal pruning, perennial cutbacks and weed control, mulch, lawn fertilizer and pest control, and spring and fall cleanups. A personal groundskeeper option adds hand pruning and site-specific care at the frequency you choose." },
-    { "q": "Do you work for apartment communities and HOAs?", "a": "Yes. Much of our landscape management is for property managers of apartment communities, offices and HOAs. See [commercial grounds care](/commercial/)." },
-    { "q": "Do you maintain residential yards too?", "a": "Yes. Homes get the same mowing, edging, bed care and lawn program as the commercial sites we look after." },
-    { "q": "How often do you mow?", "a": "On a consistent schedule set for your property before the season starts. Most lawns are cut weekly in the growing season, and we agree on the frequency on the walk." },
-    { "q": "Do you use organic products?", "a": "Where we can. Bed care uses selective treatments and organic products where possible, and we spread quality organic mulch, to support long-term plant health without harsh chemicals." },
-    { "q": "Can irrigation and snow removal be on the same contract?", "a": "Yes. Sprinkler start up, service and winterization and commercial snow and ice removal can be scheduled with landscape management, so one company looks after the property all year." },
-    { "q": "Do you do tree work?", "a": "Tree removals, trimming and stump grinding are done by our sister company, [Ole Man RB's Tree Service](https://olemanrb.com/), so one call still covers it." },
-    { "q": "How much does landscape management cost?", "a": "It depends on the size of the property, how often it is mowed and what the season includes. We price it after walking the site. Call or text [(616) 308-4862](tel:+16163084862) to set that up." }
+    {
+      "q": "What does landscape management include?",
+      "a": "Lawn mowing and edging on a set schedule, bed maintenance with seasonal pruning, perennial cutbacks and weed control, mulch, lawn fertilizer and pest control, and spring and fall cleanups. A personal groundskeeper option adds hand pruning and site-specific care at the frequency you choose."
+    },
+    {
+      "q": "Do you work for apartment communities and HOAs?",
+      "a": "Yes. Much of our landscape management is for property managers of apartment communities, offices and HOAs. See [commercial grounds care](/commercial/)."
+    },
+    {
+      "q": "Do you maintain residential yards too?",
+      "a": "Yes. Homes get the same mowing, edging, bed care and lawn program as the commercial sites we look after."
+    },
+    {
+      "q": "How often do you mow?",
+      "a": "On a consistent schedule set for your property before the season starts. Most lawns are cut weekly in the growing season, and we agree on the frequency on the walk."
+    },
+    {
+      "q": "Can irrigation and snow removal be on the same contract?",
+      "a": "Yes. Sprinkler start up, service and winterization and commercial snow and ice removal can be scheduled with landscape management, so one company looks after the property all year."
+    },
+    {
+      "q": "Do you do tree work?",
+      "a": "Tree removals, trimming and stump grinding are done by our sister company, [Ole Man RB's Tree Service](https://olemanrb.com/), so one call still covers it."
+    },
+    {
+      "q": "How much does landscape management cost?",
+      "a": "It depends on the size of the property, how often it is mowed and what the season includes. We price it after walking the site. Call or text [(616) 308-4862](tel:+16163084862) to set that up."
+    }
   ],
   "quote": {
     "title": "Hand us the grounds.",
@@ -116,10 +173,22 @@
     "title": "Mowing, beds, mulch and a lawn program.",
     "intro": "Steady care on a schedule, for apartment communities, offices, HOAs and homes.",
     "items": [
-      { "name": "Mowing and edging", "detail": "A consistent schedule with sharp edges on walks, curbs and beds." },
-      { "name": "Bed maintenance", "detail": "Pruning, perennial cutbacks and weed control." },
-      { "name": "Mulch", "detail": "Quality organic mulch that holds moisture and blocks weeds." },
-      { "name": "Fertilizer and pest control", "detail": "Routine treatments timed for results." }
+      {
+        "name": "Mowing and edging",
+        "detail": "A consistent schedule with sharp edges on walks, curbs and beds."
+      },
+      {
+        "name": "Bed maintenance",
+        "detail": "Pruning, perennial cutbacks and weed control."
+      },
+      {
+        "name": "Mulch",
+        "detail": "Fresh mulch that holds moisture and blocks weeds."
+      },
+      {
+        "name": "Fertilizer and pest control",
+        "detail": "Routine treatments timed for results."
+      }
     ]
   }
 }

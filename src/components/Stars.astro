@@ -1,12 +1,34 @@
 ---
-/* Five filled stars. The label is read out once; the shapes are decoration. */
+/* Stars. With no value, five filled (a single five star review). With a value, the
+   stars fill to it, so 4.7 shows four stars and most of a fifth. The label is read
+   out once; the shapes are decoration. */
 interface Props {
   label?: string;
+  value?: number;
 }
-const { label = '5 out of 5 stars' } = Astro.props;
+const { value } = Astro.props;
+const label = Astro.props.label ?? (value ? `${value} out of 5 stars` : '5 out of 5 stars');
 const star = 'M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9L12 2.6Z';
+const fills = [0, 1, 2, 3, 4].map((i) => Math.max(0, Math.min(1, (value ?? 5) - i)));
+const uid = `st${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <span class="stars" role="img" aria-label={label}>
-  {[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={star} /></svg>)}
+  {
+    fills.map((f, i) =>
+      f >= 1 ? (
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={star} /></svg>
+      ) : (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${uid}-${i}`}>
+              <stop offset={f} stop-color="currentColor" />
+              <stop offset={f} stop-color="currentColor" stop-opacity="0.25" />
+            </linearGradient>
+          </defs>
+          <path d={star} fill={`url(#${uid}-${i})`} />
+        </svg>
+      ),
+    )
+  }
 </span>

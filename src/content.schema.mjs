@@ -24,6 +24,7 @@ export function makeSchemas(z, ids) {
   const text = (min = 1, max = 2000) => z.string().min(min).max(max).refine(noDash, 'no em or en dashes');
 
   const photoId = z.enum(ids.photos);
+  const pairId = z.enum(ids.pairs);
   const reviewId = z.enum(ids.reviews);
   const serviceId = z.enum(ids.services);
   const cityId = z.enum(ids.cities);
@@ -92,6 +93,8 @@ export function makeSchemas(z, ids) {
       steps: z.array(z.object({ title: text(3, 60), body: text(20, 360), note: text(2, 40).optional() })).min(3).max(6),
       footnote: text(10, 400).optional(),
     }),
+    /** Real before and after pairs, side by side. */
+    z.object({ type: z.literal('pairs'), ...headFields, ids: z.array(pairId).min(1).max(4) }),
     /** Finished work, with captions. */
     z.object({
       type: z.literal('gallery'),

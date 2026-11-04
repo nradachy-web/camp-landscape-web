@@ -7,7 +7,7 @@
   "hero": {
     "kicker": "Irrigation installation and service in Grand Rapids",
     "title": "Water where it **belongs.**",
-    "lede": "CAMP designs and installs sprinkler systems on Rain Bird, Hunter and Toro parts, and services the one you already have: spring start up, zone adjustments, leak detection, repairs and a full blowout before the freeze.",
+    "lede": "CAMP designs and installs sprinkler systems for the site, and services the one you already have: spring start up, zone adjustments, leak detection, repairs and a full blowout before the freeze.",
     "chips": [
       "Installs and upgrades",
       "Spring start up",
@@ -27,7 +27,7 @@
       ],
       "checks": [
         "New systems designed around the layout, soil, plants and sun of the property",
-        "Parts from trusted makers: Rain Bird, Hunter and Toro",
+        "Repairs, leak detection and zone adjustments, all season",
         "Service for the system you have, whoever put it in",
         "Built for apartment communities and commercial sites as well as homes"
       ],
@@ -117,17 +117,17 @@
       "type": "reviews",
       "plane": "paper",
       "eyebrow": "In their words",
-      "title": "Kept **top notch.**",
+      "title": "Landscaping **and irrigation.**",
       "ids": [
-        "chris-b",
-        "renee-a"
+        "jayme-k",
+        "chris-b"
       ]
     }
   ],
   "faq": [
     {
       "q": "Do you install sprinkler systems in Grand Rapids?",
-      "a": "Yes. CAMP designs and installs irrigation systems in Grand Rapids and across Kent County and into Ottawa County, for apartment communities, commercial properties and homes. We build on Rain Bird, Hunter and Toro parts."
+      "a": "Yes. CAMP designs and installs irrigation systems in Grand Rapids and across Kent County and into Ottawa County, for apartment communities, commercial properties and homes."
     },
     {
       "q": "Can you service a system someone else installed?",
@@ -168,7 +168,7 @@
     "items": [
       {
         "name": "Installation",
-        "detail": "New systems on Rain Bird, Hunter and Toro parts, designed for the layout, soil and plants."
+        "detail": "New systems designed for the layout, soil and plants."
       },
       {
         "name": "Spring start up",

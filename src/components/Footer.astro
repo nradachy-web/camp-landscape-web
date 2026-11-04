@@ -16,7 +16,7 @@ const year = new Date().getFullYear();
       {
         RATING.value && (
           <a class="rating small" href={LINKS.google} target="_blank" rel="noopener">
-            <Stars />
+            <Stars value={Number(RATING.value)} />
             <span>{RATING.value} on Google, {RATING.countLabel} reviews</span>
           </a>
         )

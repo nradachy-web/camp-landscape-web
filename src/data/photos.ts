@@ -5,8 +5,10 @@
    `alt` says what is in the frame; `caption` is what may be printed under it.
    Never caption a photo with a town unless CAMP has said where the job is.
 
-   This draft is mostly illustration because CAMP's real job photos have not been
-   collected yet. Each one is swapped for a real photo as they arrive. */
+   Real photos so far come from CAMP's WordPress media, its Google listing and its
+   Facebook page (about 940 px wide: originals have to come from Chris). The
+   rest is illustration until more real job photos arrive. Never name where a
+   job is, and never show a house number, unit number or plate. */
 
 import type { ImageMetadata } from 'astro';
 
@@ -19,9 +21,21 @@ type Kind = 'real' | 'ai';
 interface Entry { alt: string; caption: string; kind?: Kind; focus?: 'top' | 'bottom' | 'left' | 'right' }
 
 export const PHOTOS = {
-  // real
+  // real: CAMP's own photos (WordPress media, Google listing, CAMP's Facebook page)
   'wall-lakeside': { alt: 'A curved natural stone retaining wall with wide stone steps between a lake house lawn and the beach, seen from above', caption: 'Natural stone wall and steps on a lake lot' },
-  'team-table': { alt: 'Chris Holmes and Sarah going over plans at a dining table', caption: 'Planning a season', focus: 'right' },
+  'team-table': { alt: 'Two people going over plans at a dining table, one in an Ole Man RB\u2019s cap', caption: 'Planning the season', focus: 'right' },
+  'real-fleet': { alt: 'Five CAMP pickups with red BOSS straight blade plows lined up in a lot in fall', caption: 'CAMP plow trucks, 2026' },
+  'real-lot-cleared': { alt: 'An apartment parking lot plowed and salted after a snowfall, the walk shoveled and orange snow stakes along the beds', caption: 'Plowed, salted and staked after a storm' },
+  'real-shop': { alt: 'The CAMP shop on Blaine Ave SE: a gray metal building with the CAMP sign and a fenced equipment yard', caption: 'The shop on Blaine Ave SE' },
+  'real-steps': { alt: 'New timber steps with gravel treads climbing a mulched slope beside a house', caption: 'Timber steps with gravel treads' },
+  'real-wall-front-before': { alt: 'A front slope dug out down to the dirt beside the city sidewalk', caption: 'Before' },
+  'real-wall-front-after': { alt: 'A new timber retaining wall holding the front lawn above the sidewalk', caption: 'After' },
+  'real-wall-side-before': { alt: 'A crumbling block bed at the corner of a house', caption: 'Before' },
+  'real-wall-side-after': { alt: 'A new timber wall and fresh soil at the same house corner', caption: 'After' },
+  'real-wall-apt-before': { alt: 'A rotted railroad tie wall under the trees beside a brick apartment building', caption: 'Before' },
+  'real-wall-apt-after': { alt: 'The same bed at the apartment building rebuilt with a new timber wall', caption: 'After' },
+  'real-leaf-before': { alt: 'A sloped front lawn buried under fall leaves in front of a brick ranch house', caption: 'Before' },
+  'real-leaf-after': { alt: 'The same lawn and driveway cleared of leaves', caption: 'After' },
   // illustration
   'hero-wide': { alt: 'Illustration: the landscaped entry of a West Michigan office building at golden hour, striped lawn, grasses and limestone boulders', caption: 'Illustration', kind: 'ai' },
   'hero-tall': { alt: 'Illustration: a crisp edged bed of grasses, boxwood and a limestone boulder at an office entry at golden hour', caption: 'Illustration', kind: 'ai' },
@@ -51,6 +65,13 @@ export const photo = (id: PhotoId) => {
   return { ...e, kind: e.kind ?? 'real', src };
 };
 
-export interface Pair { before: PhotoId; after: PhotoId; title: string; note: string; design?: boolean; ratio?: number }
-export const PAIRS = {} satisfies Record<string, Pair>;
+/* Real before and after pairs from CAMP's own posts. The two pictures are not taken
+   from the same spot, so they sit side by side instead of in a slider. */
+export interface Pair { before: PhotoId; after: PhotoId; title: string; note: string }
+export const PAIRS = {
+  'wall-front': { before: 'real-wall-front-before', after: 'real-wall-front-after', title: 'A front slope, held', note: 'The bank along the sidewalk dug out and a timber retaining wall built to hold the lawn above it.' },
+  'wall-apt': { before: 'real-wall-apt-before', after: 'real-wall-apt-after', title: 'A rotted tie wall, replaced', note: 'Old railroad ties at an apartment building pulled and the bed rebuilt with a new timber wall.' },
+  'wall-side': { before: 'real-wall-side-before', after: 'real-wall-side-after', title: 'A failing corner bed, rebuilt', note: 'A crumbling block bed at the house corner taken out and replaced with a timber wall.' },
+  'leaf': { before: 'real-leaf-before', after: 'real-leaf-after', title: 'A fall cleanup', note: 'A lawn under a season of leaves, cleared down to the grass and the drive.' },
+} satisfies Record<string, Pair>;
 export type PairId = keyof typeof PAIRS;
