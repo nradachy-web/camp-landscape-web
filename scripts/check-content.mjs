@@ -42,8 +42,8 @@ const slugOf = Object.fromEntries([...servicesTs.matchAll(/\{ id: '([a-z-]+)', n
 const matrixSrc = citiesTs.slice(citiesTs.indexOf('export const MATRIX'), citiesTs.indexOf('const slugFor'));
 const matrix = [...matrixSrc.matchAll(/'([a-z-]+)': \[([^\]]+)\]/g)].flatMap((m) => [...m[2].matchAll(/'([a-z-]+)'/g)].map((c) => [m[1], c[1]]));
 const validPaths = new Set([
-  '/', '/services/', '/service-areas/', '/about-us/', '/contact-us/', '/get-an-estimate/', '/privacy-policy/', '/reviews/', '/gallery/', '/yard-studio/', '/journal/',
-  ...blogSlugs.map((s) => `/journal/${s}/`),
+  '/', '/services/', '/service-areas/', '/about/', '/contact/', '/get-an-estimate/', '/privacy-policy/', '/commercial/', '/plan-your-year/', '/blog/',
+  ...blogSlugs.map((s) => `/blog/${s}/`),
   ...servicePaths,
   ...ids.cities.map((c) => `/service-areas/${c}/`),
   ...matrix.map(([s, c]) => `/${slugOf[s]}-${c}-${stateOf[c]}/`),
@@ -53,20 +53,16 @@ const FORBIDDEN = [
   [/[–—]/, 'an en or em dash'],
   [/\b(100%|every single|all) (five|5)[- ]star/i, 'a claim that every review is five stars'],
   [/#1\b|number one\b|\bthe best\b|\bbest (landscap|in (michigan|macomb|oakland|town|metro|the))|top[- ]rated|award[- ]winning|premier\b|leading\b/i, 'a ranking or superlative claim'],
-  [/guarantee(d|s)?\b|warrant(y|ies|ied)\b/i, 'a guarantee or warranty (not confirmed by Jake)'],
-  [/\b(licensed|insured|bonded|certified|accredited)\b/i, 'a license, insurance or certification claim (not confirmed by Jake)'],
+  [/guarantee(d|s)?\b|warrant(y|ies|ied)\b/i, 'a guarantee or warranty (not confirmed by CAMP)'],
+  [/\b(licensed|insured|bonded|certified|accredited)\b/i, 'a license, insurance or certification claim (not confirmed by CAMP)'],
   [/\bBBB\b|better business bureau/i, 'a BBB mention (profile not verified yet)'],
   [/\b(since (19|20)\d\d|\d+\+? years? (of|in) (experience|business)|family[- ]owned|veteran[- ]owned)\b/i, 'years in business or an ownership claim (not sourced)'],
-  [/\$\s?\d/, 'a price (Jake does not publish prices)'],
+  [/\$\s?\d/, 'a price (CAMP does not publish prices)'],
   [/\b(cheap|cheapest|lowest price|unbeatable)\b/i, 'a price boast'],
-  [/\bwe (install|offer|repair|do|handle|provide) (your )?(sprinkler|irrigation|aeration)|\bwe aerate\b/i, 'offering sprinklers or aeration (he does neither)'],
-  [/landscape lighting (install|design|service)|install(ing)? (landscape )?lighting|outdoor lighting (install|service)/i, 'offering lighting (not confirmed)'],
-  [/\b(snow (removal|plowing)|plow(ing)? snow)\b/i, 'offering snow removal (he does not)'],
-  [/paver (patio )?install|install(ing)? paver|new paver patio/i, 'offering paver installation (not confirmed)'],
-  [/weekly (mow|lawn|cut)|lawn mowing|mow your lawn|we mow\b/i, 'offering weekly mowing (not confirmed: the offer is monthly maintenance)'],
   [/lorem ipsum|TODO|TBD\b|XXX/i, 'placeholder text'],
   [/our (local|town) pages (cover|for)|we also have (local )?pages/i, 'talk about the website itself: write for the homeowner'],
   [/change (any|a|every) line|line by line, (and )?change|mark (it )?up however|drop any line/i, 'promising customers can change estimate lines (not sourced: use "go through line by line")'],
+  [/residential (snow|plow)|plow (your|home) driveways?|driveway plowing/i, 'offering residential snow (CAMP snow is commercial)'],
   [/\b(our|we have|with) (a )?\d+[- ](person|man|member)\b|\b\d+ (crews|trucks|employees)\b/i, 'a crew size (not sourced)'],
 ];
 
@@ -133,12 +129,13 @@ for (const file of targets) {
   // links
   for (const m of joined.matchAll(/\]\(([^)\s]+)\)/g)) {
     const url = m[1];
-    if (/^(tel:\+15867188762|sms:\+15867188762|#quote)$/.test(url)) continue;
+    if (/^(tel:\+16163084862|sms:\+16163084862|#quote)$/.test(url)) continue;
+    if (url === 'https://olemanrb.com/') continue;
     if (/^https?:/.test(url)) {
       problems.push(`outside link ${url}: link only to pages on this site`);
       continue;
     }
-    if (!validPaths.has(url)) problems.push(`link to ${url}, which is not a page on this site`);
+    if (!validPaths.has(url.replace(/#[a-z-]+$/, ''))) problems.push(`link to ${url}, which is not a page on this site`);
   }
 
   // town and city pages must name the town where a search looks for it
@@ -148,9 +145,9 @@ for (const file of targets) {
     if (!data.hero?.kicker?.includes(town)) problems.push(`hero.kicker does not name ${town}`);
     const words = joined.split(/\s+/).length;
     if (words < 420) problems.push(`only ${words} words: too thin to be worth a page`);
-    if (!/HD Landscape/.test(data.hero?.lede ?? '')) problems.push('hero.lede does not name HD Landscape');
+    if (!/CAMP/.test(data.hero?.lede ?? '')) problems.push('hero.lede does not name CAMP');
     const first = data.faq?.[0];
-    if (first && (!first.q.includes(town) || !/HD Landscape/.test(first.a))) problems.push(`the first FAQ must ask about ${town} by name and its answer must name HD Landscape`);
+    if (first && (!first.q.includes(town) || !/CAMP/.test(first.a))) problems.push(`the first FAQ must ask about ${town} by name and its answer must name HD Landscape`);
     for (const f of data.faq ?? []) {
       if (new RegExp(`\\b(my|our) ${town}\\b`).test(f.q)) problems.push(`FAQ uses the town as an adjective: "${f.q}"`);
     }

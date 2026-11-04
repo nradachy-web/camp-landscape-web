@@ -1,6 +1,6 @@
 """Two helpers for scripts/photos.py.
 
-grade()  lifts the color in Jake's phone photos: gentle levels, local contrast,
+grade()  lifts the color in client phone photos: gentle levels, local contrast,
          vibrance and a little extra for lawns and sky. No sharpening: it
          added weight to every photo for detail nobody sees at web size. It only
          corrects the light and color the camera caught; nothing is added or moved.
