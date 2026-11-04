@@ -1,0 +1,152 @@
+---
+/* ============================================================================
+   COMMERCIAL GROUNDS CARE, for property managers
+     hero      one contract, every season
+     paper     the problem a manager actually has
+     ink       the Season Dial on the business park
+     white     what one contract covers
+     ink       one company against separate vendors
+     paper     who we work for
+     ink       drag the plow
+     paper     reviews, then questions
+     ink       the estimate form
+   Built from the same blocks as the service pages.
+   ========================================================================== */
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Blocks from '../components/Blocks.astro';
+import Head from '../components/Head.astro';
+import Faq from '../components/Faq.astro';
+import QuoteBand from '../components/QuoteBand.astro';
+import type { Block } from '../content.config';
+import { BRAND } from '../data/site';
+import { heroImage } from '../lib/hero';
+import { breadcrumbs, faqSchema, serviceSchema } from '../lib/schema';
+
+const path = '/commercial/';
+const hero = await heroImage('ai-park-fall');
+
+const blocks = [
+  {
+    type: 'intro',
+    plane: 'paper',
+    eyebrow: 'For property managers',
+    title: 'You should not have to **chase a crew.**',
+    intro: undefined,
+    body: [
+      'You manage leases, maintenance requests, budgets and residents. The grounds should be the part you never think about. Instead it is often a mowing company, a sprinkler company and a snow company, three schedules, three invoices and three phone numbers when something goes wrong.',
+      'CAMP carries the whole property: mowing and beds in season, irrigation start up, service and winterization, and snow and ice removal in winter. One plan, written down before the season starts, and one contact who answers.',
+    ],
+    checks: ['Apartment communities, offices, retail sites and HOAs', 'A schedule set up front, so you are not following up', 'One contact for the grounds, the sprinklers and the snow', 'Tree work through our sister company, Ole Man RB’s Tree Service'],
+    photo: 'ai-bed-kept',
+    flip: false,
+  },
+  {
+    type: 'seasons',
+    set: 'commercial',
+    plane: 'ink',
+    eyebrow: 'The year at CAMP',
+    title: 'Same property. **Every season.**',
+    intro: 'What one contract looks like over twelve months. It opens on the season we are in now.',
+  },
+  {
+    type: 'cards',
+    plane: 'white',
+    eyebrow: 'What one contract covers',
+    title: 'Pick the parts the property needs, **or take them all.**',
+    columns: 4,
+    items: [
+      { tag: 'Grounds', title: 'Landscape management', body: 'Mowing and edging on a set schedule, bed maintenance, mulch, fertilizer and pest control, and spring and fall cleanups.' },
+      { tag: 'Water', title: 'Irrigation', body: 'Spring start up, zone adjustments, repairs, leak detection and winterization, for systems of any size, including multi-zone and drip.' },
+      { tag: 'Winter', title: 'Snow and ice', body: 'Lots and drive lanes plowed, walks and entries cleared, and salt down, storm after storm.' },
+      { tag: 'Projects', title: 'Installs and upgrades', body: 'New entry plantings, islands, retaining walls and steps, then kept up on the same plan.' },
+    ],
+  },
+  {
+    type: 'compare',
+    plane: 'ink',
+    eyebrow: 'One company or three',
+    title: 'Fewer vendors, **fewer phone calls.**',
+    columns: ['One contract with CAMP', 'Separate vendors'],
+    highlight: 0,
+    rows: [
+      { label: 'Who you call', values: ['One contact for every season', 'A different company for mowing, sprinklers and snow'] },
+      { label: 'Schedule', values: ['One plan for the year, set before spring', 'Three schedules to line up'] },
+      { label: 'Who knows the site', values: ['The crew that mows it in summer plows it in winter', 'A new crew learns the site in the first storm'] },
+      { label: 'When something breaks', values: ['One company, no finger pointing', 'Sorting out whose problem it is'] },
+    ],
+  },
+  {
+    type: 'cards',
+    plane: 'paper',
+    eyebrow: 'Who we work for',
+    title: 'Properties where the grounds **are the first impression.**',
+    columns: 4,
+    items: [
+      { title: 'Apartment communities', body: 'Multifamily communities, including complexes of 50 to 150 units, where residents notice every overgrown bed and every icy walk.' },
+      { title: 'Offices', body: 'Business parks and office buildings that need a clean entry every morning, in July and in January.' },
+      { title: 'Retail and service sites', body: 'Lots that have to be open and safe for customers, and beds that make the storefront look cared for.' },
+      { title: 'HOAs', body: 'Entrances, common areas and islands kept to one standard, so the board hears fewer complaints.' },
+    ],
+  },
+  {
+    type: 'reveal',
+    kind: 'snow',
+    plane: 'ink',
+    eyebrow: 'Snow and ice',
+    title: 'Drag the plow **across the lot.**',
+    intro: 'When it snows overnight, the lot, the drive lanes and the walk to the door all have to be open by the time people show up.',
+  },
+  {
+    type: 'reviews',
+    plane: 'paper',
+    eyebrow: 'In their words',
+    title: 'Snow and landscaping, **three sites.**',
+    ids: ['chris-b', 'renee-a'],
+  },
+] as Block[];
+
+const faq = [
+  { q: 'What kinds of commercial properties do you maintain?', a: 'Apartment communities, offices and business parks, retail and service sites, and HOAs across greater Grand Rapids. Much of our irrigation work is for multifamily communities of 50 to 150 units.' },
+  { q: 'Can one contract cover landscaping, irrigation and snow?', a: 'Yes. Landscape management, irrigation service and snow and ice removal can sit on one plan for the year, with one contact.' },
+  { q: 'Do you do one time projects for commercial sites?', a: 'Yes. New entry plantings, islands, retaining walls and steps, and irrigation installs, which can then be kept up on a [landscape management](/landscape-management/) plan.' },
+  { q: 'What areas do you cover for commercial work?', a: `Grand Rapids, Kentwood, Wyoming, Walker, Grandville and the rest of Kent County, and into Ottawa County. See [service areas](/service-areas/). If your property is just outside, call [${BRAND.phone}](${BRAND.phoneHref}) and ask.` },
+  { q: 'How is a commercial contract priced?', a: 'After we walk the site. Price depends on the size of the property, the mowing frequency, the beds, the irrigation system and the snow scope. You get it in writing before the season starts.' },
+];
+---
+
+<Base
+  title="Commercial Landscape Management in Grand Rapids | CAMP"
+  description="One contract for mowing, beds, irrigation and snow removal for apartment communities, offices, retail and HOAs in Grand Rapids. CAMP Landscape Management."
+  path={path}
+  preload={hero.preload}
+  schema={[serviceSchema({ name: 'Commercial landscape management', type: 'Commercial landscape management', description: 'Landscape management, irrigation service and snow and ice removal for commercial properties in Grand Rapids.', url: `${BRAND.origin}${path}` }), faqSchema(faq), breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Commercial', path }])]}
+>
+  <Hero image={hero} kicker="Commercial landscape management in Grand Rapids" title="One contract. **Every season.**" lede="For apartment communities, offices, retail and HOAs: mowing, beds, irrigation and snow under one plan, with one contact who answers and a crew that already knows the site." chips={['Landscape management', 'Irrigation', 'Snow and ice']} crumbs={[{ name: 'Commercial', path }]} />
+
+  <Blocks blocks={blocks} last="white" />
+
+  <section class="band white" aria-labelledby="faq-h">
+    <div class="wrap faqs">
+      <Head id="faq-h" layout="left" eyebrow="Questions" title="What property managers **ask first.**" intro={`Anything else? Call or text [${BRAND.phone}](${BRAND.phoneHref}).`} />
+      <Faq items={faq} />
+    </div>
+  </section>
+
+  <QuoteBand from="white" title="Walk the site with us." lede="Tell us about the property: units or square footage, what you have now and what you want handled. We will walk it and send a plan for the year." service="Landscape management" />
+</Base>
+
+<style>
+  .faqs {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 72rem) {
+    .faqs {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      align-items: start;
+    }
+  }
+</style>

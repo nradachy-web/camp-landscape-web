@@ -1,0 +1,174 @@
+---
+/* Where CAMP works, on a real map: the Grand River, Reeds Lake, US-131 and I-96
+   drawn from coordinates, and every town a point that links to its line on the
+   service areas page. The shop on Blaine Ave SE is marked. The text list of towns
+   stays on the page beside it for search engines and screen readers. */
+import { CITIES, hubPath } from '../data/cities';
+import { href } from '../lib/paths';
+
+/* the few that stay labeled on a phone */
+const PHONE = ['grand-rapids', 'rockford', 'hudsonville', 'caledonia', 'ada', 'lowell'];
+const LABEL = ['grand-rapids', 'east-grand-rapids', 'kentwood', 'wyoming', 'grandville', 'walker', 'ada', 'cascade-township', 'rockford', 'hudsonville', 'byron-center', 'caledonia', 'lowell', 'allendale', 'jenison', 'comstock-park', 'sparta'];
+const LEFT = ['jenison', 'walker', 'allendale'];
+const BELOW = ['grandville'];
+
+const W = 960, H = 690;
+const LAT0 = 43.2, LON0 = -86.0, SX = 960 / 0.7, SY = SX * 1.16;
+const xy = (lat: number, lon: number): [number, number] => [Math.round((lon - LON0) * SX), Math.round((LAT0 - lat) * SY)];
+const path = (pts: [number, number][]) => pts.map(([a, b], i) => `${i ? 'L' : 'M'}${xy(a, b).join(' ')}`).join('');
+
+/* the Grand River, from Lowell west through downtown and out past Jenison */
+const river = path([[42.934, -85.30], [42.937, -85.36], [42.95, -85.42], [42.958, -85.48], [42.97, -85.53], [42.99, -85.59], [43.005, -85.64], [42.985, -85.668], [42.96, -85.676], [42.94, -85.69], [42.925, -85.722], [42.912, -85.76], [42.91, -85.80], [42.93, -85.86], [42.955, -85.91], [42.97, -85.98]]);
+const us131 = path([[43.2, -85.69], [43.08, -85.675], [42.99, -85.676], [42.92, -85.68], [42.82, -85.70], [42.7, -85.70]]);
+const i96 = path([[42.96, -86.0], [42.985, -85.85], [43.0, -85.74], [43.0, -85.66], [42.985, -85.56], [42.955, -85.45], [42.94, -85.3]]);
+const [lx, ly] = xy(42.948, -85.612);
+const [sx, sy] = xy(42.938, -85.655);
+const towns = CITIES.map((c) => {
+  const [x, y] = xy(c.lat, c.lon);
+  return { c, x, y, on: LABEL.includes(c.id), phone: PHONE.includes(c.id), left: LEFT.includes(c.id), below: BELOW.includes(c.id) };
+});
+---
+
+<figure class="am">
+  <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Map of the towns CAMP serves around Grand Rapids">
+    <path class="am__river" d={river} />
+    <path class="am__road" d={us131} />
+    <path class="am__road" d={i96} />
+    <ellipse class="am__lake" cx={lx} cy={ly} rx="14" ry="9" />
+    <text class="am__tag" x={xy(42.948, -85.93)[0]} y={xy(42.948, -85.93)[1] + 34}>Grand River</text>
+    <text class="am__tag am__tag--w" x={xy(43.17, -85.688)[0] + 10} y={xy(43.17, -85.688)[1]}>US-131</text>
+    <text class="am__tag am__tag--w" x={xy(42.97, -85.95)[0]} y={xy(42.97, -85.95)[1] - 14}>I-96</text>
+    <g class="am__shop" aria-hidden="true">
+      <rect x={sx - 7} y={sy - 7} width="14" height="14" transform={`rotate(45 ${sx} ${sy})`} />
+    </g>
+    {
+      towns.map((t) => (
+        <a href={href(hubPath(t.c))} class="am__t" aria-label={t.c.name}>
+          <circle class="am__hit" cx={t.x} cy={t.y} r="20" />
+          <circle class:list={['am__dot', t.c.home && 'am__dot--home']} cx={t.x} cy={t.y} r={t.c.home ? 6 : 4} />
+          <text class:list={['am__n', !t.on && 'am__n--hover', !t.phone && 'am__n--wide', t.c.home && 'am__n--home']} text-anchor={t.left ? 'end' : undefined} x={t.left ? t.x - 12 : t.below ? t.x - 30 : t.x + 12} y={t.below ? t.y + 26 : t.y + 5}>{t.c.name}</text>
+        </a>
+      ))
+    }
+  </svg>
+  <figcaption class="note cap">Each point is a town we work in; the diamond is the shop on Blaine Ave SE. Pick a town, or use the list below.</figcaption>
+</figure>
+
+<style>
+  .am svg {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line-ink);
+    border-radius: var(--r);
+    background: var(--ink-2);
+  }
+
+  .am__lake {
+    fill: #22344f;
+  }
+
+  .am__shop rect {
+    fill: var(--btn-ink);
+    stroke: #fff;
+    stroke-width: 1.5;
+  }
+
+  .am__dot--home {
+    fill: var(--accent);
+  }
+
+  .am__n--home {
+    font-weight: 700;
+  }
+
+  .am__river {
+    fill: none;
+    stroke: #22344f;
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
+
+  .am__road {
+    fill: none;
+    stroke: rgb(184 207 140 / 0.42);
+    stroke-width: 1.5;
+    stroke-dasharray: 2 6;
+    stroke-linecap: round;
+  }
+
+  .am__tag {
+    fill: #7c93b5;
+    font: italic 400 19px var(--font-display);
+    letter-spacing: 0.02em;
+  }
+
+  .am__tag--w {
+    fill: rgb(184 207 140 / 0.72);
+    font-size: 15px;
+  }
+
+  .am__hit {
+    fill: transparent;
+  }
+
+  .am__dot {
+    fill: #fbe3a8;
+    transition: r 0.15s var(--ease);
+  }
+
+  .am__n {
+    fill: var(--on-ink);
+    font: 540 14px var(--font);
+    paint-order: stroke;
+    stroke: var(--ink-2);
+    stroke-width: 3.5px;
+  }
+
+  .am__n--hover {
+    opacity: 0;
+    transition: opacity 0.15s var(--ease);
+  }
+
+  .am__t:hover .am__n--hover,
+  .am__t:focus-visible .am__n--hover {
+    opacity: 1;
+  }
+
+  .am__t:hover .am__dot,
+  .am__t:focus-visible .am__dot {
+    fill: var(--accent);
+  }
+
+  .am__t:hover .am__n,
+  .am__t:focus-visible .am__n {
+    fill: var(--accent);
+  }
+
+  @media (max-width: 39.99rem) {
+    .am__n {
+      font-size: 34px;
+      stroke-width: 7px;
+    }
+
+    .am__n--wide {
+      display: none;
+    }
+
+    .am__dot {
+      r: 9px;
+    }
+
+    .am__hit {
+      r: 30px;
+    }
+
+  
+    .am__tag {
+      font-size: 30px;
+    }
+
+    .am__tag--w {
+      display: none;
+    }
+  }
+</style>

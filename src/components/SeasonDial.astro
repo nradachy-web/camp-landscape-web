@@ -1,0 +1,327 @@
+---
+/* The Season Dial: one property through a year with CAMP. Four pictures of the
+   same place, each made from the one before, so they line up and the change is
+   only the season. Radio buttons drive it through :has(), so it works with no
+   script. A few lines of script open it on today's season and mark it "Now".
+
+   The pictures are lazy: the dial sits below the first screen. */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { SEASONS, MONTHS } from '../data/seasons';
+import { href } from '../lib/paths';
+
+interface Props {
+  /** Which property: the business park or the house. */
+  set?: 'commercial' | 'home';
+  id?: string;
+  sizes?: string;
+  /** Start on this season when script is off. */
+  start?: 'spring' | 'summer' | 'fall' | 'winter';
+}
+const { set = 'commercial', id = 'sd', sizes = '(min-width: 64rem) 58vw, 100vw', start = 'summer' } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/seasons/*.jpg', { eager: true });
+const widths = [640, 960, 1280, 1600];
+const ALT = {
+  commercial: {
+    spring: 'Illustration: the business park entry in early spring, fresh mulch and new edges, grasses cut back',
+    summer: 'Illustration: the same entry in summer at golden hour, striped lawn and full beds',
+    fall: 'Illustration: the same entry in late October, yellow honeylocusts and a lawn cleared of leaves',
+    winter: 'Illustration: the same entry after a January snowfall, the plaza and walk cleared and salted',
+  },
+  home: {
+    spring: 'Illustration: the house in early spring, tulips in fresh mulch',
+    summer: 'Illustration: the same house in summer, deep beds and a striped lawn',
+    fall: 'Illustration: the same house in late October, the oak in color and the lawn cleared',
+    winter: 'Illustration: the same house after a January snowfall, drive and walk cleared',
+  },
+} as const;
+
+const pics = await Promise.all(
+  SEASONS.map(async (s) => {
+    const src = files[`../assets/seasons/${set}-${s.id}.jpg`].default;
+    const ratio = src.width / src.height;
+    const list = widths.filter((w) => w <= src.width);
+    const mk = async (format: 'avif' | 'webp', quality: number) => (await Promise.all(list.map(async (w) => `${(await getImage({ src, width: w, height: Math.round(w / ratio), format, quality })).src} ${w}w`))).join(', ');
+    const fb = await getImage({ src, width: 960, height: Math.round(960 / ratio), format: 'webp', quality: 62 });
+    return { s, avif: await mk('avif', 46), webp: await mk('webp', 60), fb: fb.src, w: src.width, h: src.height };
+  }),
+);
+const name = `${id}-season`;
+---
+
+<figure class="sd" data-sd>
+  <div class="sd__stage frame">
+    {
+      pics.map((p) => (
+        <picture class="sd__img" data-s={p.s.id}>
+          <source type="image/avif" srcset={p.avif} sizes={sizes} />
+          <source type="image/webp" srcset={p.webp} sizes={sizes} />
+          <img src={p.fb} width={p.w} height={p.h} alt={ALT[set][p.s.id]} loading="lazy" decoding="async" />
+        </picture>
+      ))
+    }
+    <p class="sd__tag note">Illustration of one property through the year</p>
+  </div>
+
+  <div class="sd__side">
+    <fieldset class="sd__pick">
+      <legend class="sr">Choose a season</legend>
+      <span class="sd__thumb" aria-hidden="true"></span>
+      {
+        SEASONS.map((s) => (
+          <label class="sd__opt">
+            <input class="sr" type="radio" name={name} value={s.id} checked={s.id === start} />
+            <span class="sd__name">{s.name}</span>
+            <span class="sd__now" aria-hidden="true">Now</span>
+          </label>
+        ))
+      }
+    </fieldset>
+
+    <ol class="sd__year" aria-hidden="true">
+      {MONTHS.map((m, i) => <li data-m={i + 1} data-s={SEASONS.find((s) => s.span.includes(i + 1))!.id}>{m}</li>)}
+    </ol>
+
+    {
+      SEASONS.map((s) => (
+        <div class="sd__note" data-s={s.id}>
+          <p class="sd__months small">{s.months}</p>
+          <h3 class="sd__title">{s.title}</h3>
+          <ul class="checks sd__list">
+            {s.items.map((t) => <li>{t}</li>)}
+          </ul>
+          <a class="arrow" href={href(s.link.path)}>{s.link.label}</a>
+        </div>
+      ))
+    }
+  </div>
+</figure>
+
+<script is:inline>
+  (function () {
+    var m = new Date().getMonth() + 1;
+    var now = m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'fall' : 'winter';
+    document.querySelectorAll('[data-sd]:not([data-on])').forEach(function (sd) {
+      sd.setAttribute('data-on', '');
+      var input = sd.querySelector('input[value="' + now + '"]');
+      if (input) {
+        input.checked = true;
+        input.parentNode.classList.add('is-now');
+      }
+      var li = sd.querySelector('.sd__year [data-m="' + m + '"]');
+      if (li) li.classList.add('is-today');
+    });
+  })();
+</script>
+
+<style>
+  .sd {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .sd {
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    }
+  }
+
+  .sd__stage {
+    display: grid;
+    aspect-ratio: 16 / 10;
+  }
+
+  .sd__img {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity 0.9s var(--ease);
+  }
+
+  .sd__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .sd__tag {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    margin: 0;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--r-sm);
+    background: rgb(14 18 15 / 0.66);
+    color: var(--on-ink);
+  }
+
+  .sd__side {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  /* the segmented choice, with a thumb that slides to the season */
+  .sd__pick {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 4px;
+    border: 1px solid var(--line-ink);
+    border-radius: var(--r);
+    background: rgb(255 255 255 / 0.04);
+  }
+
+  .sd__thumb {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 8px) / 4);
+    border-radius: var(--r-sm);
+    background: var(--btn-ink);
+    transition: transform 0.45s var(--ease);
+  }
+
+  .sd__opt {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    min-height: 3rem;
+    border-radius: var(--r-sm);
+    color: var(--on-ink-muted);
+    font-size: 0.9375rem;
+    font-weight: 640;
+    cursor: pointer;
+    transition: color 0.25s var(--ease);
+  }
+
+  .sd__opt:hover {
+    color: var(--on-ink);
+  }
+
+  .sd__opt:has(input:checked) {
+    color: #fff;
+  }
+
+  .sd__opt:has(input:focus-visible) {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+  }
+
+  .sd__now {
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    display: none;
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--ink);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transform: translateX(-50%);
+  }
+
+  .sd__opt.is-now .sd__now {
+    display: block;
+  }
+
+  /* the year, as twelve months: the chosen season lights up */
+  .sd__year {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .sd__year li {
+    display: grid;
+    place-items: center;
+    height: 1.6rem;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 0.05);
+    color: var(--on-ink-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    transition:
+      background-color 0.4s var(--ease),
+      color 0.4s var(--ease);
+  }
+
+  .sd__year li.is-today {
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+
+  .sd__note {
+    display: none;
+    gap: 0.75rem;
+  }
+
+  .sd__months {
+    color: var(--accent-soft);
+    font-weight: 600;
+  }
+
+  .sd__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1vw + 1.2rem, 2rem);
+    font-weight: 720;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+
+  .sd__list {
+    margin-block: 0.25rem 0.25rem;
+  }
+
+  /* one rule per season: the picture, the thumb, the months and the words */
+  .sd:has(input[value='spring']:checked) {
+    --i: 0;
+  }
+  .sd:has(input[value='summer']:checked) {
+    --i: 1;
+  }
+  .sd:has(input[value='fall']:checked) {
+    --i: 2;
+  }
+  .sd:has(input[value='winter']:checked) {
+    --i: 3;
+  }
+
+  .sd .sd__thumb {
+    transform: translateX(calc(var(--i, 1) * 100%));
+  }
+
+  .sd:has(input[value='spring']:checked) [data-s='spring'],
+  .sd:has(input[value='summer']:checked) [data-s='summer'],
+  .sd:has(input[value='fall']:checked) [data-s='fall'],
+  .sd:has(input[value='winter']:checked) [data-s='winter'] {
+    opacity: 1;
+  }
+
+  .sd:has(input[value='spring']:checked) .sd__note[data-s='spring'],
+  .sd:has(input[value='summer']:checked) .sd__note[data-s='summer'],
+  .sd:has(input[value='fall']:checked) .sd__note[data-s='fall'],
+  .sd:has(input[value='winter']:checked) .sd__note[data-s='winter'] {
+    display: grid;
+  }
+
+  .sd:has(input[value='spring']:checked) .sd__year [data-s='spring'],
+  .sd:has(input[value='summer']:checked) .sd__year [data-s='summer'],
+  .sd:has(input[value='fall']:checked) .sd__year [data-s='fall'],
+  .sd:has(input[value='winter']:checked) .sd__year [data-s='winter'] {
+    background: var(--btn-ink);
+    color: #fff;
+  }
+
+  @media (forced-colors: active) {
+    .sd__opt:has(input:checked) {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+</style>

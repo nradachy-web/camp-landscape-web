@@ -1,0 +1,74 @@
+---
+/* Contact, at the old site's address. The shop address is public on the old site and the Google listing. */
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import QuoteBand from '../components/QuoteBand.astro';
+import Icon from '../components/Icon.astro';
+import { BRAND, SOCIAL } from '../data/site';
+import { heroImage } from '../lib/hero';
+import { breadcrumbs } from '../lib/schema';
+
+const path = '/contact/';
+const head = await heroImage('ai-home-fall', { sizes: '(min-width: 60rem) 48vw, 1px' });
+---
+
+<Base
+  title="Contact CAMP Landscape Management | Grand Rapids, MI"
+  description="Call or text CAMP Landscape Management at (616) 308-4862 or send a request for a free estimate. Shop at 1661 Blaine Ave SE, Grand Rapids, MI."
+  path={path}
+  preload={{ ...head.preload, media: '(min-width: 60rem)' }}
+  schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Contact', path }])]}
+>
+  <PageHead image={head} eyebrow="Contact" title="Call, text, or **tell us about the property.**" lede="A real person at the CAMP office answers. Texting a photo of the property is a fast way to start." crumbs={[{ name: 'Contact', path }]} next="ink">
+    <ul class="ways">
+      <li><a class="way" href={BRAND.phoneHref} data-loc="contact"><Icon name="phone" /><span>Call {BRAND.phone}</span></a></li>
+      <li><a class="way" href={BRAND.smsHref} data-loc="contact-text"><Icon name="text" /><span>Text a photo</span></a></li>
+      <li><a class="way" href={`mailto:${BRAND.email}`}><Icon name="mail" /><span>{BRAND.email}</span></a></li>
+      <li class="way"><Icon name="pin" /><span>{BRAND.street}, {BRAND.city}, {BRAND.state} {BRAND.zip}</span></li>
+      {SOCIAL.length > 0 && <li class="soc">{SOCIAL.map((x) => <a href={x.href} target="_blank" rel="noopener">{x.name}</a>)}</li>}
+    </ul>
+  </PageHead>
+  <QuoteBand from="ink" eyebrow="Free estimate" title="Or send a request here." />
+</Base>
+
+<style>
+  .ways {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .way {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.75rem;
+    font-size: 1.125rem;
+    font-weight: 560;
+    text-decoration: none;
+  }
+
+  a.way:hover {
+    color: var(--accent);
+  }
+
+  .way :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+    color: var(--accent);
+  }
+
+  .soc {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .soc a {
+    display: inline-block;
+    padding-block: 0.5rem;
+    text-decoration: none;
+  }
+
+  .soc a:hover {
+    color: var(--accent);
+  }
+</style>

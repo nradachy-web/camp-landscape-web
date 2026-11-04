@@ -1,0 +1,182 @@
+{
+  "service": "landscaping",
+  "meta": {
+    "title": "Landscape Installation in Grand Rapids, MI | CAMP Landscape",
+    "description": "Landscape installation in Grand Rapids: grading, hydroseed, plantings, retaining walls and steps, patios, outdoor living and lighting for homes and businesses."
+  },
+  "hero": {
+    "kicker": "Landscape installation in Grand Rapids and West Michigan",
+    "title": "Built for the site. **Built to last.**",
+    "lede": "From a bare lot to a finished yard, or a tired one made new: grading, topsoil and hydroseed, plantings, edging and mulch, retaining walls and steps, patios and outdoor living, for homes and commercial properties.",
+    "chips": [
+      "New yard installs",
+      "Walls, steps and patios",
+      "Lighting"
+    ],
+    "photo": "wall-lakeside"
+  },
+  "blocks": [
+    {
+      "type": "intro",
+      "plane": "paper",
+      "eyebrow": "The short version",
+      "title": "Every phase, **one crew.**",
+      "body": [
+        "Whether you are starting from scratch with a new yard or upgrading an outdoor space you already have, we handle every phase: grading, topsoil and hydroseeding, plantings, edging and mulch. Every plan is tailored to the site, with a focus on how it performs over the years and how it looks on day one.",
+        "We work closely with you to understand what you want, give you straight recommendations, and build something that works as well as it looks. We only recommend plants and features that will thrive in West Michigan, not just survive one season here."
+      ],
+      "checks": [
+        "Grading, topsoil and hydroseed for a lawn that starts right",
+        "Plants chosen for your soil and light, so they thrive without constant care",
+        "Edging and mulch to finish every bed",
+        "Residential and commercial properties"
+      ],
+      "photo": "ai-home-spring"
+    },
+    {
+      "type": "intro",
+      "anchor": "walls",
+      "plane": "ink",
+      "eyebrow": "Retaining walls and steps",
+      "title": "Turn a slope into **ground you can use.**",
+      "body": [
+        "When a property has slopes or changes in grade, the right retaining wall does more than hold back soil. It makes flat, usable space, defines safe steps between levels, stops erosion and helps the property drain.",
+        "We build walls and steps in a range of materials and styles to match the look you want, with the structure the site needs underneath. The lake lot pictured is ours: a curved natural stone wall and wide steps from the lawn down to the beach."
+      ],
+      "checks": [
+        "Walls that hold the grade and stop erosion",
+        "Steps that make a hill safe and easy to use",
+        "Materials and styles to match the home"
+      ],
+      "photo": "wall-lakeside"
+    },
+    {
+      "type": "cards",
+      "anchor": "patios",
+      "plane": "white",
+      "eyebrow": "Outdoor living",
+      "title": "The favorite room **on the property.**",
+      "intro": "A patio, a fire, a place to cook. Designed around how you actually spend time outside, and built to last.",
+      "columns": 3,
+      "items": [
+        {
+          "tag": "Patios",
+          "title": "A place to sit and stay",
+          "body": "A quiet space to unwind or a big one for family and friends. Choose brick, concrete, slate and more, built on a proper base so it stays flat and solid."
+        },
+        {
+          "tag": "Outdoor living",
+          "title": "Fire pits, kitchens, lounges",
+          "body": "A custom fire pit, a built-in kitchen or a lounge area extends the house into the yard, for cool nights by the fire and weekend cookouts."
+        },
+        {
+          "tag": "Lighting",
+          "title": "Finished after dark",
+          "body": "Light on the garden, the paths and the steps makes the property safer and more usable at night, and makes it look intentional and finished."
+        }
+      ]
+    },
+    {
+      "type": "steps",
+      "plane": "paper",
+      "eyebrow": "How a project runs",
+      "title": "Design it, build it right, **then keep it.**",
+      "steps": [
+        {
+          "title": "Sit down and design",
+          "body": "We meet at the property, talk through how you want to use the space, and plan a landscape that fits the site and the way you live."
+        },
+        {
+          "title": "Build it right",
+          "body": "Materials and plants chosen for beauty and for our climate, put in by our crew with the grading and base work done properly underneath."
+        },
+        {
+          "title": "Keep it healthy",
+          "body": "Then, if you want, we maintain it, with [landscape management](/landscape-management/) and [irrigation](/irrigation/) service, so the investment stays polished year round."
+        }
+      ]
+    },
+    {
+      "type": "intro",
+      "plane": "white",
+      "eyebrow": "Commercial installs",
+      "title": "New entries, islands **and common areas.**",
+      "body": [
+        "Installation is not only for homes. We plant entries, islands and common areas for apartment communities, offices and HOAs, then keep them up on a [landscape management](/landscape-management/) plan, so the property does not slide back after the crew leaves.",
+        "For bigger site changes, walls, steps and grading are handled by the same crew, and tree removals by our sister company, [Ole Man RB's Tree Service](https://olemanrb.com/)."
+      ],
+      "photo": "ai-park-spring",
+      "flip": true,
+      "cta": {
+        "label": "Commercial grounds care",
+        "href": "/commercial/"
+      }
+    },
+    {
+      "type": "reviews",
+      "plane": "paper",
+      "eyebrow": "In their words",
+      "title": "They took the time **to do it right.**",
+      "ids": [
+        "renee-a",
+        "chris-b"
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "q": "What does landscape installation include?",
+      "a": "Grading, topsoil and hydroseeding, plantings, edging and mulch, plus retaining walls and steps, patios, outdoor living features like fire pits and outdoor kitchens, and landscape lighting. We handle every phase, for homes and commercial properties."
+    },
+    {
+      "q": "Do you build retaining walls in Grand Rapids?",
+      "a": "Yes. We build retaining walls and steps across greater Grand Rapids to manage changes in grade, stop erosion and create usable flat space, in a range of materials and styles."
+    },
+    {
+      "q": "What patio materials do you work with?",
+      "a": "Brick, concrete, slate and more. We help you pick a material that matches the home and how you will use the space."
+    },
+    {
+      "q": "Will the plants survive a Michigan winter?",
+      "a": "We only recommend plants that will thrive in West Michigan soil and our unpredictable seasons, chosen for your soil and light, so you are not replacing them after one hard winter."
+    },
+    {
+      "q": "Do you do commercial landscape installation?",
+      "a": "Yes. We install entries, islands and common area landscapes for apartment communities, offices and HOAs, and can maintain them afterward. See [commercial grounds care](/commercial/)."
+    },
+    {
+      "q": "Can you maintain the landscape after it is installed?",
+      "a": "Yes. Most of our installs move straight onto a [landscape management](/landscape-management/) plan with mowing, bed care and mulch, plus [irrigation](/irrigation/) service."
+    },
+    {
+      "q": "How much does landscape installation cost?",
+      "a": "Every project is different, so we price it after we have seen the property and talked through what you want. Call or text [(616) 308-4862](tel:+16163084862) to schedule an on-site estimate."
+    }
+  ],
+  "quote": {
+    "title": "Start with a walk of the property.",
+    "lede": "Tell us what you have in mind, big or small. We will meet you on site, talk through the options and put together a plan and an estimate."
+  },
+  "summary": {
+    "title": "From grading to the last plant.",
+    "intro": "New yards, upgrades, walls, steps, patios and lighting, for homes and businesses.",
+    "items": [
+      {
+        "name": "Site work",
+        "detail": "Grading, topsoil and hydroseed."
+      },
+      {
+        "name": "Planting",
+        "detail": "Trees, shrubs and perennials chosen for the soil and light."
+      },
+      {
+        "name": "Walls and steps",
+        "detail": "Retaining walls and steps that hold a slope."
+      },
+      {
+        "name": "Outdoor living",
+        "detail": "Patios, fire pits, outdoor kitchens and lighting."
+      }
+    ]
+  }
+}

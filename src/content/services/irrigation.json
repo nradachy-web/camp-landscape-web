@@ -1,0 +1,187 @@
+{
+  "service": "irrigation",
+  "meta": {
+    "title": "Irrigation Installation and Service in Grand Rapids | CAMP",
+    "description": "Sprinkler installation, repair, spring start up and winterization in Grand Rapids for apartment communities, businesses and homes. CAMP Landscape Management."
+  },
+  "hero": {
+    "kicker": "Irrigation installation and service in Grand Rapids",
+    "title": "Water where it **belongs.**",
+    "lede": "CAMP designs and installs sprinkler systems on Rain Bird, Hunter and Toro parts, and services the one you already have: spring start up, zone adjustments, leak detection, repairs and a full blowout before the freeze.",
+    "chips": [
+      "Installs and upgrades",
+      "Spring start up",
+      "Fall winterization"
+    ],
+    "photo": "ai-irrigation"
+  },
+  "blocks": [
+    {
+      "type": "intro",
+      "plane": "paper",
+      "eyebrow": "The short version",
+      "title": "A system that runs right is **one you forget about.**",
+      "body": [
+        "Consistent, even water is the backbone of a healthy landscape. When a system is designed for the site and kept up through the year, the lawn stays green, the beds stay alive and nobody is out there in July dragging a hose.",
+        "We design and install new systems, and our service crew maintains, repairs and upgrades every common kind of system, including drip and multi-zone setups and smart controllers. We find the problem, tell you plainly what it is, and fix it for the long run instead of patching it."
+      ],
+      "checks": [
+        "New systems designed around the layout, soil, plants and sun of the property",
+        "Parts from trusted makers: Rain Bird, Hunter and Toro",
+        "Service for the system you have, whoever put it in",
+        "Built for apartment communities and commercial sites as well as homes"
+      ],
+      "photo": "ai-home-summer"
+    },
+    {
+      "type": "zones",
+      "plane": "ink",
+      "eyebrow": "Try it",
+      "title": "Run the zones. **Spot the trouble.**",
+      "intro": "A drawing of a typical front yard system. Run each zone as found, then flip the switch to see the same yard after a tune up."
+    },
+    {
+      "type": "cards",
+      "anchor": "spring",
+      "plane": "white",
+      "eyebrow": "Through the year",
+      "title": "Three visits that **keep it running.**",
+      "intro": "Most systems need the same three things every year. We put them on the calendar so you do not have to remember.",
+      "columns": 3,
+      "items": [
+        {
+          "tag": "April and May",
+          "title": "Spring start up",
+          "body": "We bring the system back on, run every zone, and inspect and adjust each part. If a head needs moving or a zone needs adding to cover a dry spot, we tell you before summer finds it."
+        },
+        {
+          "tag": "All season",
+          "title": "Service and repairs",
+          "body": "Broken heads, leaks, valves that stick and zones that will not shut off. Inspections and zone adjustments as the property changes, with clear answers and no guesswork."
+        },
+        {
+          "tag": "Before the freeze",
+          "title": "Winterization",
+          "body": "Water left in the lines can crack pipes over a Michigan winter. We blow every zone, pipe and backflow device clear with commercial equipment and shut the system down safely."
+        }
+      ]
+    },
+    {
+      "type": "intro",
+      "anchor": "winter",
+      "plane": "paper",
+      "eyebrow": "Winterization",
+      "title": "One cold night can mean **a spring repair bill.**",
+      "body": [
+        "Even a little water sitting in an irrigation line can freeze, expand and split the pipe, a fitting or the backflow device. You find out in April, when the system will not hold pressure.",
+        "Our winterization clears the whole system with high-powered commercial equipment, zone by zone, so every pipe and the backflow device are empty before the first hard freeze. It is not just draining the lines. It protects what you paid for and saves the surprise in spring."
+      ],
+      "checks": [
+        "Every zone blown clear, one at a time",
+        "Backflow device emptied and protected",
+        "The controller set for winter",
+        "Book it in the fall, before the first hard freeze"
+      ],
+      "photo": "ai-home-fall",
+      "flip": true,
+      "cta": {
+        "label": "Book a winterization",
+        "href": "#quote"
+      }
+    },
+    {
+      "type": "steps",
+      "plane": "white",
+      "eyebrow": "A new system",
+      "title": "From a dry lawn to **a system that fits it.**",
+      "steps": [
+        {
+          "title": "Walk the site",
+          "body": "We look at the layout, the soil, what is planted and where the sun hits, because each of those changes how a zone should be built."
+        },
+        {
+          "title": "Design the zones",
+          "body": "Lawn on rotors and sprays, beds on drip, each zone sized to the water pressure you have, so every area gets what it needs and nothing more."
+        },
+        {
+          "title": "Install it clean",
+          "body": "Lines in, heads set to grade, the controller programmed, and the lawn put back the way we found it."
+        },
+        {
+          "title": "Keep it right",
+          "body": "We start it each spring and blow it out each fall, so the system you paid for keeps working the way it was designed."
+        }
+      ]
+    },
+    {
+      "type": "reviews",
+      "plane": "paper",
+      "eyebrow": "In their words",
+      "title": "Kept **top notch.**",
+      "ids": [
+        "chris-b",
+        "renee-a"
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "q": "Do you install sprinkler systems in Grand Rapids?",
+      "a": "Yes. CAMP designs and installs irrigation systems in Grand Rapids and across Kent County and into Ottawa County, for apartment communities, commercial properties and homes. We build on Rain Bird, Hunter and Toro parts."
+    },
+    {
+      "q": "Can you service a system someone else installed?",
+      "a": "Yes. Our service crew works on every common kind of sprinkler system, including drip lines, multi-zone systems and smart controllers, whoever put them in."
+    },
+    {
+      "q": "When should I schedule a spring start up?",
+      "a": "April or May. We turn the system back on, run each zone, inspect and adjust the parts, and recommend any changes, like moving a head or adding a zone, before the summer heat shows where the gaps are."
+    },
+    {
+      "q": "When should I winterize my sprinklers?",
+      "a": "In the fall, before the first hard freeze. Water left in the lines can freeze and crack pipes, fittings and the backflow device, so we blow the system clear with commercial equipment and shut it down safely."
+    },
+    {
+      "q": "Why is part of my lawn dry when the sprinklers run?",
+      "a": "Usually a head is broken, aimed wrong, set to the wrong throw or blocked by a plant that grew in front of it. Sometimes the zone was never laid out to cover that spot. A system check finds which one it is."
+    },
+    {
+      "q": "Do you work on irrigation for apartment communities and commercial properties?",
+      "a": "Yes. A lot of our irrigation work is for property managers, including multifamily communities of 50 to 150 units and commercial sites with large lawns. See [commercial grounds care](/commercial/)."
+    },
+    {
+      "q": "Can irrigation be part of a landscape management contract?",
+      "a": "Yes. Start up, service and winterization can be scheduled alongside mowing, beds and snow, so one company looks after the property all year. See [landscape management](/landscape-management/)."
+    },
+    {
+      "q": "How much does a sprinkler system cost?",
+      "a": "It depends on the size of the property, the number of zones and what is planted, so we price it after walking the site. Call or text [(616) 308-4862](tel:+16163084862) to set that up."
+    }
+  ],
+  "quote": {
+    "title": "Get the system on the calendar.",
+    "lede": "Tell us whether it is a new install, a repair, a start up or a winterization, and where the property is. We will take it from there."
+  },
+  "summary": {
+    "title": "Installs, service, start up and winterization.",
+    "intro": "Sprinkler systems designed for the site, and the yearly service that keeps them working.",
+    "items": [
+      {
+        "name": "Installation",
+        "detail": "New systems on Rain Bird, Hunter and Toro parts, designed for the layout, soil and plants."
+      },
+      {
+        "name": "Spring start up",
+        "detail": "Every zone run, inspected and adjusted in April and May."
+      },
+      {
+        "name": "Service and repair",
+        "detail": "Heads, leaks, valves, drip, multi-zone systems and smart controllers."
+      },
+      {
+        "name": "Winterization",
+        "detail": "Every zone, pipe and backflow device blown clear before the freeze."
+      }
+    ]
+  }
+}

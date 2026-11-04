@@ -1,0 +1,21 @@
+---
+/* Service pages live at the top level of the site (/irrigation/,
+   /landscape-management/), the same addresses the old site used. A page exists
+   when its content file exists. Service-in-a-town pages join this route once the
+   town matrix in src/data/cities.ts has entries. */
+import { getCollection } from 'astro:content';
+import ServicePage from '../templates/ServicePage.astro';
+import { SERVICES } from '../data/services';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.flatMap((entry) => {
+    const svc = SERVICES.find((s) => s.id === entry.data.service);
+    return svc ? [{ params: { slug: svc.path.replace(/\//g, '') }, props: { entry } }] : [];
+  });
+}
+
+const { entry } = Astro.props;
+---
+
+<ServicePage entry={entry} />

@@ -1,0 +1,95 @@
+{
+  "service": "snow-removal",
+  "meta": {
+    "title": "Commercial Snow Removal in Grand Rapids, MI | CAMP Landscape",
+    "description": "Commercial snow plowing, salting and sidewalk clearing in Grand Rapids for apartment communities, offices, retail and HOAs. CAMP Landscape Management."
+  },
+  "hero": {
+    "kicker": "Commercial snow and ice removal in Grand Rapids",
+    "title": "Open, clear and **safe to walk.**",
+    "lede": "When it snows, CAMP plows lots and drive lanes and clears and salts walks and entries for apartment communities, offices, retail and HOAs across greater Grand Rapids, storm after storm, all winter.",
+    "chips": ["Plowing", "Salting and de-icing", "Walks and entries"],
+    "photo": "ai-plow-night"
+  },
+  "blocks": [
+    {
+      "type": "intro",
+      "plane": "paper",
+      "eyebrow": "The short version",
+      "title": "Fast, reliable clearing **all winter.**",
+      "body": [
+        "A Michigan winter brings storm after storm. A commercial property has to stay safe and reachable through every one: lots and drive lanes open, walks and entries clear, and ice treated before someone slips on it.",
+        "CAMP handles snow and ice for commercial properties with the same crew and the same standards that keep the grounds the rest of the year. One company from the spring cleanup to the last plow of March."
+      ],
+      "checks": [
+        "Lots and drive lanes plowed",
+        "Walks, entries and steps cleared",
+        "Salt and de-icing on walks, entries and lots",
+        "Apartment communities, offices, retail and HOAs"
+      ],
+      "photo": "ai-park-winter"
+    },
+    {
+      "type": "reveal",
+      "kind": "snow",
+      "plane": "ink",
+      "eyebrow": "Try it",
+      "title": "Drag the plow **across the lot.**",
+      "intro": "An office lot the morning after an overnight snowfall. Drag across it, or let the plow do it."
+    },
+    {
+      "type": "cards",
+      "plane": "white",
+      "eyebrow": "How a storm runs",
+      "title": "Before, during **and after.**",
+      "intro": "Every site gets a plan before the first flake, so the crew knows where the snow goes and what has to be open first.",
+      "columns": 3,
+      "items": [
+        { "tag": "Before the season", "title": "Walk and mark the site", "body": "We walk the property with you, agree on what gets plowed, shoveled and salted, and mark curbs and islands so they are not lost under the snow." },
+        { "tag": "During a storm", "title": "Plow, clear and salt", "body": "Drive lanes and stalls plowed, walks and entries cleared, and ice treated, with the snow stacked where it will not block a stall or a sightline." },
+        { "tag": "After it stops", "title": "Clean up and check", "body": "Edges pushed back, drifts cleared, and the site checked again so a refreeze does not catch anyone on the walk the next morning." }
+      ]
+    },
+    {
+      "type": "intro",
+      "plane": "paper",
+      "eyebrow": "One company all year",
+      "title": "The crew that mows it **plows it.**",
+      "body": [
+        "The people who keep your grounds in summer already know the property: the curbs, the islands, the drains, the spots that drift. In winter they plow it. Nobody new has to learn the site in the middle of a storm.",
+        "Snow can sit on the same plan as [landscape management](/landscape-management/) and [irrigation](/irrigation/) winterization, with one contact for the property in every season."
+      ],
+      "photo": "ai-park-fall",
+      "flip": true,
+      "cta": { "label": "Commercial grounds care", "href": "/commercial/" }
+    },
+    {
+      "type": "reviews",
+      "plane": "ink",
+      "eyebrow": "In their words",
+      "title": "Snow and landscaping, **three sites.**",
+      "ids": ["chris-b", "renee-a"]
+    }
+  ],
+  "faq": [
+    { "q": "Do you offer commercial snow removal in Grand Rapids?", "a": "Yes. CAMP plows, clears and salts commercial properties across greater Grand Rapids, including apartment communities, offices, retail sites and HOAs." },
+    { "q": "Do you plow residential driveways?", "a": "Our snow and ice service is built for commercial properties. If you have a home, call us and we will tell you straight whether we can help." },
+    { "q": "What does commercial snow removal include?", "a": "Plowing lots and drive lanes, clearing walks, entries and steps, and salting and de-icing, set out in a plan for the site before the season starts." },
+    { "q": "Can snow removal be combined with landscape management?", "a": "Yes. Many properties have us for the whole year: [landscape management](/landscape-management/) and [irrigation](/irrigation/) in season, snow and ice in winter, with one contact." },
+    { "q": "When should we sign up for snow removal?", "a": "Before the snow flies. Fall is when we walk the site, set the plan and mark the curbs and islands, so the first storm goes to plan." },
+    { "q": "How is commercial snow removal priced?", "a": "It depends on the size of the lot and walks and what the site needs, so we price it after a walk of the property. Call or text [(616) 308-4862](tel:+16163084862) to set that up." }
+  ],
+  "quote": {
+    "title": "Get the site on the snow list.",
+    "lede": "Tell us about the property: the lot, the walks and the entries, and what has to be open first. We will walk it and send a plan for the winter."
+  },
+  "summary": {
+    "title": "Plowing, salting and walks for commercial sites.",
+    "intro": "Snow and ice handled through the winter for apartment communities, offices, retail and HOAs.",
+    "items": [
+      { "name": "Plowing", "detail": "Lots and drive lanes." },
+      { "name": "Walks and entries", "detail": "Walks, entries and steps cleared." },
+      { "name": "Salting", "detail": "Salt and de-icing on walks, entries and lots." }
+    ]
+  }
+}

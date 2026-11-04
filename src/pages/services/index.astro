@@ -1,0 +1,37 @@
+---
+/* Every service, in four groups. */
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Head from '../../components/Head.astro';
+import ServiceCards from '../../components/ServiceCards.astro';
+import QuoteBand from '../../components/QuoteBand.astro';
+import { GROUPS, inGroup } from '../../data/services';
+import { heroImage } from '../../lib/hero';
+import { breadcrumbs, serviceListSchema } from '../../lib/schema';
+
+const head = await heroImage('ai-park-spring', { sizes: '(min-width: 60rem) 48vw, 1px' });
+const path = '/services/';
+---
+
+<Base
+  title="Landscaping, Lawn Care, Irrigation and Snow | CAMP Grand Rapids"
+  description="Landscape installation, landscape management, irrigation and commercial snow removal in Grand Rapids from CAMP Landscape Management. Free estimates."
+  path={path}
+  preload={{ ...head.preload, media: '(min-width: 60rem)' }}
+  schema={[serviceListSchema(), breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Services', path }])]}
+>
+  <PageHead image={head} eyebrow="Services" title="Installed, kept up, watered **and plowed.**" lede="Four kinds of work, one company and one number to call. If something is outside what we do, we will say so on the first call." crumbs={[{ name: 'Services', path }]} />
+
+  {
+    GROUPS.map((g, i) => (
+      <section class:list={['band', i % 2 === 1 && 'white']} aria-labelledby={`g-${g.id}`}>
+        <div class="wrap">
+          <Head id={`g-${g.id}`} title={g.name} intro={g.blurb} />
+          <ServiceCards services={inGroup(g.id)} />
+        </div>
+      </section>
+    ))
+  }
+
+  <QuoteBand from="white" avoid={['ai-park-spring']} />
+</Base>

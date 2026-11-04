@@ -1,0 +1,83 @@
+---
+/* Where two planes meet they meet on a contour line, the lay of the land a crew
+   reads before it grades, plants or plows. Three thin lines ride above the cut
+   like the rings on a survey map. Decorative, so it stays out of the
+   accessibility tree.
+
+   `to` is the plane below the line. Sits at the bottom of the band above it. */
+interface Props {
+  to?: 'paper' | 'white' | 'ink';
+  flip?: boolean;
+  /** Sit along the top of the band instead, in the color of the band above. */
+  top?: boolean;
+}
+const { to = 'paper', flip = false, top = false } = Astro.props;
+const cut = 'M0 52C180 30 330 18 520 30s380 40 600 30c120-6 230-24 320-38';
+---
+
+<svg class:list={['edge', `edge--${to}`, flip && 'edge--flip', top && 'edge--top']} viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  <path class="edge__ring r3" d={cut} transform="translate(0 -27)" />
+  <path class="edge__ring r2" d={cut} transform="translate(0 -18)" />
+  <path class="edge__ring r1" d={cut} transform="translate(0 -9)" />
+  <path class="edge__fill" d={`${cut}V80H0z`} />
+</svg>
+
+<style>
+  .edge {
+    position: absolute;
+    inset: auto 0 -1px;
+    z-index: 3;
+    width: 100%;
+    height: clamp(2rem, 5vw, 4.75rem);
+    pointer-events: none;
+  }
+
+  .edge--flip {
+    transform: scaleX(-1);
+  }
+
+  .edge--top {
+    inset: -1px 0 auto;
+    transform: scaleY(-1);
+  }
+
+  .edge--top.edge--flip {
+    transform: scale(-1, -1);
+  }
+
+  .edge__fill {
+    fill: var(--paper);
+  }
+
+  .edge--white .edge__fill {
+    fill: var(--white);
+  }
+
+  .edge--ink .edge__fill {
+    fill: var(--ink);
+  }
+
+  /* the rings sit on the band above, so they take that band's ink */
+  .edge__ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .edge--ink .edge__ring {
+    stroke: var(--accent-ink);
+  }
+
+  .r1 {
+    opacity: 0.55;
+  }
+
+  .r2 {
+    opacity: 0.32;
+  }
+
+  .r3 {
+    opacity: 0.16;
+  }
+</style>

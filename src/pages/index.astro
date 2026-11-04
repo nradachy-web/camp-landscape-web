@@ -1,0 +1,468 @@
+---
+/* ============================================================================
+   HOME
+     hero      the property at golden hour. "One crew for your grounds, every season."
+     paper     two doors: a business or community, or a home
+     ink       the Season Dial: the same property through the year
+     white     what we do, in four groups, and the tree work next door
+     ink       drag the plow across the lot
+     paper     how it runs, start to finish
+     ink       the sprinkler zone check
+     white     real work: the lake lot wall
+     paper     reviews
+     ink       where we work
+     paper     plain answers (what answer engines quote)
+     ink       the estimate form beside the phone
+   ========================================================================== */
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Head from '../components/Head.astro';
+import Photo from '../components/Photo.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteBand from '../components/QuoteBand.astro';
+import Edge from '../components/Edge.astro';
+import AreaMap from '../components/AreaMap.astro';
+import SeasonDial from '../components/SeasonDial.astro';
+import RevealPanel from '../components/RevealPanel.astro';
+import RevealScript from '../components/RevealScript.astro';
+import ZoneCheck from '../components/ZoneCheck.astro';
+import { BRAND } from '../data/site';
+import { GROUPS, inGroup, TREE_PARTNER } from '../data/services';
+import { AREAS, AREA_NAMES, inArea, hubPath } from '../data/cities';
+import { REVIEWS } from '../data/reviews';
+import { photo } from '../data/photos';
+import { heroImage } from '../lib/hero';
+import { href } from '../lib/paths';
+import { faqSchema } from '../lib/schema';
+
+const wide = await heroImage('hero-wide', { sizes: '100vw', widths: [960, 1320, 1672], media: '(min-width: 48rem)' });
+const tall = await heroImage('hero-tall', { sizes: '100vw', widths: [420, 640, 828, 1024], media: '(max-width: 47.99rem)' });
+
+const doors = [
+  {
+    eyebrow: 'Businesses and communities',
+    title: 'Offices, apartment communities and HOAs',
+    body: 'Mowing, beds, irrigation and snow under one contract, on a schedule you never have to chase. One crew, one invoice, one number to call.',
+    photo: 'ai-park-fall' as const,
+    path: '/commercial/',
+    cta: 'Commercial grounds care',
+  },
+  {
+    eyebrow: 'Homes',
+    title: 'A yard built right, then kept that way',
+    body: 'New plantings, walls, steps and patios, then the weekly care and the sprinkler service that keep it looking like the day it was finished.',
+    photo: 'ai-home-summer' as const,
+    path: '/landscaping/',
+    cta: 'Landscape installation',
+  },
+];
+
+const steps = [
+  { title: 'We walk the site', body: 'We come out, walk the property with you and listen: what has to be handled, what bugs you, and what you would like it to look like.' },
+  { title: 'You get one plan', body: 'Installs, weekly care, irrigation and snow, priced and scheduled for the season, so nothing falls between two companies.' },
+  { title: 'The crew shows up', body: 'On the schedule we set, with the equipment the job needs. Edges cut, clippings blown off, beds left clean.' },
+  { title: 'One call all year', body: 'Spring start up, summer mowing, fall blowout, winter plowing. The same people answer, whatever the season.' },
+];
+
+const faq = [
+  { q: 'What does CAMP Landscape Management do?', a: 'CAMP installs and maintains landscapes for businesses, apartment communities, HOAs and homes across greater Grand Rapids. That covers landscape installation, retaining walls and steps, patios and outdoor living, landscape lighting, lawn mowing and edging, bed maintenance and mulch, lawn fertilizer and pest control, irrigation installation and service, and commercial snow and ice removal.' },
+  { q: 'Do you work on commercial properties?', a: 'Yes. Much of our work is for property managers: apartment communities, offices and HOAs that need mowing, beds, irrigation and snow handled on a schedule. See [commercial grounds care](/commercial/).' },
+  { q: 'Do you do snow removal for homes?', a: 'Our snow and ice service is for commercial properties: lots, drives, walks and entries. Call us about your property and we will tell you straight whether it is a fit.' },
+  { q: 'Who does your tree work?', a: `Tree removals, trimming and stump grinding are done by our sister company, [Ole Man RB's Tree Service](${TREE_PARTNER.href}). Same ownership, so one call covers the grounds and the trees.` },
+  { q: 'What areas do you serve?', a: `We are based in ${BRAND.city} and work across Kent County and into Ottawa County: Grand Rapids, East Grand Rapids, Kentwood, Wyoming, Grandville, Walker, Ada, Cascade, Rockford and more. See [every town we serve](/service-areas/).` },
+  { q: 'How much does landscape management cost?', a: `It depends on the size of the property, how often it is cut and what the season includes, so we price it after we have walked the site. Call or text [${BRAND.phone}](${BRAND.phoneHref}) to set that up.` },
+];
+---
+
+<Base
+  title="CAMP Landscape Management | Grand Rapids Landscaping and Snow"
+  description="CAMP installs and maintains landscapes for businesses, apartment communities and homes in Grand Rapids, with irrigation service and commercial snow removal."
+  path="/"
+  preload={[wide.preload, tall.preload]}
+  schema={[faqSchema(faq)]}
+>
+  <Hero
+    size="home"
+    image={wide}
+    tall={tall}
+    kicker="Landscape management, irrigation and snow in Grand Rapids"
+    title="One crew for your grounds, **every season.**"
+    lede="CAMP installs and maintains landscapes for businesses, apartment communities and homes across greater Grand Rapids, then plows and salts when the season turns."
+    next="paper"
+  />
+
+  <section class="band has-edge doors-band" aria-labelledby="doors-h">
+    <div class="wrap">
+      <Head id="doors-h" eyebrow="Start here" title="Two kinds of property, **one standard.**" intro="Tell us what you are looking after and we will show you what a year with CAMP looks like for it." />
+      <ul class="doors">
+        {
+          doors.map((d) => (
+            <li>
+              <a class="door" href={href(d.path)}>
+                <div class="frame door__img">
+                  <Photo id={d.photo} ratio={16 / 10} widths={[480, 720, 960]} sizes="(min-width: 60rem) 44vw, 92vw" alt="" />
+                </div>
+                <div class="door__body">
+                  <p class="eyebrow">{d.eyebrow}</p>
+                  <h3 class="door__h">{d.title}</h3>
+                  <p class="muted">{d.body}</p>
+                  <span class="arrow">{d.cta}</span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <Edge to="ink" />
+  </section>
+
+  <section class="band has-edge ink" aria-labelledby="year-h">
+    <div class="wrap">
+      <Head id="year-h" eyebrow="The year at CAMP" title="Same property. **Every season.**" intro="This is what twelve months with one crew looks like. It opens on the season we are in now; tap through the year." />
+      <SeasonDial set="commercial" id="home" />
+    </div>
+    <Edge to="white" flip />
+  </section>
+
+  <section class="band has-edge white" aria-labelledby="svc-h">
+    <div class="wrap">
+      <Head id="svc-h" eyebrow="What we do" title="Installed, kept up, watered **and plowed.**" intro="Four kinds of work, one company. Start with a single service or hand us the whole property." />
+      <ul class="groups">
+        {
+          GROUPS.map((g) => (
+            <li class="group">
+              <a class="frame group__img" href={href(g.path)} tabindex="-1" aria-hidden="true">
+                <Photo id={g.photo} ratio={3 / 2} widths={[420, 640, 840]} sizes="(min-width: 70rem) 23vw, (min-width: 40rem) 46vw, 92vw" alt="" />
+              </a>
+              <h3 class="h3"><a href={href(g.path)}>{g.name}</a></h3>
+              <p class="small muted">{g.blurb}</p>
+              <ul class="group__list">
+                {inGroup(g.id).map((s) => <li><a href={href(s.path)}>{s.name}</a></li>)}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+      <aside class="tree card pad">
+        <div>
+          <p class="eyebrow">Tree work, same family</p>
+          <p class="tree__t">{TREE_PARTNER.blurb}</p>
+        </div>
+        <a class="btn ghost" href={TREE_PARTNER.href} target="_blank" rel="noopener">Visit olemanrb.com</a>
+      </aside>
+    </div>
+    <Edge to="ink" />
+  </section>
+
+  <section class="band has-edge ink" aria-labelledby="snow-h">
+    <div class="wrap two snow">
+      <div class="stack" style="--gap:1.4rem">
+        <Head id="snow-h" layout="left" eyebrow="Snow and ice" title="Drag the plow **across the lot.**" intro="When it snows overnight, the lot, the drive lanes and the walk to the front door all have to be open by the time people show up." />
+        <ul class="checks">
+          <li>Lots and drive lanes plowed, the snow stacked where it will not block a stall</li>
+          <li>Walks, entries and steps cleared and salted</li>
+          <li>Snow stakes set along curbs and islands before the first storm</li>
+          <li>The same crew that keeps the grounds all summer</li>
+        </ul>
+        <a class="arrow" href={href('/snow-and-ice-removal/')}>Commercial snow and ice removal</a>
+      </div>
+      <RevealPanel kind="snow" sizes="(min-width: 60rem) 50vw, 92vw" />
+    </div>
+    <Edge to="paper" />
+  </section>
+
+  <section class="band has-edge" aria-labelledby="how-h">
+    <div class="wrap">
+      <Head id="how-h" eyebrow="How it runs" title="Plan it once. **We keep it running.**" intro="Initiative, integrity and thoroughness are the values CAMP was built on. Here is what they look like on a property." />
+      <Steps steps={steps} />
+    </div>
+    <Edge to="ink" flip />
+  </section>
+
+  <section class="band has-edge ink" aria-labelledby="zone-h">
+    <div class="wrap">
+      <Head id="zone-h" eyebrow="Irrigation" title="Run the sprinklers. **Find the problem.**" intro="Most systems we are called to have one of three things wrong. Run each zone, then flip it to see the same yard after a tune up." />
+      <ZoneCheck id="home-zc" />
+      <p class="zone-more"><a class="arrow" href={href('/irrigation/')}>Irrigation installation, start up and winterization</a></p>
+    </div>
+    <Edge to="white" />
+  </section>
+
+  <section class="band has-edge white" aria-labelledby="work-h">
+    <div class="wrap two wide-left real">
+      <figure>
+        <div class="frame real__img">
+          <Photo id="wall-lakeside" ratio={1126 / 720} widths={[640, 960, 1126]} sizes="(min-width: 60rem) 56vw, 92vw" />
+        </div>
+        <figcaption class="note cap">{photo('wall-lakeside').caption}. A CAMP job.</figcaption>
+      </figure>
+      <div class="stack" style="--gap:1.3rem">
+        <Head id="work-h" layout="left" eyebrow="Real work" title="A lake lot that **finally works.**" />
+        <p class="lede">A slope down to the water, held by a curved natural stone wall, with wide stone steps from the lawn to the beach and new turf on top.</p>
+        <ul class="checks">
+          <li>Retaining walls and steps that hold the grade and stop erosion</li>
+          <li>Grading, topsoil and hydroseed or sod to finish the lawn</li>
+          <li>Planned for how the property is used, then built by our crew</li>
+        </ul>
+        <a class="arrow" href={href('/landscaping/')}>Landscape installation</a>
+      </div>
+    </div>
+    <Edge to="paper" flip />
+  </section>
+
+  <section class="band has-edge" aria-labelledby="rv-h">
+    <div class="wrap">
+      <Head id="rv-h" eyebrow="What clients say" title="In the words of **the people we work for.**" />
+      <Reviews reviews={REVIEWS.slice(0, 3)} />
+    </div>
+    <Edge to="ink" />
+  </section>
+
+  <section class="band has-edge ink" aria-labelledby="areas-h">
+    <div class="wrap">
+      <Head id="areas-h" eyebrow="Where we work" title="From the shop on Blaine **to the county line.**" intro={`Based in ${BRAND.city}, working across Kent County and into Ottawa County.`} />
+      <AreaMap />
+      <div class="areas">
+        {
+          AREAS.map((a) => (
+            <div>
+              <h3 class="h3">{AREA_NAMES[a]}</h3>
+              <ul class="areas__l">
+                {inArea(a).map((c) => <li><a href={href(hubPath(c))}>{c.name}</a></li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <Edge to="paper" flip />
+  </section>
+
+  <section class="band" aria-labelledby="faq-h">
+    <div class="wrap faqs">
+      <Head id="faq-h" layout="left" eyebrow="Plain answers" title="Good to know **before you call.**" intro={`Anything else? Call or text [${BRAND.phone}](${BRAND.phoneHref}).`} />
+      <Faq items={faq} />
+    </div>
+  </section>
+
+  <QuoteBand avoid={['ai-park-fall']} />
+  <RevealScript />
+</Base>
+
+<style>
+  .doors {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 52rem) {
+    .doors {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .door {
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    background: var(--white);
+    text-decoration: none;
+    transition:
+      border-color 0.2s var(--ease),
+      transform 0.25s var(--ease);
+  }
+
+  .door:hover {
+    border-color: var(--maroon);
+    transform: translateY(-2px);
+  }
+
+  .door__img {
+    border-radius: 0;
+    aspect-ratio: 16 / 10;
+  }
+
+  .door__img :global(img) {
+    transition: scale 0.6s var(--ease);
+  }
+
+  .door:hover .door__img :global(img) {
+    scale: 1.03;
+  }
+
+  .door__body {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    padding: clamp(1.25rem, 2.6vw, 2rem);
+  }
+
+  .door__h {
+    font-size: clamp(1.4rem, 1vw + 1.1rem, 1.85rem);
+    font-weight: 720;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+  }
+
+  .door .arrow {
+    margin-top: 0.2rem;
+    color: var(--maroon);
+  }
+
+  .groups {
+    display: grid;
+    gap: 2.5rem 1.5rem;
+  }
+
+  @media (min-width: 40rem) {
+    .groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 70rem) {
+    .groups {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .group {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+  }
+
+  .group__img {
+    display: block;
+    margin-bottom: 0.4rem;
+    aspect-ratio: 3 / 2;
+  }
+
+  .group .h3 a {
+    text-decoration: none;
+  }
+
+  .group .h3 a:hover {
+    color: var(--maroon);
+  }
+
+  .group__list {
+    margin-top: 0.35rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .group__list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 2.6rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.975rem;
+    font-weight: 540;
+    text-decoration: none;
+    transition:
+      color 0.16s var(--ease),
+      padding 0.16s var(--ease);
+  }
+
+  .group__list a::after {
+    content: '';
+    width: 0.42em;
+    height: 0.42em;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: 0.5;
+  }
+
+  .group__list a:hover {
+    color: var(--maroon);
+    padding-left: 0.3rem;
+  }
+
+  .tree {
+    display: grid;
+    gap: 1rem 2rem;
+    align-items: center;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  @media (min-width: 52rem) {
+    .tree {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  .tree__t {
+    margin-top: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 560;
+  }
+
+  .zone-more {
+    margin-top: 1.5rem;
+  }
+
+  .real__img {
+    aspect-ratio: 1126 / 720;
+  }
+
+  .areas {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 40rem) {
+    .areas {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 39.99rem) {
+    .areas__l {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 1rem;
+    }
+  }
+
+  @media (min-width: 66rem) {
+    .areas {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .areas ul {
+    margin-top: 0.6rem;
+  }
+
+  .areas a {
+    display: block;
+    padding-block: 0.5rem;
+    color: var(--on-ink-muted);
+    text-decoration: none;
+  }
+
+  .areas a:hover {
+    color: var(--accent);
+  }
+
+  .faqs {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 72rem) {
+    .faqs {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      align-items: start;
+    }
+  }
+</style>

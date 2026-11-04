@@ -1,0 +1,40 @@
+---
+/* The way in to the season plan builder: four seasons as small tiles. */
+import { href } from '../lib/paths';
+import { SEASONS } from '../data/seasons';
+---
+
+<a class="pt card pad" href={href('/plan-your-year/')}>
+  <ul class="pt__s" aria-hidden="true">{SEASONS.map((s) => <li>{s.name}</li>)}</ul>
+  <span class="pt__t">Build your season plan</span>
+  <span class="arrow">Plan your year</span>
+</a>
+
+<style>
+  .pt {
+    display: grid;
+    gap: 0.9rem;
+    text-decoration: none;
+  }
+
+  .pt__s {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .pt__s li {
+    padding: 0.5rem;
+    border-radius: var(--r-sm);
+    background: var(--btn-ink);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    text-align: center;
+  }
+
+  .pt__t {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,410 @@
+---
+/* ============================================================================
+   PLAN YOUR YEAR: the season plan builder
+
+   Pick the property, then the work for each season. The year ribbon and the plan
+   on the right fill in as you go, driven by :has() on the checkboxes, so the
+   builder works with no script. With script, "Send this plan" writes the plan
+   into the estimate form at the bottom of the page and ticks the matching
+   services, and "Copy a link" saves the plan in the address (#p=...).
+
+   Snow and ice is commercial only, so it locks when "A home" is chosen.
+   ========================================================================== */
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import QuoteBand from '../components/QuoteBand.astro';
+import Edge from '../components/Edge.astro';
+import Icon from '../components/Icon.astro';
+import { MONTHS } from '../data/seasons';
+import { heroImage } from '../lib/hero';
+import { breadcrumbs } from '../lib/schema';
+
+const path = '/plan-your-year/';
+const head = await heroImage('ai-park-spring', { sizes: '(min-width: 60rem) 48vw, 1px' });
+
+const KINDS = [
+  { id: 'home', label: 'A home' },
+  { id: 'business', label: 'A business or office' },
+  { id: 'community', label: 'An apartment community or HOA' },
+];
+
+type Item = { id: string; label: string; service: string };
+const PLAN: { id: string; name: string; months: number[]; note: string; commercial?: boolean; items: Item[] }[] = [
+  {
+    id: 'spring', name: 'Spring', months: [3, 4, 5], note: 'March to May',
+    items: [
+      { id: 'sp-clean', label: 'Spring cleanup', service: 'Landscape management' },
+      { id: 'sp-mulch', label: 'Fresh edges and mulch', service: 'Landscape management' },
+      { id: 'sp-irr', label: 'Sprinkler start up', service: 'Irrigation installation and service' },
+      { id: 'sp-feed', label: 'First fertilizer round', service: 'Fertilizer and pest control' },
+    ],
+  },
+  {
+    id: 'summer', name: 'Summer', months: [6, 7, 8], note: 'June to August',
+    items: [
+      { id: 'su-mow', label: 'Weekly mowing and edging', service: 'Landscape management' },
+      { id: 'su-beds', label: 'Bed maintenance and pruning', service: 'Landscape management' },
+      { id: 'su-pest', label: 'Fertilizer and pest control', service: 'Fertilizer and pest control' },
+      { id: 'su-proj', label: 'A project: planting, a wall or a patio', service: 'Landscape installation' },
+    ],
+  },
+  {
+    id: 'fall', name: 'Fall', months: [9, 10, 11], note: 'September to November',
+    items: [
+      { id: 'fa-leaf', label: 'Leaf cleanup', service: 'Landscape management' },
+      { id: 'fa-cut', label: 'Beds cut back for winter', service: 'Landscape management' },
+      { id: 'fa-blow', label: 'Sprinkler winterization', service: 'Winterization' },
+      { id: 'fa-stake', label: 'Snow stakes set', service: 'Snow and ice removal' },
+    ],
+  },
+  {
+    id: 'winter', name: 'Winter', months: [12, 1, 2], note: 'December to February', commercial: true,
+    items: [
+      { id: 'wi-plow', label: 'Plowing lots and drives', service: 'Snow and ice removal' },
+      { id: 'wi-salt', label: 'Salt and de-icing', service: 'Snow and ice removal' },
+      { id: 'wi-walk', label: 'Walks and entries cleared', service: 'Snow and ice removal' },
+    ],
+  },
+];
+const ALL = PLAN.flatMap((s) => s.items.map((i) => ({ ...i, season: s.id, commercial: !!s.commercial || i.id === 'fa-stake' })));
+
+/* The rules that make the plan fill in with no script: one per item and per season. */
+const css = [
+  ...ALL.map((i) => `.pb:has(#${i.id}:checked) [data-for="${i.id}"]{display:grid}`),
+  ...PLAN.map((s) => `.pb:has([data-season="${s.id}"] input:checked) .pb__year [data-s="${s.id}"]{background:var(--btn-ink);color:#fff}.pb:has([data-season="${s.id}"] input:checked) .pb__group[data-s="${s.id}"]{display:block}`),
+  `.pb:has(#k-home:checked) [data-commercial] {opacity:.42;pointer-events:none}.pb:has(#k-home:checked) .pb__lock{display:block}`,
+  `.pb:has(.pb__seasons input:checked) .pb__empty{display:none}`,
+].join('');
+const seasonOf = (m: number) => PLAN.find((s) => s.months.includes(m))!.id;
+---
+
+<Base
+  title="Plan Your Year | Season Plan Builder | CAMP Landscape"
+  description="Build a season by season plan for your property: spring cleanup, mowing, irrigation, fall cleanup, winterization and commercial snow. Send it for an estimate."
+  path={path}
+  preload={{ ...head.preload, media: '(min-width: 60rem)' }}
+  schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Plan your year', path }])]}
+>
+  <PageHead image={head} eyebrow="Plan your year" title="Build the year **for your property.**" lede="Pick the kind of property, then the work you want handled each season. Your plan fills in on the right. Send it to us and we will price it after a walk of the site." crumbs={[{ name: 'Plan your year', path }]} next="ink" />
+
+  <style set:html={css}></style>
+
+  <section class="band ink has-edge" aria-labelledby="pb-h">
+    <div class="wrap">
+      <h2 class="sr" id="pb-h">The season plan builder</h2>
+      <form class="pb" data-pb onsubmit="return false">
+        <div class="pb__build">
+          <fieldset class="pb__kind">
+            <legend class="pb__legend">The property</legend>
+            <div class="pb__chips">
+              {
+                KINDS.map((k, i) => (
+                  <label class="pb__chip">
+                    <input class="sr" type="radio" name="kind" id={`k-${k.id}`} value={k.label} checked={i === 1} />
+                    <span>{k.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <div class="pb__seasons">
+            {
+              PLAN.map((s) => (
+                <fieldset class="pb__season" data-season={s.id} data-commercial={s.commercial ? '' : undefined}>
+                  <legend class="pb__legend">
+                    {s.name} <span class="small muted">{s.note}</span>
+                  </legend>
+                  <div class="pb__chips">
+                    {s.items.map((i) => (
+                      <label class="pb__chip pb__chip--check" data-commercial={i.id === 'fa-stake' ? '' : undefined}>
+                        <input class="sr" type="checkbox" id={i.id} name="item" value={i.label} data-service={i.service} data-season-name={s.name} />
+                        <span>{i.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {s.commercial && <p class="pb__lock small">Snow and ice removal is for commercial properties.</p>}
+                </fieldset>
+              ))
+            }
+          </div>
+        </div>
+
+        <aside class="pb__plan light" aria-live="polite">
+          <p class="eyebrow">Your year with CAMP</p>
+          <ol class="pb__year" aria-hidden="true">
+            {MONTHS.map((m, i) => <li data-s={seasonOf(i + 1)}>{m}</li>)}
+          </ol>
+          <p class="pb__empty small muted">Pick a few things on the left and your plan shows up here.</p>
+          <div class="pb__list">
+            {
+              PLAN.map((s) => (
+                <div class="pb__group" data-s={s.id}>
+                  <h3 class="pb__gh">{s.name}</h3>
+                  <ul class="checks">
+                    {s.items.map((i) => <li data-for={i.id}>{i.label}</li>)}
+                  </ul>
+                </div>
+              ))
+            }
+          </div>
+          <div class="pb__actions">
+            <button class="btn primary" type="button" data-send><Icon name="mail" />Send this plan</button>
+            <button class="btn ghost small" type="button" data-copy hidden>Copy a link to this plan</button>
+          </div>
+          <p class="pb__msg fine muted" data-msg></p>
+        </aside>
+      </form>
+    </div>
+    <Edge to="paper" />
+  </section>
+
+  <QuoteBand title="Send us the plan." lede="Your plan goes in the message below. Add the address or the town and how to reach you, and we will set up a walk of the property." />
+</Base>
+
+<script is:inline>
+  (function () {
+    var pb = document.querySelector('[data-pb]');
+    if (!pb || pb.dataset.on) return;
+    pb.dataset.on = '1';
+    var items = Array.prototype.slice.call(pb.querySelectorAll('input[name=item]'));
+    var kinds = Array.prototype.slice.call(pb.querySelectorAll('input[name=kind]'));
+    var msg = pb.querySelector('[data-msg]');
+    var copy = pb.querySelector('[data-copy]');
+    var track = function (n, p) { if (window.campTrack) window.campTrack(n, p); };
+
+    function home() { return document.getElementById('k-home').checked; }
+    /* a home cannot keep snow on its plan */
+    function lock() {
+      if (!home()) return;
+      pb.querySelectorAll('[data-commercial] input:checked').forEach(function (i) { i.checked = false; });
+    }
+    kinds.forEach(function (k) { k.addEventListener('change', function () { lock(); save(); }); });
+    items.forEach(function (i) { i.addEventListener('change', save); });
+
+    function chosen() { return items.filter(function (i) { return i.checked; }); }
+    function save() {
+      var ids = chosen().map(function (i) { return i.id; });
+      var k = kinds.filter(function (x) { return x.checked; })[0];
+      history.replaceState(null, '', ids.length ? '#p=' + (k ? k.id : '') + '.' + ids.join('.') : location.pathname + location.search);
+      msg.textContent = '';
+    }
+    /* open a shared plan */
+    var m = location.hash.match(/^#p=([a-z-]+)\.(.+)$/);
+    if (m) {
+      var k = document.getElementById(m[1]);
+      if (k) k.checked = true;
+      m[2].split('.').forEach(function (id) { var el = document.getElementById(id); if (el && el.name === 'item') el.checked = true; });
+      lock();
+    }
+
+    if (navigator.clipboard) copy.hidden = false;
+    copy.addEventListener('click', function () {
+      save();
+      navigator.clipboard.writeText(location.href).then(function () { msg.textContent = 'Link copied. Anyone with it sees this plan.'; });
+    });
+
+    pb.querySelector('[data-send]').addEventListener('click', function () {
+      var list = chosen();
+      if (!list.length) { msg.textContent = 'Pick at least one thing first.'; return; }
+      var kind = kinds.filter(function (x) { return x.checked; })[0];
+      var bySeason = {};
+      list.forEach(function (i) { (bySeason[i.dataset.seasonName] = bySeason[i.dataset.seasonName] || []).push(i.value); });
+      var text = 'Season plan from the website' + (kind ? ' for ' + kind.value.toLowerCase() : '') + ':\n' + Object.keys(bySeason).map(function (s) { return s + ': ' + bySeason[s].join(', '); }).join('\n');
+      var f = document.getElementById('qf');
+      if (f) {
+        var t = f.querySelector('textarea[name=message]');
+        if (t) t.value = text;
+        var services = {};
+        list.forEach(function (i) { services[i.dataset.service] = true; });
+        f.querySelectorAll('input[name=services]').forEach(function (c) { if (services[c.value]) c.checked = true; });
+        if (kind) f.querySelectorAll('input[name=property_type]').forEach(function (r) { r.checked = r.value === kind.value; });
+        var lead = f.querySelector('input[name=lead_source]');
+        if (!lead) { lead = document.createElement('input'); lead.type = 'hidden'; lead.name = 'lead_source'; f.appendChild(lead); }
+        lead.value = 'season_plan';
+      }
+      track('plan_send', { items: list.length, property: kind ? kind.id : '' });
+      var q = document.getElementById('quote');
+      if (q) q.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  })();
+</script>
+
+<style>
+  .pb {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .pb {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+
+    .pb__plan {
+      position: sticky;
+      top: calc(var(--header) + 1.5rem);
+    }
+  }
+
+  .pb__build {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .pb__kind,
+  .pb__season {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .pb__seasons {
+    display: grid;
+    gap: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line-ink);
+  }
+
+  .pb__legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 720;
+    letter-spacing: -0.02em;
+  }
+
+  .pb__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pb__chip {
+    cursor: pointer;
+    transition: opacity 0.25s var(--ease);
+  }
+
+  .pb__chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.875rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--line-ink);
+    border-radius: var(--r-sm);
+    background: rgb(255 255 255 / 0.04);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition:
+      background-color 0.2s var(--ease),
+      border-color 0.2s var(--ease);
+  }
+
+  .pb__chip:hover span {
+    border-color: rgb(255 255 255 / 0.4);
+  }
+
+  .pb__chip--check span::before {
+    content: '';
+    width: 0.95rem;
+    height: 0.95rem;
+    border: 1.5px solid rgb(255 255 255 / 0.5);
+    border-radius: 3px;
+  }
+
+  .pb__chip input:checked + span {
+    border-color: var(--btn-ink);
+    background: var(--btn-ink);
+    color: #fff;
+  }
+
+  .pb__chip--check input:checked + span::before {
+    border-color: #fff;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a1d24' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12.5 4 4 8-9'/%3E%3C/svg%3E") center / 0.8rem no-repeat;
+  }
+
+  .pb__chip input:focus-visible + span {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+  }
+
+  .pb__lock {
+    display: none;
+    margin-top: 0.6rem;
+    color: var(--accent-soft);
+  }
+
+  .pb__plan {
+    display: grid;
+    gap: 1.1rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: var(--r);
+    box-shadow: 0 30px 60px rgb(0 0 0 / 0.45);
+  }
+
+  .pb__year {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .pb__year li {
+    display: grid;
+    place-items: center;
+    height: 1.9rem;
+    border-radius: 2px;
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 650;
+    transition:
+      background-color 0.35s var(--ease),
+      color 0.35s var(--ease);
+  }
+
+  .pb__list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .pb__group {
+    display: none;
+  }
+
+  .pb__gh {
+    margin-bottom: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--maroon);
+  }
+
+  .pb__group li {
+    display: none;
+  }
+
+  .pb__group .checks {
+    gap: 0.5rem;
+  }
+
+  .pb__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pb__msg:empty {
+    display: none;
+  }
+</style>

@@ -1,0 +1,114 @@
+---
+/* Every town, by area, with Grand Rapids first: that is where the shop is. Each town
+   has an anchor, so a link from the map or the footer lands on its line. */
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Edge from '../../components/Edge.astro';
+import Head from '../../components/Head.astro';
+import Faq from '../../components/Faq.astro';
+import QuoteBand from '../../components/QuoteBand.astro';
+import AreaMap from '../../components/AreaMap.astro';
+import { AREAS, AREA_NAMES, areaId, inArea, hubPath, hasHub } from '../../data/cities';
+import { BRAND } from '../../data/site';
+import { heroImage } from '../../lib/hero';
+import { href } from '../../lib/paths';
+import { breadcrumbs, faqSchema } from '../../lib/schema';
+
+const head = await heroImage('ai-home-summer', { sizes: '(min-width: 60rem) 48vw, 1px' });
+const path = '/service-areas/';
+const blurbs: Record<string, string> = {
+  'Grand Rapids': 'Home ground. The shop is on Blaine Ave SE, and the city and East Grand Rapids are a short drive from every job.',
+  East: 'Ada, Cascade and out along the Grand River to Lowell: bigger lots, mature trees and long drives.',
+  South: 'Kentwood and Wyoming, down through Gaines, Byron Center and Caledonia: offices, apartment communities and newer neighborhoods.',
+  West: 'Grandville and Walker, and over the county line into Jenison, Hudsonville and Allendale.',
+  North: 'Comstock Park, Plainfield and up to Rockford and Sparta.',
+};
+const faq = [
+  { q: 'Where is CAMP Landscape Management based?', a: `Our shop is at ${BRAND.street} in ${BRAND.city}, Michigan. We work across Kent County and into Ottawa County, and every estimate starts with a walk of the property.` },
+  { q: 'Do you work outside these towns?', a: `Often, yes, especially for commercial properties. If you are close to a town on this list, call or text [${BRAND.phone}](${BRAND.phoneHref}) and ask.` },
+];
+---
+
+<Base
+  title="Service Areas Around Grand Rapids | CAMP Landscape"
+  description="CAMP Landscape Management works across Kent County and into Ottawa County: Grand Rapids, East Grand Rapids, Kentwood, Wyoming, Grandville, Ada and more."
+  path={path}
+  preload={{ ...head.preload, media: '(min-width: 60rem)' }}
+  schema={[faqSchema(faq), breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Service areas', path }])]}
+>
+  <PageHead image={head} eyebrow="Service areas" title="From the shop on Blaine **to the county line.**" lede={`Based in ${BRAND.city}. We work across Kent County and into Ottawa County.`} crumbs={[{ name: 'Service areas', path }]} next="ink" />
+
+  <section class="band ink map has-edge" aria-labelledby="map-h">
+    <div class="wrap">
+      <h2 class="sr" id="map-h">Map of our service area</h2>
+      <AreaMap />
+    </div>
+    <Edge to="paper" />
+  </section>
+
+  <section class="band" aria-labelledby="areas-h">
+    <div class="wrap">
+      <h2 class="sr" id="areas-h">Towns we serve</h2>
+      <div class="areas">
+        {
+          AREAS.map((a) => (
+            <div class="area" id={areaId(a)}>
+              <h3 class="h2 area__t">{AREA_NAMES[a]}</h3>
+              <p class="small muted">{blurbs[a]}</p>
+              <ul class="chips">
+                {inArea(a).map((c) => <li id={c.id}>{hasHub(c) ? <a class="chip" href={href(hubPath(c))}>{c.name}</a> : <span class="chip">{c.name}</span>}</li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="band white" aria-labelledby="faq-h">
+    <div class="wrap faqs">
+      <Head id="faq-h" layout="left" eyebrow="Questions" title="Not sure if you are in range?" />
+      <Faq items={faq} />
+    </div>
+  </section>
+
+  <QuoteBand from="white" />
+</Base>
+
+<style>
+  .map {
+    padding-top: 1rem;
+  }
+
+  .area {
+    scroll-margin-top: calc(var(--header) + 1rem);
+  }
+
+  .areas {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .area {
+    display: grid;
+    gap: 0.7rem;
+    padding-top: clamp(1.5rem, 3vw, 2.25rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .area__t {
+    font-size: clamp(1.7rem, 1.6vw + 1.2rem, 2.4rem);
+  }
+
+  .faqs {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 72rem) {
+    .faqs {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(2rem, 6vw, 6rem);
+    }
+  }
+</style>

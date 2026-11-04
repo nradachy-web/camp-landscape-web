@@ -1,0 +1,19 @@
+{
+  "name": "camp-landscape",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/postbuild.mjs",
+    "build:preview": "BASE_PATH=/camp-landscape-web/ astro build && BASE_PATH=/camp-landscape-web/ node scripts/postbuild.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^7.3.8"
+  },
+  "private": true
+}

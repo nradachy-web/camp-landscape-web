@@ -1,0 +1,475 @@
+---
+/* Zone check: a front yard seen from above, with its sprinkler zones. Run a zone
+   and watch the heads sweep. "As found" shows what a tired system does: a broken
+   head bubbling, a head throwing water on the drive, a patch nobody reaches. "After
+   a tune up" shows the same yard with the heads fixed and aimed.
+
+   A drawing, not a photo, so it needs no image. Radios and a checkbox drive it
+   through :has(), so it works with no script. Motion stops for reduced motion. */
+
+interface Props {
+  id?: string;
+}
+const { id = 'zc' } = Astro.props;
+
+/* x, y, throw radius, start angle and sweep in degrees (0 = east, clockwise) */
+type Head = { x: number; y: number; r: number; a: number; s: number; zone: 1 | 2; fault?: 'broken' | 'aim' | 'short' };
+const HEADS: Head[] = [
+  { x: 46, y: 430, r: 150, a: 270, s: 90, zone: 1 },
+  { x: 250, y: 430, r: 150, a: 180, s: 180, zone: 1, fault: 'short' },
+  { x: 46, y: 262, r: 150, a: 0, s: 90, zone: 1 },
+  { x: 250, y: 262, r: 150, a: 0, s: 180, zone: 1, fault: 'broken' },
+  { x: 560, y: 430, r: 150, a: 180, s: 90, zone: 2, fault: 'aim' },
+  { x: 400, y: 430, r: 150, a: 180, s: 180, zone: 2 },
+  { x: 560, y: 262, r: 150, a: 90, s: 90, zone: 2 },
+  { x: 400, y: 262, r: 150, a: 0, s: 180, zone: 2 },
+];
+
+const rad = (d: number) => (d * Math.PI) / 180;
+const wedge = (h: Head, r = h.r, a = h.a, s = h.s) => {
+  const x1 = h.x + r * Math.cos(rad(a));
+  const y1 = h.y + r * Math.sin(rad(a));
+  const x2 = h.x + r * Math.cos(rad(a + s));
+  const y2 = h.y + r * Math.sin(rad(a + s));
+  return `M${h.x} ${h.y}L${x1.toFixed(1)} ${y1.toFixed(1)}A${r} ${r} 0 ${s > 180 ? 1 : 0} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}Z`;
+};
+/* As found: the aimed head points at the drive, the short head barely reaches */
+const found = (h: Head) => (h.fault === 'aim' ? wedge(h, h.r, 270, 90) : h.fault === 'short' ? wedge(h, 70) : h.fault === 'broken' ? '' : wedge(h));
+const fixed = (h: Head) => wedge(h);
+const n = `${id}-zone`;
+---
+
+<figure class="zc" data-zc>
+  <div class="zc__stage frame">
+    <svg class="zc__svg" viewBox="0 0 720 500" role="img" aria-labelledby={`${id}-t`}>
+      <title id={`${id}-t`}>A front yard from above with two sprinkler zones on the lawn and drip line in the beds</title>
+      <defs>
+        <radialGradient id={`${id}-w`} cx="0" cy="0" r="1" gradientUnits="objectBoundingBox">
+          <stop offset="0" stop-color="#9ad6ff" stop-opacity="0.08" />
+          <stop offset="1" stop-color="#9ad6ff" stop-opacity="0.46" />
+        </radialGradient>
+        <pattern id={`${id}-g`} width="48" height="48" patternUnits="userSpaceOnUse">
+          <rect width="24" height="48" fill="#47752f" />
+          <rect x="24" width="24" height="48" fill="#3f6a2a" />
+        </pattern>
+        <pattern id={`${id}-m`} width="6" height="6" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="#2b2019" />
+          <circle cx="2" cy="2" r="0.9" fill="#3a2b20" />
+        </pattern>
+        <clipPath id={`${id}-lawn`}>
+          <path d="M20 250H590V440H20z" />
+        </clipPath>
+      </defs>
+
+      <rect width="720" height="500" fill="#1a201b" />
+      <!-- street and sidewalk -->
+      <rect x="0" y="458" width="720" height="42" fill="#232823" />
+      <path d="M0 482H720" stroke="#6b6e62" stroke-width="2" stroke-dasharray="18 14" />
+      <rect x="0" y="440" width="720" height="18" fill="#a5a69c" />
+      <path d="M60 440v18M140 440v18M220 440v18M300 440v18M380 440v18M460 440v18M540 440v18M620 440v18M700 440v18" stroke="#8f9087" stroke-width="1.5" />
+      <!-- the lawn, striped -->
+      <rect x="20" y="250" width="570" height="190" fill={`url(#${id}-g)`} />
+      <!-- the dry patch, gone after the tune up -->
+      <ellipse class="zc__dry" cx="330" cy="352" rx="46" ry="26" fill="#8e7f43" opacity="0.92" />
+      <!-- house: hip roof in two planes, garage wing -->
+      <path d="M40 46H470V196H40z" fill="#3c423d" />
+      <path d="M40 46L150 121H360L470 46z" fill="#4a514b" />
+      <path d="M40 196L150 121H360L470 196z" fill="#353b36" />
+      <path d="M150 121H360" stroke="#5c645d" stroke-width="2" />
+      <path d="M470 76H650V196H470z" fill="#353b36" />
+      <path d="M470 76L560 136L650 76z" fill="#434a44" />
+      <path d="M470 196L560 136L650 196z" fill="#30352f" />
+      <!-- drive and front walk -->
+      <rect x="590" y="196" width="100" height="244" fill="#9b9c93" />
+      <path d="M590 270h100M590 350h100" stroke="#8a8b82" stroke-width="1.5" />
+      <path d="M236 196h32v64c0 52 30 76 30 180h-32c0-96-30-124-30-180z" fill="#b2a88f" />
+      <!-- beds with shrubs -->
+      <rect class="zc__bed" x="40" y="196" width="196" height="54" fill={`url(#${id}-m)`} />
+      <rect class="zc__bed" x="268" y="196" width="202" height="54" fill={`url(#${id}-m)`} />
+      <circle class="zc__bed" cx="112" cy="358" r="46" fill={`url(#${id}-m)`} />
+      <circle cx="112" cy="358" r="26" fill="#2c5222" />
+      <circle cx="104" cy="350" r="15" fill="#3a6a2c" />
+      {[72, 128, 184, 304, 360, 416].map((x) => <g><circle cx={x} cy="223" r="16" fill="#2c5222" /><circle cx={x - 4} cy="219" r="8" fill="#3a6a2c" /></g>)}
+      <!-- drip line in the beds, zone 3 -->
+      <path class="zc__drip" d="M48 240H228M276 240H462M72 358a40 40 0 1 0 80 0a40 40 0 1 0-80 0" />
+
+      <!-- the spray -->
+      <g clip-path={`url(#${id}-lawn)`}>
+        {
+          HEADS.map((h) => (
+            <g class:list={['zc__head', `z${h.zone}`, h.fault && `f-${h.fault}`]}>
+              {found(h) && <path class="zc__arc zc__arc--found" d={found(h)} fill={`url(#${id}-w)`} />}
+              <path class="zc__arc zc__arc--fixed" d={fixed(h)} fill={`url(#${id}-w)`} />
+            </g>
+          ))
+        }
+      </g>
+      <!-- the spray that lands on the drive, only as found -->
+      <path class="zc__over" d={wedge(HEADS[4], 150, 270, 90)} fill={`url(#${id}-w)`} />
+      <!-- rotor streams: one line per head, sweeping its arc -->
+      {
+        HEADS.map((h) => {
+          const a = h.fault === 'aim' ? 270 : h.a;
+          const r = h.fault === 'short' ? 70 : h.r;
+          return (
+            <g class:list={['zc__stream', `z${h.zone}`, h.fault && `f-${h.fault}`]} style={`--sweep:${h.s}deg;transform-origin:${h.x}px ${h.y}px;rotate:${a}deg`}>
+              <line class="zc__jet zc__jet--found" x1={h.x} y1={h.y} x2={h.x + r} y2={h.y} />
+              <line class="zc__jet zc__jet--fixed" x1={h.x} y1={h.y} x2={h.x + h.r} y2={h.y} />
+            </g>
+          );
+        })
+      }
+      {
+        HEADS.map((h) => (
+          <g class:list={['zc__dot', `z${h.zone}`, h.fault && `f-${h.fault}`]}>
+            {h.fault === 'broken' && <circle class="zc__geyser" cx={h.x} cy={h.y} r="17" />}
+            <circle class="zc__pin" cx={h.x} cy={h.y} r="6.5" />
+          </g>
+        ))
+      }
+      <!-- what is wrong, only as found -->
+      <g class="zc__flags" font-size="14" font-weight="650">
+        <path d="M250 262L292 286" />
+        <g transform="translate(292 276)"><rect width="112" height="26" rx="13" /><text x="13" y="17.5">Broken head</text></g>
+        <path d="M640 300L626 330" />
+        <g transform="translate(552 330)"><rect width="150" height="26" rx="13" /><text x="13" y="17.5">Watering the drive</text></g>
+        <path d="M330 352L372 390" />
+        <g transform="translate(364 384)"><rect width="92" height="26" rx="13" /><text x="13" y="17.5">Dry patch</text></g>
+      </g>
+      <g class="zc__zones" font-size="12" font-weight="650" letter-spacing="1.5">
+        <text x="160" y="432">ZONE 1</text>
+        <text x="470" y="432">ZONE 2</text>
+      </g>
+    </svg>
+    <p class="zc__tag note">Drawing of a typical front yard system</p>
+  </div>
+
+  <div class="zc__side">
+    <fieldset class="zc__group">
+      <legend class="zc__legend small">Run a zone</legend>
+      <div class="zc__chips">
+        <label><input class="sr" type="radio" name={n} value="1" checked /><span>Zone 1, west lawn</span></label>
+        <label><input class="sr" type="radio" name={n} value="2" /><span>Zone 2, east lawn</span></label>
+        <label><input class="sr" type="radio" name={n} value="3" /><span>Zone 3, bed drip</span></label>
+        <label><input class="sr" type="radio" name={n} value="all" /><span>All zones</span></label>
+      </div>
+    </fieldset>
+
+    <label class="zc__switch">
+      <input class="sr" type="checkbox" />
+      <span class="zc__track" aria-hidden="true"><span></span></span>
+      <span class="zc__state"><span class="zc__a">As found</span><span class="zc__b">After a tune up</span></span>
+    </label>
+
+    <div class="zc__read">
+      <p class="zc__say zc__say--found">A head that breaks floods one spot and starves the next. One aimed a few degrees off waters the driveway every morning, and the patch between them browns by July.</p>
+      <p class="zc__say zc__say--fixed">Heads replaced, aimed and set to the right throw, so the lawn gets even water and the drive stays dry. The beds get slow drip, not spray on the siding.</p>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .zc {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .zc {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+  }
+
+  .zc__stage {
+    background: #1d231e;
+  }
+
+  .zc__svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .zc__tag {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    margin: 0;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--r-sm);
+    background: rgb(14 18 15 / 0.66);
+    color: var(--on-ink);
+  }
+
+  .zc__side {
+    display: grid;
+    gap: 1.35rem;
+  }
+
+  .zc__group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .zc__legend {
+    margin-bottom: 0.6rem;
+    color: var(--on-ink-muted);
+    font-weight: 600;
+  }
+
+  .zc__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .zc__chips label {
+    cursor: pointer;
+  }
+
+  .zc__chips span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--line-ink);
+    border-radius: var(--r-sm);
+    background: rgb(255 255 255 / 0.04);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition:
+      background-color 0.2s var(--ease),
+      border-color 0.2s var(--ease);
+  }
+
+  .zc__chips input:checked + span {
+    border-color: var(--btn-ink);
+    background: var(--btn-ink);
+    color: #fff;
+  }
+
+  .zc__chips input:focus-visible + span,
+  .zc__switch input:focus-visible ~ .zc__track {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+  }
+
+  .zc__switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+    font-weight: 650;
+  }
+
+  .zc__track {
+    position: relative;
+    flex: none;
+    width: 3.2rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.14);
+    transition: background-color 0.25s var(--ease);
+  }
+
+  .zc__track span {
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .zc__switch:has(input:checked) .zc__track {
+    background: var(--accent-ink);
+  }
+
+  .zc__switch:has(input:checked) .zc__track span {
+    transform: translateX(1.4rem);
+  }
+
+  .zc__b,
+  .zc__say--fixed {
+    display: none;
+  }
+
+  .zc:has(.zc__switch input:checked) .zc__a,
+  .zc:has(.zc__switch input:checked) .zc__say--found {
+    display: none;
+  }
+
+  .zc:has(.zc__switch input:checked) .zc__b {
+    display: inline;
+  }
+
+  .zc:has(.zc__switch input:checked) .zc__say--fixed {
+    display: block;
+  }
+
+  .zc__say {
+    color: var(--on-ink-muted);
+  }
+
+  /* ----- the drawing ----- */
+
+  .zc__drip {
+    fill: none;
+    stroke: #9ad6ff;
+    stroke-width: 2;
+    stroke-dasharray: 2 7;
+    opacity: 0.18;
+    transition: opacity 0.4s var(--ease);
+  }
+
+  .zc__pin {
+    fill: #e9eee4;
+    stroke: #0e120f;
+    stroke-width: 2.5;
+  }
+
+  .zc__arc,
+  .zc__over,
+  .zc__stream,
+  .zc__jet--fixed {
+    opacity: 0;
+    transition: opacity 0.5s var(--ease);
+  }
+
+  .zc__jet {
+    stroke: #d6f0ff;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 3 7;
+  }
+
+  .zc__geyser {
+    fill: #9ad6ff;
+    opacity: 0;
+  }
+
+  .zc__flags path {
+    stroke: #fff;
+    stroke-width: 1.5;
+    opacity: 0.8;
+  }
+
+  .zc__flags rect {
+    fill: var(--btn-ink);
+  }
+
+  .zc__flags text {
+    fill: #fff;
+    font-family: var(--font);
+  }
+
+  .zc__zones text {
+    fill: rgb(255 255 255 / 0.55);
+    font-family: var(--font);
+  }
+
+  .zc__flags,
+  .zc__dry {
+    transition: opacity 0.5s var(--ease);
+  }
+
+  /* which zone runs */
+  .zc:has(input[value='1']:checked) .z1 .zc__arc--found,
+  .zc:has(input[value='2']:checked) .z2 .zc__arc--found,
+  .zc:has(input[value='all']:checked) .zc__arc--found,
+  .zc:has(input[value='1']:checked) .zc__stream.z1:not(.f-broken),
+  .zc:has(input[value='2']:checked) .zc__stream.z2,
+  .zc:has(input[value='all']:checked) .zc__stream:not(.f-broken) {
+    opacity: 1;
+  }
+
+  .zc:has(input[value='2']:checked) .zc__over,
+  .zc:has(input[value='all']:checked) .zc__over {
+    opacity: 1;
+  }
+
+  .zc:has(input[value='1']:checked) .z1.f-broken .zc__geyser,
+  .zc:has(input[value='all']:checked) .f-broken .zc__geyser {
+    opacity: 0.75;
+  }
+
+  .zc:has(input[value='3']:checked) .zc__drip,
+  .zc:has(input[value='all']:checked) .zc__drip {
+    opacity: 0.9;
+  }
+
+  /* after a tune up: fixed arcs and full streams, no overspray, geyser, dry patch or flags */
+  .zc:has(.zc__switch input:checked) .zc__arc--found,
+  .zc:has(.zc__switch input:checked) .zc__over,
+  .zc:has(.zc__switch input:checked) .zc__geyser,
+  .zc:has(.zc__switch input:checked) .zc__flags,
+  .zc:has(.zc__switch input:checked) .zc__dry,
+  .zc:has(.zc__switch input:checked) .zc__jet--found {
+    opacity: 0 !important;
+  }
+
+  .zc:has(.zc__switch input:checked) .zc__jet--fixed {
+    opacity: 1;
+  }
+
+  .zc:has(.zc__switch input:checked):has(input[value='1']:checked) .z1 .zc__arc--fixed,
+  .zc:has(.zc__switch input:checked):has(input[value='2']:checked) .z2 .zc__arc--fixed,
+  .zc:has(.zc__switch input:checked):has(input[value='all']:checked) .zc__arc--fixed,
+  .zc:has(.zc__switch input:checked):has(input[value='1']:checked) .zc__stream.z1,
+  .zc:has(.zc__switch input:checked):has(input[value='all']:checked) .zc__stream {
+    opacity: 1;
+  }
+
+  /* the aimed head swings back onto the lawn */
+  .zc:has(.zc__switch input:checked) .zc__stream.f-aim {
+    rotate: 180deg !important;
+  }
+
+  .zc:has(.zc__switch input:checked) .zc__drip {
+    stroke-dasharray: 2 4;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .zc__arc {
+      animation: zc-pulse 2.4s ease-in-out infinite;
+    }
+
+    .zc__jet {
+      transform-box: view-box;
+      transform-origin: inherit;
+    }
+
+    .zc__stream line {
+      animation: zc-sweep 3.2s ease-in-out infinite alternate;
+      transform-origin: inherit;
+    }
+
+    .zc__geyser {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: zc-bubble 0.9s ease-in-out infinite;
+    }
+
+    @keyframes zc-pulse {
+      50% {
+        fill-opacity: 0.62;
+      }
+    }
+
+    @keyframes zc-sweep {
+      to {
+        rotate: var(--sweep);
+      }
+    }
+
+    @keyframes zc-bubble {
+      50% {
+        transform: scale(1.35);
+      }
+    }
+  }
+</style>
