@@ -16,6 +16,7 @@ interface Props {
   eyebrow?: string;
   service?: string;
   town?: string;
+  kind?: number;
   /** Photos this page already shows. */
   avoid?: string[];
   /** The plane of the band above, for the cut line along the top. */
@@ -27,6 +28,7 @@ const {
   lede = 'We walk the site with you, listen to what you need handled, and come back with a plan and an estimate for the season or the project.',
   service,
   town,
+  kind = 0,
   avoid = [],
   from = 'paper',
 } = Astro.props;
@@ -52,7 +54,7 @@ const bg = open[seed % open.length] ?? 'ai-park-fall';
     </div>
 
     <div class="quote__form light" id="quote">
-      <QuoteForm service={service} town={town} />
+      <QuoteForm service={service} town={town} kind={kind} />
     </div>
 
     <div class="quote__rest stack" style="--gap:1.25rem">

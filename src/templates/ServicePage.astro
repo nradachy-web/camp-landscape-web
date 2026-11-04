@@ -80,7 +80,7 @@ const schema = [
     }
   </section>
 
-  <QuoteBand title={c.quote?.title} lede={c.quote?.lede} service={svc.name} avoid={[c.hero.photo, svc.band]} />
+  <QuoteBand title={c.quote?.title} lede={c.quote?.lede} service={svc.name} kind={svc.for === 'commercial' ? 1 : 0} avoid={[c.hero.photo, svc.band]} />
 </Base>
 
 <style>

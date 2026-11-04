@@ -14,8 +14,10 @@ import { href } from '../lib/paths';
 interface Props {
   service?: string;
   town?: string;
+  /** Which property type starts selected: 0 home, 1 business, 2 community. */
+  kind?: number;
 }
-const { service = '', town = '' } = Astro.props;
+const { service = '', town = '', kind = 0 } = Astro.props;
 const thanks = `${BRAND.origin}/thank-you/`;
 const id = 'qf';
 const names = CITIES.map((c) => c.name);
@@ -36,7 +38,7 @@ const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'
       {
         KINDS.map((k, i) => (
           <label class="qf__chip">
-            <input type="radio" name="property_type" value={k} checked={i === 0} />
+            <input type="radio" name="property_type" value={k} checked={i === kind} />
             <span>{k}</span>
           </label>
         ))
