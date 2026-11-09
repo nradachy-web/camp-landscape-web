@@ -2,7 +2,7 @@
   "service": "landscape-management",
   "meta": {
     "title": "Landscape Management and Lawn Care in Grand Rapids | CAMP",
-    "description": "Mowing, edging, bed maintenance, mulch, fertilizer and pest control in Grand Rapids for apartment communities, offices, HOAs and homes. CAMP Landscape."
+    "description": "Mowing, edging, bed maintenance, mulch, fertilizer and weed control in Grand Rapids for apartment communities, offices, HOAs and homes. CAMP Landscape."
   },
   "hero": {
     "kicker": "Landscape management and lawn care in Grand Rapids",
@@ -11,7 +11,7 @@
     "chips": [
       "Mowing and edging",
       "Beds and mulch",
-      "Fertilizer and pest control"
+      "Fertilizer and weed control"
     ],
     "photo": "ai-crew-mow"
   },
@@ -19,7 +19,6 @@
     {
       "type": "intro",
       "plane": "paper",
-      "eyebrow": "The short version",
       "title": "The first thing people see **is the lawn.**",
       "body": [
         "When residents, tenants or customers pull in, the grounds are the first impression. Long grass, weeds in the beds or a ragged edge along the walk say the property is slipping, even when everything inside is fine.",
@@ -29,7 +28,7 @@
         "A consistent mowing schedule with sharp edges on walks, curbs and beds",
         "Seasonal pruning, perennial cutbacks and weed control in the beds",
         "Fresh mulch that holds moisture and keeps weeds down",
-        "Fertilizer and targeted pest control, timed to work"
+        "Fertilizer and weed control, timed to work"
       ],
       "photo": "ai-park-spring"
     },
@@ -67,8 +66,8 @@
         },
         {
           "tag": "On a program",
-          "title": "Fertilizer and pest control",
-          "body": "Routine fertilization and targeted pest control keep turf green, strong and ready for visitors, applied with care and timed to work."
+          "title": "Fertilizer and weed control",
+          "body": "Routine fertilization and weed control keep turf green, thick and ready for visitors, applied with care and timed to work."
         },
         {
           "tag": "Your frequency",
@@ -138,7 +137,7 @@
   "faq": [
     {
       "q": "What does landscape management include?",
-      "a": "Lawn mowing and edging on a set schedule, bed maintenance with seasonal pruning, perennial cutbacks and weed control, mulch, lawn fertilizer and pest control, and spring and fall cleanups. A personal groundskeeper option adds hand pruning and site-specific care at the frequency you choose."
+      "a": "Lawn mowing and edging on a set schedule, bed maintenance with seasonal pruning, perennial cutbacks and weed control, mulch, lawn fertilizer and weed control, and spring and fall cleanups. A personal groundskeeper option adds hand pruning and site-specific care at the frequency you choose."
     },
     {
       "q": "Do you work for apartment communities and HOAs?",
@@ -153,7 +152,7 @@
       "a": "On a consistent schedule set for your property before the season starts. Most lawns are cut weekly in the growing season, and we agree on the frequency on the walk."
     },
     {
-      "q": "Can irrigation and snow removal be on the same contract?",
+      "q": "Can the same company handle irrigation and snow removal?",
       "a": "Yes. Sprinkler start up, service and winterization and commercial snow and ice removal can be scheduled with landscape management, so one company looks after the property all year."
     },
     {
@@ -186,7 +185,7 @@
         "detail": "Fresh mulch that holds moisture and blocks weeds."
       },
       {
-        "name": "Fertilizer and pest control",
+        "name": "Fertilizer and weed control",
         "detail": "Routine treatments timed for results."
       }
     ]

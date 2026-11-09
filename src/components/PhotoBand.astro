@@ -1,6 +1,7 @@
 ---
 /* One full bleed photo, edge to edge, to break up a long page. The cut bed line
-   sits on it top and bottom. Lazy, and captioned honestly like every picture. */
+   sits on it top and bottom. Lazy. Real photos carry their caption; illustrations
+   carry none (the client asked to drop the "Illustration" tag, 2026-11-09). */
 import Photo from './Photo.astro';
 import Edge from './Edge.astro';
 import { photo, type PhotoId } from '../data/photos';
@@ -18,7 +19,7 @@ const p = photo(id);
 <figure class="pb" aria-label={p.alt}>
   <Photo id={id} ratio={2.2} widths={[828, 1280, 1672, 2000]} sizes="100vw" focus="center" alt={p.alt} />
   <Edge to={from} top />
-  <figcaption class="note pb__cap">{p.caption}</figcaption>
+  {p.kind === 'real' && <figcaption class="note pb__cap">{p.caption}</figcaption>}
   <Edge to={to} flip />
 </figure>
 

@@ -67,6 +67,8 @@ export function makeSchemas(z, ids) {
       body: z.array(text(20, 900)).max(4).default([]),
       checks: z.array(text(8, 240)).max(7).default([]),
       photo: photoId.optional(),
+      /** The photo's frame: tall (the default) or wide, for a landscape photo too small to crop tall. */
+      frame: z.enum(['tall', 'wide']).default('tall'),
       flip: z.boolean().default(false),
       cta: cta.optional(),
     }),

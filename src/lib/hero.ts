@@ -52,6 +52,7 @@ export async function heroImage(id: PhotoId, opts: { ratio?: number; focus?: str
     webp,
     fallback: fb.src,
     preload: { srcset: avif, sizes, type: 'image/avif', media: opts.media },
-    note: p.kind === 'ai' ? 'Illustration' : p.kind === 'relit' || p.kind === 'design' ? p.caption : undefined,
+    // No visible "Illustration" tag: Chris and Sarah found it unnecessary (2026-11-09). Alt text still says so.
+    note: p.kind === 'relit' || p.kind === 'design' ? p.caption : undefined,
   };
 }

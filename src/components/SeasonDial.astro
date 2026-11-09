@@ -3,11 +3,13 @@
    same place, each made from the one before, so they line up and the change is
    only the season. Radio buttons drive it through :has(), so it works with no
    script. A few lines of script open it on today's season and mark it "Now".
+   No month strip or month ranges: Chris and Sarah asked for the season picker
+   alone, straight into the heading (Loom review, 2026-11-09).
 
    The pictures are lazy: the dial sits below the first screen. */
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { SEASONS, MONTHS } from '../data/seasons';
+import { SEASONS } from '../data/seasons';
 import { href } from '../lib/paths';
 
 interface Props {
@@ -61,7 +63,6 @@ const name = `${id}-season`;
         </picture>
       ))
     }
-    <p class="sd__tag note">Illustration of one property through the year</p>
   </div>
 
   <div class="sd__side">
@@ -79,14 +80,9 @@ const name = `${id}-season`;
       }
     </fieldset>
 
-    <ol class="sd__year" aria-hidden="true">
-      {MONTHS.map((m, i) => <li data-m={i + 1} data-s={SEASONS.find((s) => s.span.includes(i + 1))!.id}>{m}</li>)}
-    </ol>
-
     {
       SEASONS.map((s) => (
         <div class="sd__note" data-s={s.id}>
-          <p class="sd__months small">{s.months}</p>
           <h3 class="sd__title">{s.title}</h3>
           <ul class="checks sd__list">
             {s.items.map((t) => <li>{t}</li>)}
@@ -109,8 +105,6 @@ const name = `${id}-season`;
         input.checked = true;
         input.parentNode.classList.add('is-now');
       }
-      var li = sd.querySelector('.sd__year [data-m="' + m + '"]');
-      if (li) li.classList.add('is-today');
     });
   })();
 </script>
@@ -143,17 +137,6 @@ const name = `${id}-season`;
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-
-  .sd__tag {
-    position: absolute;
-    right: 0.6rem;
-    bottom: 0.6rem;
-    margin: 0;
-    padding: 0.15rem 0.45rem;
-    border-radius: var(--r-sm);
-    background: rgb(14 18 15 / 0.66);
-    color: var(--on-ink);
   }
 
   .sd__side {
@@ -231,39 +214,9 @@ const name = `${id}-season`;
     display: block;
   }
 
-  /* the year, as twelve months: the chosen season lights up */
-  .sd__year {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 3px;
-  }
-
-  .sd__year li {
-    display: grid;
-    place-items: center;
-    height: 1.6rem;
-    border-radius: 2px;
-    background: rgb(255 255 255 / 0.05);
-    color: var(--on-ink-muted);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    transition:
-      background-color 0.4s var(--ease),
-      color 0.4s var(--ease);
-  }
-
-  .sd__year li.is-today {
-    box-shadow: inset 0 -2px 0 var(--accent);
-  }
-
   .sd__note {
     display: none;
     gap: 0.75rem;
-  }
-
-  .sd__months {
-    color: var(--accent-soft);
-    font-weight: 600;
   }
 
   .sd__title {
@@ -278,7 +231,7 @@ const name = `${id}-season`;
     margin-block: 0.25rem 0.25rem;
   }
 
-  /* one rule per season: the picture, the thumb, the months and the words */
+  /* one rule per season: the picture, the thumb and the words */
   .sd:has(input[value='spring']:checked) {
     --i: 0;
   }
@@ -310,13 +263,6 @@ const name = `${id}-season`;
     display: grid;
   }
 
-  .sd:has(input[value='spring']:checked) .sd__year [data-s='spring'],
-  .sd:has(input[value='summer']:checked) .sd__year [data-s='summer'],
-  .sd:has(input[value='fall']:checked) .sd__year [data-s='fall'],
-  .sd:has(input[value='winter']:checked) .sd__year [data-s='winter'] {
-    background: var(--btn-ink);
-    color: #fff;
-  }
 
   @media (forced-colors: active) {
     .sd__opt:has(input:checked) {

@@ -727,6 +727,12 @@ a.chip:hover {
   aspect-ratio: 4 / 5;
 }
 
+/* a landscape photo beside words, when the original is too small to crop tall */
+.frame.wide {
+  aspect-ratio: 16 / 10;
+  align-self: center;
+}
+
 @media (min-width: 60rem) {
   .frame.tall {
     aspect-ratio: 10 / 11;

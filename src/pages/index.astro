@@ -2,13 +2,14 @@
 /* ============================================================================
    HOME
      hero      the property at golden hour. "One crew for your grounds, every season."
-     paper     two doors: a business or community, or a home
+     paper     two doors: a business or community, or a home (labelled on the photo)
      ink       the Season Dial: the same property through the year
-     white     what we do, in four groups, and the tree work next door
+     white     what we do, in four groups, and the tree removal partner banner
      ink       drag the plow across the lot
      paper     how it runs, start to finish
      ink       the sprinkler zone check
-     white     real work: the lake lot wall
+     white     real work: CAMP's own job photos (never the lake lot or the plowed
+               apartment lot: both tied to lawsuits, per Chris 2026-11-09)
      paper     reviews
      ink       where we work
      paper     plain answers (what answer engines quote)
@@ -29,6 +30,7 @@ import RevealPanel from '../components/RevealPanel.astro';
 import RevealScript from '../components/RevealScript.astro';
 import ZoneCheck from '../components/ZoneCheck.astro';
 import Pairs from '../components/Pairs.astro';
+import TreeBanner from '../components/TreeBanner.astro';
 import { BRAND } from '../data/site';
 import { GROUPS, inGroup, TREE_PARTNER } from '../data/services';
 import { AREAS, AREA_NAMES, inArea, hubPath } from '../data/cities';
@@ -45,7 +47,7 @@ const doors = [
   {
     eyebrow: 'Businesses and communities',
     title: 'Offices, apartment communities and HOAs',
-    body: 'Mowing, beds, irrigation and snow under one contract, on a schedule you never have to chase. One crew, one invoice, one number to call.',
+    body: 'Mowing, beds, irrigation and snow from one company, on a schedule you never have to chase. One crew, and one contact to call or text about anything.',
     photo: 'ai-park-fall' as const,
     path: '/commercial/',
     cta: 'Commercial grounds care',
@@ -62,13 +64,13 @@ const doors = [
 
 const steps = [
   { title: 'We walk the site', body: 'We come out, walk the property with you and listen: what has to be handled, what bugs you, and what you would like it to look like.' },
-  { title: 'You get one plan', body: 'Installs, weekly care, irrigation and snow, priced and scheduled for the season, so nothing falls between two companies.' },
+  { title: 'You get it in writing', body: 'Installs, weekly care, irrigation and snow, priced and scheduled before each season, so nothing falls between two companies.' },
   { title: 'The crew shows up', body: 'On the schedule we set, with the equipment the job needs. Edges cut, clippings blown off, beds left clean.' },
-  { title: 'One call all year', body: 'Spring start up, summer mowing, fall blowout, winter plowing. The same people answer, whatever the season.' },
+  { title: 'One contact all year', body: 'Spring start up, summer mowing, fall blowout, winter plowing. Call or text the same number, whatever the season and whatever the question.' },
 ];
 
 const faq = [
-  { q: 'What does CAMP Landscape Management do?', a: 'CAMP installs and maintains landscapes for businesses, apartment communities, HOAs and homes across greater Grand Rapids. That covers landscape installation, retaining walls and steps, sod and seed, lawn mowing and edging, bed maintenance and mulch, lawn fertilizer and pest control, irrigation installation and service, and commercial snow and ice removal.' },
+  { q: 'What does CAMP Landscape Management do?', a: 'CAMP installs and maintains landscapes for businesses, apartment communities, HOAs and homes across greater Grand Rapids. That covers landscape installation, retaining walls and steps, sod and seed, lawn mowing and edging, bed maintenance and mulch, lawn fertilizer and weed control, irrigation installation, irrigation service and repair, and commercial snow and ice removal.' },
   { q: 'Do you work on commercial properties?', a: 'Yes. Much of our work is for property managers: apartment communities, offices and HOAs that need mowing, beds, irrigation and snow handled on a schedule. See [commercial grounds care](/commercial/).' },
   { q: 'Do you do snow removal for homes?', a: 'Our snow and ice service is for commercial properties: lots, drives, walks and entries. Call us about your property and we will tell you straight whether it is a fit.' },
   { q: 'Who does your tree work?', a: `Tree removals, trimming and stump grinding are done by our sister company, [Ole Man RB's Tree Service](${TREE_PARTNER.href}). Same ownership, so one call covers the grounds and the trees.` },
@@ -90,13 +92,13 @@ const faq = [
     tall={tall}
     kicker="Landscape management, irrigation and snow in Grand Rapids"
     title="One crew for your grounds, **every season.**"
-    lede="CAMP installs and maintains landscapes for businesses, apartment communities and homes across greater Grand Rapids, then plows and salts when the season turns."
+    lede="CAMP installs and maintains landscapes for businesses, apartment communities and homes across greater Grand Rapids, and keeps commercial lots, walks and entries clear all winter."
     next="paper"
   />
 
   <section class="band has-edge doors-band" aria-labelledby="doors-h">
     <div class="wrap">
-      <Head id="doors-h" eyebrow="Start here" title="Two kinds of property, **one standard.**" intro="Tell us what you are looking after and we will show you what a year with CAMP looks like for it." />
+      <Head id="doors-h" eyebrow="Getting started" title="Two kinds of property, **one standard.**" />
       <ul class="doors">
         {
           doors.map((d) => (
@@ -104,9 +106,9 @@ const faq = [
               <a class="door" href={href(d.path)}>
                 <div class="frame door__img">
                   <Photo id={d.photo} ratio={16 / 10} widths={[480, 720, 960]} sizes="(min-width: 60rem) 44vw, 92vw" alt="" />
+                  <p class="door__label">{d.eyebrow}</p>
                 </div>
                 <div class="door__body">
-                  <p class="eyebrow">{d.eyebrow}</p>
                   <h3 class="door__h">{d.title}</h3>
                   <p class="muted">{d.body}</p>
                   <span class="arrow">{d.cta}</span>
@@ -122,7 +124,7 @@ const faq = [
 
   <section class="band has-edge ink" aria-labelledby="year-h">
     <div class="wrap">
-      <Head id="year-h" eyebrow="The year at CAMP" title="Same property. **Every season.**" intro="This is what twelve months with one crew looks like. It opens on the season we are in now; tap through the year." />
+      <Head id="year-h" eyebrow="The year at CAMP" title="Same property. **Every season.**" intro="This is what a year with one crew looks like. It opens on the season we are in now; tap through the seasons." />
       <SeasonDial set="commercial" id="home" />
     </div>
     <Edge to="white" flip />
@@ -147,13 +149,7 @@ const faq = [
           ))
         }
       </ul>
-      <aside class="tree card pad">
-        <div>
-          <p class="eyebrow">Tree work, same family</p>
-          <p class="tree__t">{TREE_PARTNER.blurb}</p>
-        </div>
-        <a class="btn ghost" href={TREE_PARTNER.href} target="_blank" rel="noopener">Visit olemanrb.com</a>
-      </aside>
+      <TreeBanner />
     </div>
     <Edge to="ink" />
   </section>
@@ -187,7 +183,7 @@ const faq = [
     <div class="wrap">
       <Head id="zone-h" eyebrow="Irrigation" title="Run the sprinklers. **Find the problem.**" intro="Three things go wrong with a tired system. Run each zone to find them, then flip it to see the same yard after a tune up." />
       <ZoneCheck id="home-zc" />
-      <p class="zone-more"><a class="arrow" href={href('/irrigation/')}>Irrigation installation, start up and winterization</a></p>
+      <p class="zone-more"><a class="arrow" href={href('/irrigation/')}>Irrigation installation</a> <a class="arrow" href={href('/irrigation/#service')}>Irrigation service and repair</a></p>
     </div>
     <Edge to="white" />
   </section>
@@ -197,13 +193,13 @@ const faq = [
       <div class="two wide-left real">
         <figure>
           <div class="frame real__img">
-            <Photo id="wall-lakeside" ratio={16 / 9} widths={[640, 960, 1280]} sizes="(min-width: 60rem) 56vw, 92vw" />
+            <Photo id="real-steps" ratio={16 / 9} widths={[640, 960]} sizes="(min-width: 60rem) 56vw, 92vw" />
           </div>
-          <figcaption class="note cap">{photo('wall-lakeside').caption}. A CAMP job.</figcaption>
+          <figcaption class="note cap">{photo('real-steps').caption}. A CAMP job.</figcaption>
         </figure>
         <div class="stack" style="--gap:1.3rem">
-          <Head id="work-h" layout="left" eyebrow="Real CAMP jobs" title="A lake lot that **finally works.**" />
-          <p class="lede">A slope down to the water, held by a curved natural stone wall, with wide stone steps from the lawn to the beach and new turf on top.</p>
+          <Head id="work-h" layout="left" eyebrow="Real CAMP jobs" title="A slope you can **actually climb.**" />
+          <p class="lede">New timber steps with gravel treads, set into a mulched slope beside the house, so a hill that was hard to use is safe and easy underfoot.</p>
           <ul class="checks">
             <li>Retaining walls and steps that hold the grade and stop erosion</li>
             <li>Grading, topsoil and sod or seed to finish the lawn</li>
@@ -214,20 +210,8 @@ const faq = [
       </div>
       <div class="real__more">
         <Head layout="left" small eyebrow="Before and after" title="From CAMP's own job photos." />
-        <Pairs ids={['wall-front', 'wall-apt', 'leaf']} />
+        <Pairs ids={['wall-front', 'wall-apt', 'wall-side', 'leaf']} />
       </div>
-      <ul class="real__strip">
-        {
-          (['real-fleet', 'real-lot-cleared', 'real-steps'] as const).map((id) => (
-            <li>
-              <figure>
-                <div class="frame real__s"><Photo id={id} ratio={4 / 3} widths={[320, 480, 640]} sizes="(min-width: 60rem) 30vw, 92vw" /></div>
-                <figcaption class="note cap">{photo(id).caption}</figcaption>
-              </figure>
-            </li>
-          ))
-        }
-      </ul>
     </div>
     <Edge to="paper" flip />
   </section>
@@ -302,8 +286,28 @@ const faq = [
   }
 
   .door__img {
+    position: relative;
     border-radius: 0;
     aspect-ratio: 16 / 10;
+  }
+
+  /* the pathway, said on the picture: business or home */
+  .door__label {
+    position: absolute;
+    left: clamp(0.9rem, 2vw, 1.4rem);
+    bottom: clamp(0.9rem, 2vw, 1.4rem);
+    z-index: 1;
+    max-width: calc(100% - 2rem);
+    padding: 0.6rem 0.95rem 0.65rem;
+    border-radius: var(--r-sm);
+    background: var(--maroon);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.6vw + 0.9rem, 1.35rem);
+    font-weight: 720;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    box-shadow: 0 8px 24px rgb(14 18 15 / 0.28);
   }
 
   .door__img :global(img) {
@@ -404,26 +408,10 @@ const faq = [
     padding-left: 0.3rem;
   }
 
-  .tree {
-    display: grid;
-    gap: 1rem 2rem;
-    align-items: center;
-    margin-top: clamp(2.5rem, 5vw, 3.5rem);
-  }
-
-  @media (min-width: 52rem) {
-    .tree {
-      grid-template-columns: 1fr auto;
-    }
-  }
-
-  .tree__t {
-    margin-top: 0.5rem;
-    font-size: 1.125rem;
-    font-weight: 560;
-  }
-
   .zone-more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
     margin-top: 1.5rem;
   }
 
@@ -435,22 +423,6 @@ const faq = [
     margin-top: clamp(3rem, 6vw, 4.5rem);
     padding-top: clamp(2.5rem, 5vw, 3.5rem);
     border-top: 1px solid var(--line);
-  }
-
-  .real__strip {
-    display: grid;
-    gap: 1.5rem;
-    margin-top: 2.5rem;
-  }
-
-  @media (min-width: 48rem) {
-    .real__strip {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .real__s {
-    aspect-ratio: 4 / 3;
   }
 
   .areas {

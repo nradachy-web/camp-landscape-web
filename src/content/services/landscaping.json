@@ -2,24 +2,24 @@
   "service": "landscaping",
   "meta": {
     "title": "Landscape Installation in Grand Rapids, MI | CAMP Landscape",
-    "description": "Landscape installation in Grand Rapids: grading, topsoil, sod and seed, plantings, edging, retaining walls and steps for homes and commercial properties."
+    "description": "Landscape installation in Grand Rapids: grading, sod and seed, plantings, retaining walls and steps, and irrigation installs for homes and commercial sites."
   },
   "hero": {
     "kicker": "Landscape installation in Grand Rapids and West Michigan",
     "title": "Built for the site. **Built to last.**",
-    "lede": "From a bare lot to a finished yard, or a tired one made new: grading, topsoil, sod and seed, plantings, edging and mulch, and retaining walls and steps, for homes and commercial properties.",
+    "lede": "From a bare lot to a finished yard, or a tired one made new: grading, topsoil, sod and seed, plantings, edging and mulch, retaining walls and steps, and irrigation installed by our own crew, for homes and commercial properties.",
     "chips": [
       "New yard installs",
       "Retaining walls and steps",
+      "Irrigation installs",
       "Sod, seed and grading"
     ],
-    "photo": "wall-lakeside"
+    "photo": "ai-home-summer"
   },
   "blocks": [
     {
       "type": "intro",
       "plane": "paper",
-      "eyebrow": "The short version",
       "title": "Every phase, **one crew.**",
       "body": [
         "Whether you are starting from scratch with a new yard or upgrading an outdoor space you already have, we handle every phase: grading, topsoil, sod and seed, plantings, edging and mulch. Every plan is tailored to the site, with a focus on how it performs over the years and how it looks on day one.",
@@ -31,7 +31,7 @@
         "Edging and mulch to finish every bed",
         "Residential and commercial properties"
       ],
-      "photo": "ai-home-spring"
+      "photo": "ai-lawn-clean"
     },
     {
       "type": "intro",
@@ -41,14 +41,15 @@
       "title": "Turn a slope into **ground you can use.**",
       "body": [
         "When a property has slopes or changes in grade, the right retaining wall does more than hold back soil. It makes flat, usable space, defines safe steps between levels, stops erosion and helps the property drain.",
-        "We build walls and steps in a range of materials and styles, with the structure the site needs underneath. The lake lot pictured is a CAMP job: a curved natural stone wall and wide steps from the lawn down to the beach."
+        "We build walls and steps in a range of materials and styles, with the structure the site needs underneath. The timber steps pictured are a CAMP job: gravel treads set into a mulched slope beside the house."
       ],
       "checks": [
         "Walls that hold the grade and stop erosion",
         "Steps that make a hill safe and easy to use",
         "Materials and styles to match the home"
       ],
-      "photo": "wall-lakeside"
+      "photo": "real-steps",
+      "frame": "wide"
     },
     {
       "type": "pairs",
@@ -87,6 +88,29 @@
           "body": "Sod for a finished lawn now, or seed and hydroseed for larger areas, put down clean and ready to water."
         }
       ]
+    },
+    {
+      "type": "intro",
+      "anchor": "irrigation",
+      "plane": "white",
+      "eyebrow": "Irrigation installs",
+      "title": "The sprinklers go in **with the yard.**",
+      "body": [
+        "Irrigation is a big part of what we build: about a quarter of our recent projects have been irrigation installs. Plenty of landscape companies have to sub that work out. We do not. The same crew that grades and plants the yard lays the lines, sets the heads and programs the controller.",
+        "Because the system is planned with the landscape, every bed and every stretch of lawn gets the water it needs from day one. After that we can start it each spring, [service it](/irrigation/#service) through the season and blow it out before the freeze."
+      ],
+      "checks": [
+        "Installed by CAMP's own crew, never subbed out",
+        "Zones planned around the new lawn, beds and plantings",
+        "Lawn on rotors and sprays, beds on drip",
+        "Start up, service and winterization once it is in"
+      ],
+      "photo": "ai-irrigation",
+      "flip": true,
+      "cta": {
+        "label": "Irrigation installation",
+        "href": "/irrigation/"
+      }
     },
     {
       "type": "steps",
@@ -139,7 +163,7 @@
   "faq": [
     {
       "q": "What does landscape installation include?",
-      "a": "Grading, topsoil, sod and seed, plantings, edging and mulch, plus retaining walls and steps. We handle every phase, for homes and commercial properties."
+      "a": "Grading, topsoil, sod and seed, plantings, edging and mulch, plus retaining walls and steps and irrigation installs. We handle every phase with our own crew, for homes and commercial properties."
     },
     {
       "q": "Do you build retaining walls in Grand Rapids?",
@@ -152,6 +176,10 @@
     {
       "q": "Do you install sod or seed new lawns?",
       "a": "Yes. We grade the ground, spread topsoil, and put down sod or seed, including hydroseed for larger areas, as part of a new yard or on its own."
+    },
+    {
+      "q": "Do you install irrigation with a new landscape?",
+      "a": "Yes, with our own crew. About a quarter of our recent projects have been irrigation installs. We plan the zones with the landscape, install the system, and can then start it up, service it and winterize it every year. See [irrigation installation](/irrigation/)."
     },
     {
       "q": "Do you do commercial landscape installation?",
@@ -172,7 +200,7 @@
   },
   "summary": {
     "title": "From grading to the last plant.",
-    "intro": "New yards, upgrades, lawns, walls and steps, for homes and businesses.",
+    "intro": "New yards, upgrades, lawns, walls, steps and irrigation, for homes and businesses.",
     "items": [
       {
         "name": "Site work",
@@ -189,6 +217,10 @@
       {
         "name": "Walls and steps",
         "detail": "Retaining walls and steps that hold a slope."
+      },
+      {
+        "name": "Irrigation",
+        "detail": "Sprinkler systems installed with the landscape by our own crew."
       }
     ]
   }

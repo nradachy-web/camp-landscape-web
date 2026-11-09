@@ -22,7 +22,7 @@ export function business() {
     name: BRAND.name,
     legalName: BRAND.legalName,
     additionalType: 'https://www.productontology.org/id/Landscaping',
-    description: `${BRAND.name} is a landscape company in ${BRAND.city}, Michigan, owned by ${BRAND.owner}. It installs and maintains landscapes for commercial properties, apartment communities and homes across greater Grand Rapids, including landscape installation, retaining walls and steps, sod and seed, lawn mowing, bed maintenance, lawn fertilizer and pest control, irrigation installation and service, and commercial snow and ice removal.`,
+    description: `${BRAND.name} is a landscape company in ${BRAND.city}, Michigan, owned by ${BRAND.owner}. It installs and maintains landscapes for commercial properties, apartment communities and homes across greater Grand Rapids, including landscape installation, retaining walls and steps, sod and seed, lawn mowing, bed maintenance, lawn fertilizer and weed control, irrigation installation, irrigation service and repair, and commercial snow and ice removal.`,
     url: `${ORIGIN}/`,
     telephone: BRAND.phoneE164,
     email: BRAND.email,

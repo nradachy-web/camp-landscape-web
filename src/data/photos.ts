@@ -1,14 +1,21 @@
 /* The photo library. Two kinds, and the page always tells the truth about which:
      real    CAMP's own job and team photos.
-     ai      made from a prompt for a service with no job photo yet. The caption
-             says "Illustration". Never used as proof of a job.
+     ai      made from a prompt for a service with no job photo yet. No caption is
+             printed under it (Chris and Sarah asked to drop the visible
+             "Illustration" tag on 2026-11-09); the alt text still says so. Never
+             used as proof of a job, and never captioned as a CAMP job.
    `alt` says what is in the frame; `caption` is what may be printed under it.
    Never caption a photo with a town unless CAMP has said where the job is.
 
    Real photos so far come from CAMP's WordPress media, its Google listing and its
    Facebook page (about 940 px wide: originals have to come from Chris). The
    rest is illustration until more real job photos arrive. Never name where a
-   job is, and never show a house number, unit number or plate. */
+   job is, and never show a house number, unit number or plate.
+
+   NEVER USE (Chris and Sarah, Loom review 2026-11-09): the lake lot stone wall
+   aerial (WP "Retaining-Wall-Bostwick", also on the Google listing) and the plowed
+   apartment lot (Facebook fbid 1476650044464823). Both properties are tied to
+   lawsuits. They were removed from every page and from this folder. */
 
 import type { ImageMetadata } from 'astro';
 
@@ -22,10 +29,8 @@ interface Entry { alt: string; caption: string; kind?: Kind; focus?: 'top' | 'bo
 
 export const PHOTOS = {
   // real: CAMP's own photos (WordPress media, Google listing, CAMP's Facebook page)
-  'wall-lakeside': { alt: 'A curved natural stone retaining wall with wide stone steps between a lake house lawn and the beach, seen from above', caption: 'Natural stone wall and steps on a lake lot' },
   'team-table': { alt: 'Two people going over plans at a dining table, one in an Ole Man RB\u2019s cap', caption: 'Planning the season', focus: 'right' },
   'real-fleet': { alt: 'Five CAMP pickups with red BOSS straight blade plows lined up in a lot in fall', caption: 'CAMP plow trucks, 2026' },
-  'real-lot-cleared': { alt: 'An apartment parking lot plowed and salted after a snowfall, the walk shoveled and orange snow stakes along the beds', caption: 'Plowed, salted and staked after a storm' },
   'real-shop': { alt: 'The CAMP shop on Blaine Ave SE: a gray metal building with the CAMP sign and a fenced equipment yard', caption: 'The shop on Blaine Ave SE' },
   'real-steps': { alt: 'New timber steps with gravel treads climbing a mulched slope beside a house', caption: 'Timber steps with gravel treads' },
   'real-wall-front-before': { alt: 'A front slope dug out down to the dirt beside the city sidewalk', caption: 'Before' },
@@ -36,6 +41,8 @@ export const PHOTOS = {
   'real-wall-apt-after': { alt: 'The same bed at the apartment building rebuilt with a new timber wall', caption: 'After' },
   'real-leaf-before': { alt: 'A sloped front lawn buried under fall leaves in front of a brick ranch house', caption: 'Before' },
   'real-leaf-after': { alt: 'The same lawn and driveway cleared of leaves', caption: 'After' },
+  // real, Ole Man RB's Tree Service (the sister company): only for the tree partner banner
+  'omr-trim': { alt: 'An Ole Man RB\u2019s Tree Service climber cutting a tree in sections from a red tracked lift', caption: 'Ole Man RB\u2019s Tree Service at work' },
   // illustration
   'hero-wide': { alt: 'Illustration: the landscaped entry of a West Michigan office building at golden hour, striped lawn, grasses and limestone boulders', caption: 'Illustration', kind: 'ai' },
   'hero-tall': { alt: 'Illustration: a crisp edged bed of grasses, boxwood and a limestone boulder at an office entry at golden hour', caption: 'Illustration', kind: 'ai' },

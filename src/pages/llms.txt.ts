@@ -23,7 +23,7 @@ export const GET: APIRoute = async () => {
     '',
     '## More',
     `- [All services](${u('/services/')})`,
-    `- [Commercial grounds care](${u('/commercial/')}): one contract for mowing, beds, irrigation and snow`,
+    `- [Commercial grounds care](${u('/commercial/')}): one contact for mowing, beds, irrigation and snow`,
     `- [Plan your year](${u('/plan-your-year/')}): build a season by season plan for a property`,
     `- [All service areas](${u('/service-areas/')})`,
     `- [Get an estimate](${u('/get-an-estimate/')})`,

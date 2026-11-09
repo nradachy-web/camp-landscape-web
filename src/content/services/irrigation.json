@@ -7,9 +7,10 @@
   "hero": {
     "kicker": "Irrigation installation and service in Grand Rapids",
     "title": "Water where it **belongs.**",
-    "lede": "CAMP designs and installs sprinkler systems for the site, and services the one you already have: spring start up, zone adjustments, leak detection, repairs and a full blowout before the freeze.",
+    "lede": "Two separate services: new sprinkler systems designed for the site and installed by our own crew, and service for the one you already have, from spring start up and repairs to a full blowout before the freeze.",
     "chips": [
-      "Installs and upgrades",
+      "New system installs",
+      "Service and repair",
       "Spring start up",
       "Fall winterization"
     ],
@@ -19,7 +20,6 @@
     {
       "type": "intro",
       "plane": "paper",
-      "eyebrow": "The short version",
       "title": "A system that runs right is **one you forget about.**",
       "body": [
         "Consistent, even water is the backbone of a healthy landscape. When a system is designed for the site and kept up through the year, the lawn stays green, the beds stay alive and nobody is out there in July dragging a hose.",
@@ -32,6 +32,27 @@
         "Built for apartment communities and commercial sites as well as homes"
       ],
       "photo": "ai-home-summer"
+    },
+    {
+      "type": "cards",
+      "anchor": "service",
+      "plane": "white",
+      "eyebrow": "Two kinds of irrigation work",
+      "title": "Install a new system, **or fix the one you have.**",
+      "intro": "They are separate jobs, so we treat them that way. Start with whichever one the property needs.",
+      "columns": 2,
+      "items": [
+        {
+          "tag": "Installation",
+          "title": "A new system",
+          "body": "Designed around the layout, soil, plants and sun of the property, then installed by our own crew, never subbed out: lines in, heads set to grade, the controller programmed and the lawn put back the way we found it."
+        },
+        {
+          "tag": "Service",
+          "title": "The system you already have",
+          "body": "Heads that spray the walk, zones that will not shut off, leaks, sticking valves and dry spots. We find the problem, tell you plainly what it is and fix it for the long run, whoever put the system in."
+        }
+      ]
     },
     {
       "type": "zones",
@@ -111,7 +132,8 @@
           "title": "Keep it right",
           "body": "We start it each spring and blow it out each fall, so the system you paid for keeps working the way it was designed."
         }
-      ]
+      ],
+      "anchor": "install"
     },
     {
       "type": "reviews",
@@ -127,7 +149,7 @@
   "faq": [
     {
       "q": "Do you install sprinkler systems in Grand Rapids?",
-      "a": "Yes. CAMP designs and installs irrigation systems in Grand Rapids and across Kent County and into Ottawa County, for apartment communities, commercial properties and homes."
+      "a": "Yes. CAMP designs and installs irrigation systems with our own crew, not a subcontractor, in Grand Rapids and across Kent County and into Ottawa County, for apartment communities, commercial properties and homes."
     },
     {
       "q": "Can you service a system someone else installed?",
@@ -147,11 +169,11 @@
     },
     {
       "q": "Do you work on irrigation for apartment communities and commercial properties?",
-      "a": "Yes. A lot of our irrigation work is for property managers, including multifamily communities of 50 to 150 units and commercial sites with large lawns. See [commercial grounds care](/commercial/)."
+      "a": "Yes. A lot of our irrigation work is for property managers, including multifamily communities from 50 units to complexes with thousands, and commercial sites with large lawns. See [commercial grounds care](/commercial/)."
     },
     {
-      "q": "Can irrigation be part of a landscape management contract?",
-      "a": "Yes. Start up, service and winterization can be scheduled alongside mowing, beds and snow, so one company looks after the property all year. See [landscape management](/landscape-management/)."
+      "q": "Can the same company handle irrigation and the rest of the grounds?",
+      "a": "Yes. Installs, start up, service and winterization can be scheduled alongside mowing, beds and snow, with one contact for the property all year. See [landscape management](/landscape-management/)."
     },
     {
       "q": "How much does a sprinkler system cost?",
@@ -164,7 +186,7 @@
   },
   "summary": {
     "title": "Installs, service, start up and winterization.",
-    "intro": "Sprinkler systems designed for the site, and the yearly service that keeps them working.",
+    "intro": "Two separate services: new systems installed by our own crew, and the yearly service that keeps any system working.",
     "items": [
       {
         "name": "Installation",

@@ -65,10 +65,10 @@ const link = (h: string) => (h.startsWith('#') || /^(https?:|tel:|sms:)/.test(h)
               </div>
               {b.photo && (
                 <figure>
-                  <div class="frame tall">
-                    <Photo id={b.photo as PhotoId} ratio={4 / 5} widths={[400, 640, 880]} sizes="(min-width: 60rem) 44vw, 100vw" />
+                  <div class:list={['frame', b.frame === 'wide' ? 'wide' : 'tall']}>
+                    <Photo id={b.photo as PhotoId} ratio={b.frame === 'wide' ? 16 / 10 : 4 / 5} widths={[400, 640, 880]} sizes="(min-width: 60rem) 44vw, 100vw" />
                   </div>
-                  <figcaption class="note cap">{photo(b.photo as PhotoId).caption}</figcaption>
+                  {photo(b.photo as PhotoId).kind === 'real' && <figcaption class="note cap">{photo(b.photo as PhotoId).caption}</figcaption>}
                 </figure>
               )}
             </div>
@@ -129,7 +129,7 @@ const link = (h: string) => (h.startsWith('#') || /^(https?:|tel:|sms:)/.test(h)
                       <div class="frame gal__frame">
                         <Photo id={id as PhotoId} ratio={4 / 3} widths={[300, 480, 640]} sizes="(min-width: 60rem) 30vw, 46vw" />
                       </div>
-                      <figcaption class="note cap">{photo(id as PhotoId).caption}</figcaption>
+                      {photo(id as PhotoId).kind === 'real' && <figcaption class="note cap">{photo(id as PhotoId).caption}</figcaption>}
                     </figure>
                   </li>
                 ))}

@@ -8,12 +8,14 @@ import { balance } from '../lib/paths';
 
 interface Props {
   reviews: Review[];
-  /** Show the "read every review" link under the cards. */
+  /** Show the "read every review" link under the cards. Off by default: Chris and
+      Sarah flagged it ("careful with that") on 2026-11-09, since the Google listing
+      shows reviews the site leaves out on purpose. */
   more?: boolean;
   /** The reviews page: every word, in quiet columns. */
   full?: boolean;
 }
-const { reviews, more = true, full = false } = Astro.props;
+const { reviews, more = false, full = false } = Astro.props;
 const size = (r: Review) => r.text.length + (r.more?.length ?? 0) + 180;
 const columns = full ? balance(reviews, size, 3) : [];
 const body = (r: Review) => `${r.text}${full && r.more ? r.more : r.excerpt ? ' …' : ''}`;

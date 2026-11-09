@@ -1,0 +1,105 @@
+---
+/* The tree removal partner, as its own banner. Chris and Sarah asked for this to
+   stand out the way it did on the old site ("Tree Removal Partner"), not as a
+   one-line strip (Loom review, 2026-11-09). The photo is a real Ole Man RB's job. */
+import Photo from './Photo.astro';
+import { TREE_PARTNER } from '../data/services';
+import { heading } from '../lib/rich';
+
+interface Props {
+  id?: string;
+}
+const { id = 'tree-h' } = Astro.props;
+---
+
+<aside class="tb ink" aria-labelledby={id}>
+  <div class="tb__img">
+    <Photo id="omr-trim" ratio={16 / 10} widths={[480, 720, 960, 1280]} sizes="(min-width: 56rem) 50vw, 100vw" />
+  </div>
+  <div class="tb__body">
+    <p class="eyebrow">Tree removal partner</p>
+    <h3 class="tb__h" id={id} set:html={heading('Tree work stays **in the family.**', 'accent')} />
+    <p class="tb__t">Removals, trimming, crane work and stump grinding by our sister company, {TREE_PARTNER.name}. Same ownership as CAMP, so one call covers the grounds and the trees.</p>
+    <ul class="tb__list small">
+      <li>Tree removal</li>
+      <li>Trimming and pruning</li>
+      <li>Crane work</li>
+      <li>Stump grinding</li>
+    </ul>
+    <p><a class="btn primary" href={TREE_PARTNER.href} target="_blank" rel="noopener" data-cta="tree-partner">Visit olemanrb.com</a></p>
+  </div>
+</aside>
+
+<style>
+  .tb {
+    display: grid;
+    overflow: hidden;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    border-radius: var(--r);
+  }
+
+  @media (min-width: 56rem) {
+    .tb {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+  }
+
+  .tb__img {
+    aspect-ratio: 16 / 10;
+  }
+
+  @media (min-width: 56rem) {
+    .tb__img {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+  }
+
+  .tb__img :global(picture),
+  .tb__img :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tb__body {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    padding: clamp(1.6rem, 4vw, 3.25rem);
+  }
+
+  .tb__h {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.4vw + 1.2rem, 2.5rem);
+    font-weight: 740;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    color: var(--on-ink);
+  }
+
+  .tb__t {
+    max-width: 34rem;
+    color: var(--on-ink-muted);
+    font-size: 1.0625rem;
+  }
+
+  .tb__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tb__list li {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--line-ink);
+    border-radius: 999px;
+    color: var(--on-ink);
+  }
+
+  .tb p:last-child {
+    margin-top: 0.4rem;
+  }
+</style>
