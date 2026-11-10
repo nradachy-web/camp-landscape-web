@@ -36,6 +36,12 @@ export const LINKS = {
   instagram: '',
   /* The sister company that does CAMP's tree work. */
   treePartner: 'https://olemanrb.com/',
+  /* The employee portal lives in CAMP's WordPress back office. Always this
+     absolute address, never a page of ours: signed in it opens the portal,
+     signed out WordPress sends the visitor to its own sign in page and back.
+     It works from the preview and after launch, because launch routes only the
+     public pages (see _source/private-docs/WORDPRESS-KEEP.md). */
+  portal: 'https://camplandscape.com/employee-portal/',
 };
 
 /** The social links in the order they are shown, skipping any without an address. */
@@ -49,6 +55,12 @@ export const FORM = {
      empty key shows the phone number instead of pretending to send. */
   key: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '',
   endpoint: 'https://api.web3forms.com/submit',
+};
+
+/* Job applications from /careers/. Same Web3Forms key as the estimate form, so
+   they land in the same inbox with their own subject line. */
+export const APPLY = {
+  subject: 'New job application from camplandscape.com',
 };
 
 export const TRACKING = {

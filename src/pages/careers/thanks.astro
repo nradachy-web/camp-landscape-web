@@ -1,0 +1,18 @@
+---
+/* Where a sent job application lands. Not a lead (no `lead` prop), never in
+   the sitemap. */
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import { BRAND } from '../../data/site';
+import { href } from '../../lib/paths';
+---
+
+<Base title="Application received | CAMP Landscape" description="Your job application reached CAMP Landscape Management. Questions in the meantime? Call or text the office." path="/careers/thanks/" quoteHref="/get-an-estimate/" noindex bare>
+  <PageHead eyebrow="Application received" title="Thanks. **It is with the office.**" lede="Your application is on its way to the CAMP office. If you have a question in the meantime, call or text the number below." next="ink">
+    <div class="actions">
+      <a class="btn primary" href={BRAND.phoneHref} data-loc="apply-thanks"><Icon name="phone" />{BRAND.phone}</a>
+      <a class="btn ghost" href={href('/careers/')}>Back to careers</a>
+    </div>
+  </PageHead>
+</Base>

@@ -4,7 +4,7 @@
    into a full screen menu. Both are the native popover, so they open, close and
    take Escape with no script. */
 import Icon from './Icon.astro';
-import { BRAND } from '../data/site';
+import { BRAND, LINKS } from '../data/site';
 import { GROUPS, inGroup, TREE_PARTNER } from '../data/services';
 import { AREAS, AREA_NAMES, areaId } from '../data/cities';
 import { href } from '../lib/paths';
@@ -116,6 +116,8 @@ const logo = href('/logo.svg');
         <li><a href={href('/plan-your-year/')}>Plan your year</a></li>
         <li><a href={href('/about/')}>About</a></li>
         <li><a href={href('/contact/')}>Contact</a></li>
+        <li><a href={href('/careers/')}>Careers</a></li>
+        <li><a href={LINKS.portal}>Employee portal</a></li>
         <li><a href={TREE_PARTNER.href} target="_blank" rel="noopener">Tree work: Ole Man RB's</a></li>
       </ul>
     </div>

@@ -25,7 +25,7 @@ const common = ['Landscape management', 'Landscape installation', 'Irrigation in
 const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'];
 ---
 
-<form class="qf" id={id} action={FORM.endpoint} method="POST" data-key={FORM.key ? '1' : ''} data-thanks={href('/thank-you/')}>
+<form class="qf" id={id} action={FORM.endpoint} method="POST" data-key={FORM.key ? '1' : ''} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone}>
   <input type="hidden" name="access_key" value={FORM.key} />
   <input type="hidden" name="subject" value="New estimate request from camplandscape.com" />
   <input type="hidden" name="from_name" value="CAMP Landscape website" />
@@ -115,7 +115,7 @@ const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'
       if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') { e.preventDefault(); f.querySelector('.qf__next').click(); }
     });
     function call(text) {
-      msg.innerHTML = text + ' <a href="tel:+15867188762">(586) 718-8762</a>.';
+      msg.innerHTML = text + ' <a href="' + f.dataset.tel + '">' + f.dataset.phone + '</a>.';
     }
     f.addEventListener('submit', function (e) {
       e.preventDefault();

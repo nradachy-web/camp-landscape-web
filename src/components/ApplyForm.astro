@@ -1,0 +1,285 @@
+---
+/* The job application on /careers/. One short step, posted to Web3Forms like the
+   estimate form, and it only says "sent" when the service confirms it. With no
+   key (the preview) or on any failure it gives the phone number instead.
+
+   It never counts as a lead: success goes to /careers/thanks/, which is not the
+   lead page, and the only event is job_application_sent. No resume upload,
+   because Web3Forms' free plan rejects files. */
+import { APPLY, BRAND, FORM } from '../data/site';
+import { CITIES } from '../data/cities';
+import { href } from '../lib/paths';
+
+const id = 'af';
+const WORK = ['Landscape management crew', 'Landscape installation crew', 'Irrigation', 'Snow and ice (winter)', 'Crew lead', 'Not sure yet'];
+const HOURS = ['Full time', 'Part time', 'Winter snow only'];
+const SEASONS = ['New to landscaping', 'One or two seasons', 'Three to five seasons', 'More than five seasons'];
+const LICENSE = ['Yes', 'Yes, with a CDL', 'No'];
+const names = CITIES.map((c) => c.name);
+---
+
+<form class="af" id={id} action={FORM.endpoint} method="POST" data-key={FORM.key ? '1' : ''} data-thanks={href('/careers/thanks/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone}>
+  <input type="hidden" name="access_key" value={FORM.key} />
+  <input type="hidden" name="subject" value={APPLY.subject} />
+  <input type="hidden" name="from_name" value="CAMP Landscape website" />
+  <input type="hidden" name="redirect" value={`${BRAND.origin}/careers/thanks/`} />
+  <input type="checkbox" name="botcheck" class="sr" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <fieldset class="af__group">
+    <legend class="af__q">What kind of work?</legend>
+    <ul class="af__chips">
+      {
+        WORK.map((w) => (
+          <li>
+            <label class="af__chip">
+              <input type="checkbox" name="work" value={w} />
+              <span>{w}</span>
+            </label>
+          </li>
+        ))
+      }
+    </ul>
+  </fieldset>
+
+  <fieldset class="af__group">
+    <legend class="af__q">Hours you want</legend>
+    <div class="af__chips" role="radiogroup">
+      {
+        HOURS.map((h, i) => (
+          <label class="af__chip">
+            <input type="radio" name="hours" value={h} checked={i === 0} />
+            <span>{h}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <div class="af__two">
+    <label class="af__field">
+      <span>Landscape experience</span>
+      <select name="experience">
+        {SEASONS.map((s) => <option>{s}</option>)}
+      </select>
+    </label>
+    <label class="af__field">
+      <span>Driver's license</span>
+      <select name="drivers_license">
+        {LICENSE.map((l) => <option>{l}</option>)}
+      </select>
+    </label>
+  </div>
+
+  <label class="af__field"><span>Name</span><input name="name" required autocomplete="name" /></label>
+  <div class="af__two">
+    <label class="af__field"><span>Phone</span><input name="phone" type="tel" required autocomplete="tel" inputmode="tel" /></label>
+    <label class="af__field"><span>Email <em>optional</em></span><input name="email" type="email" autocomplete="email" /></label>
+  </div>
+  <label class="af__field">
+    <span>Town you live in <em>optional</em></span>
+    <input name="town" list="af-towns" autocomplete="address-level2" />
+    <datalist id="af-towns">{names.map((n) => <option value={n} />)}</datalist>
+  </label>
+  <label class="af__field"><span>Anything we should know? <em>optional</em></span><textarea name="message" rows="3" placeholder="Past jobs, equipment you run, when you can start"></textarea></label>
+
+  <button class="btn primary af__send" type="submit">Send my application</button>
+  <p class="af__msg small" role="status" aria-live="polite"></p>
+  <p class="fine muted af__fine">No resume needed. We use this to contact you about work at CAMP and nothing else. Rather talk? Call or text <a href={BRAND.phoneHref} data-loc="apply-form">{BRAND.phone}</a>.</p>
+</form>
+
+<script is:inline>
+  (function () {
+    var f = document.getElementById('af');
+    if (!f || f.dataset.on) return;
+    f.dataset.on = '1';
+    var msg = f.querySelector('.af__msg'), send = f.querySelector('.af__send');
+    function track(name, params) { if (window.campTrack) window.campTrack(name, params); }
+    function call(text) {
+      msg.innerHTML = text + ' <a href="' + f.dataset.tel + '">' + f.dataset.phone + '</a>.';
+    }
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.textContent = ''; msg.className = 'af__msg small';
+      if (!f.dataset.key) { call('Online applications open when this site goes live. For now, call or text the office at'); return; }
+      var d = new FormData(f);
+      if ((String(d.get('phone')).match(/\d/g) || []).length < 10) { msg.textContent = 'Please check the phone number, so we can reach you.'; msg.classList.add('is-bad'); f.querySelector('input[name=phone]').focus(); return; }
+      var o = {};
+      d.forEach(function (v, k) { if (k !== 'work') o[k] = v; });
+      o.work = d.getAll('work').join(', ') || 'Not chosen';
+      o.subject = 'New job application: ' + o.name + ' (' + o.work + ', ' + o.hours + ')';
+      o.page = location.pathname;
+      send.disabled = true; send.textContent = 'Sending';
+      fetch(f.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(o) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (!j.success) throw new Error('rejected');
+          /* not a lead: nothing about the person goes to Google */
+          track('job_application_sent', { hours: o.hours });
+          location.href = f.dataset.thanks;
+        })
+        .catch(function () {
+          send.disabled = false; send.textContent = 'Send my application';
+          call('That did not go through. Please call or text the office at');
+          msg.classList.add('is-bad');
+        });
+    });
+  })();
+</script>
+
+<style>
+  .af {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .af__group {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .af__q {
+    padding: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .af__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .af__chip {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+
+  .af__chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .af__chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #8a8676;
+    border-radius: var(--r-sm);
+    background: var(--white);
+    font-size: 0.9375rem;
+    font-weight: 540;
+    transition:
+      background-color 0.16s var(--ease),
+      border-color 0.16s var(--ease),
+      color 0.16s var(--ease);
+  }
+
+  .af__chip:hover span {
+    border-color: var(--action);
+  }
+
+  .af__chip input:checked + span {
+    border-color: var(--action);
+    background: var(--action);
+    color: #fff;
+  }
+
+  .af__chip input:focus-visible + span {
+    outline: 2px solid var(--action);
+    outline-offset: 2px;
+  }
+
+  .af__field {
+    display: grid;
+    gap: 0.3rem;
+    min-width: 0;
+    font-size: 0.9375rem;
+    font-weight: 560;
+  }
+
+  .af__field em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .af__field input,
+  .af__field select,
+  .af__field textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid #8a8676;
+    border-radius: var(--r-sm);
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .af ::placeholder {
+    color: var(--muted);
+    opacity: 1;
+  }
+
+  .af__field textarea {
+    resize: vertical;
+  }
+
+  .af__field :focus-visible {
+    outline: 2px solid var(--action);
+    outline-offset: 1px;
+    border-color: var(--action);
+  }
+
+  .af__two {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 34rem) {
+    .af__two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .af__send {
+    justify-self: start;
+    min-width: 13rem;
+  }
+
+  @media (max-width: 29.99rem) {
+    .af__send {
+      justify-self: stretch;
+    }
+  }
+
+  .af__msg:empty {
+    display: none;
+  }
+
+  .af__msg {
+    font-weight: 560;
+  }
+
+  .af__msg.is-bad {
+    padding: 0.7rem 0.85rem;
+    border-left: 3px solid #a12b1f;
+    background: #fbeeeb;
+    color: #6f1c13;
+  }
+
+  .af__fine a {
+    font-weight: 600;
+  }
+</style>

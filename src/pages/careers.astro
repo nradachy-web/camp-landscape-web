@@ -1,0 +1,187 @@
+---
+/* Careers, plus the door to the employee portal. The portal itself stays in
+   CAMP's WordPress back office, so this page only links to it at its real
+   address and never copies a login form.
+
+   Facts only: no pay, benefits, openings, crew names or faces (the crew changed
+   in fall 2026). The work is CAMP's own service list; the four values are CAMP's
+   own words from the old About page. */
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Head from '../components/Head.astro';
+import Edge from '../components/Edge.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import ApplyForm from '../components/ApplyForm.astro';
+import { BRAND, LINKS } from '../data/site';
+import { photo } from '../data/photos';
+import { heroImage } from '../lib/hero';
+import { breadcrumbs } from '../lib/schema';
+
+const path = '/careers/';
+const head = await heroImage('real-fleet', { sizes: '(min-width: 60rem) 48vw, 1px' });
+
+const work = [
+  { tag: 'Spring to fall', title: 'Landscape management', body: 'Mowing, edging, beds, pruning and cleanups on business grounds, apartment communities and homes, week after week.' },
+  { tag: 'Projects', title: 'Landscape installation', body: 'New plantings, sod and seed, grading, and timber retaining walls and steps, built to last through a Michigan winter.' },
+  { tag: 'Start up to blow out', title: 'Irrigation', body: 'New system installs, spring start ups, head and valve repairs and fall winterizations. Installs are done by CAMP, not subbed out.' },
+  { tag: 'Winter', title: 'Snow and ice', body: 'Plowing and salting commercial lots, drives and walks, often before anyone else is on the road.' },
+];
+
+const values = [
+  { title: 'Initiative', body: 'You see the head about to fail or the bed getting away, and you say something or fix it.' },
+  { title: 'Integrity', body: 'Straight about the work, the time and the mistakes. Nobody gets oversold, least of all the customer.' },
+  { title: 'Thoroughness', body: 'Edges cut, clippings blown off, every zone checked, the walk salted to the door.' },
+  { title: 'Professionalism', body: 'On time and ready to work. On every property, you are CAMP.' },
+];
+---
+
+<Base
+  title="Careers at CAMP Landscape Management | Grand Rapids, MI"
+  description="Work outside with CAMP Landscape Management in Grand Rapids: landscape management, installation, irrigation and snow crews. Short application, no resume."
+  path={path}
+  quoteHref="/get-an-estimate/"
+  bare
+  preload={{ ...head.preload, media: '(min-width: 60rem)' }}
+  schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Careers', path }])]}
+>
+  <PageHead image={head} eyebrow="Careers" title="Work you can see **from the road.**" lede={`CAMP builds and keeps up landscapes, runs irrigation and plows commercial lots across ${BRAND.region}. If you like outdoor work done right, send a short application. It takes about two minutes.`} crumbs={[{ name: 'Careers', path }]}>
+    <div class="actions">
+      <a class="btn primary" href="#apply">Apply now</a>
+      <a class="btn ghost" href={LINKS.portal}><Icon name="key" />Employee portal</a>
+    </div>
+  </PageHead>
+
+  <section class="band has-edge" aria-labelledby="work-h">
+    <div class="wrap">
+      <Head id="work-h" eyebrow="The work" title="Four kinds of work, **one company.**" intro="Tell us which you want, or that you are not sure yet. Plenty of people start on one crew and learn the others." />
+      <ul class="grid c4 jobs">
+        {
+          work.map((w) => (
+            <li class="card pad job">
+              <span class="eyebrow">{w.tag}</span>
+              <h3 class="h3">{w.title}</h3>
+              <p class="small muted">{w.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <Edge to="ink" />
+  </section>
+
+  <section class="band ink has-edge" aria-labelledby="way-h">
+    <div class="wrap two wide-left">
+      <div>
+        <Head id="way-h" layout="left" eyebrow="What we look for" title="Four words, **on every job.**" intro="They are how CAMP answers the phone, shows up for the work and treats every property. Bring them and we can teach the rest of the job." />
+        <ul class="grid c2 vals">
+          {
+            values.map((v, i) => (
+              <li class="val">
+                <span class="val__n">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="h3">{v.title}</h3>
+                <p class="small muted">{v.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <figure>
+        <div class="frame tall"><Photo id="real-shop" ratio={4 / 5} widths={[420, 640, 860]} sizes="(min-width: 60rem) 36vw, 92vw" /></div>
+        <figcaption class="note cap">{photo('real-shop').caption}</figcaption>
+      </figure>
+    </div>
+    <Edge to="paper" flip />
+  </section>
+
+  <section class="band apply" aria-labelledby="apply-h">
+    <div class="wrap two wide-left apply__grid">
+      <div class="stack apply__copy" style="--gap:1.25rem">
+        <p class="eyebrow">Apply</p>
+        <h2 class="h2" id="apply-h">A short application. <span class="accent">No resume.</span></h2>
+        <p class="lede">Tell us what kind of work you want and how to reach you. It goes straight to the CAMP office.</p>
+        <ul class="checks small">
+          <li>Pick one kind of work or several</li>
+          <li>Experience helps, and new people are welcome to apply</li>
+          <li><span>Rather talk? Call or text <a class="nw" href={BRAND.phoneHref} data-loc="careers">{BRAND.phone}</a></span></li>
+        </ul>
+      </div>
+      <div class="card pad apply__card" id="apply">
+        <ApplyForm />
+      </div>
+    </div>
+  </section>
+
+  <section class="band ink portal" id="portal" aria-labelledby="portal-h">
+    <Edge to="paper" top />
+    <div class="wrap portal__row">
+      <div class="stack" style="--gap:0.9rem">
+        <p class="eyebrow">Employees</p>
+        <h2 class="h2" id="portal-h">Already on the crew? <span class="accent">Sign in here.</span></h2>
+        <p class="lede">Same employee portal, same login as always. Forgot your password? Use the reset link on the sign in page, or ask the office.</p>
+      </div>
+      <a class="btn primary portal__btn" href={LINKS.portal}><Icon name="key" />Employee portal sign in</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .job {
+    display: grid;
+    gap: 0.55rem;
+    align-content: start;
+  }
+
+  .vals {
+    row-gap: 1.75rem;
+  }
+
+  .val {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+  }
+
+  .val__n {
+    color: var(--accent);
+    font-family: var(--font-accent);
+    font-size: 2rem;
+    font-style: italic;
+    line-height: 1;
+  }
+
+  .apply__grid {
+    align-items: start;
+  }
+
+  .apply__copy {
+    max-width: 30rem;
+  }
+
+  .apply__card {
+    scroll-margin-top: 5.5rem;
+    box-shadow: 0 24px 50px rgb(14 18 15 / 0.12);
+  }
+
+  .portal__row {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+  }
+
+  .portal__btn {
+    justify-self: start;
+  }
+
+  .portal__btn :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  @media (min-width: 60rem) {
+    .portal__row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4rem;
+    }
+  }
+</style>
