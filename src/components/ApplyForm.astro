@@ -100,7 +100,7 @@ const names = CITIES.map((c) => c.name);
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       msg.textContent = ''; msg.className = 'af__msg small';
-      if (!f.dataset.key) { call('Online applications open when this site goes live. For now, call or text the office at'); return; }
+      if (!f.dataset.key) { call('To apply today, call or text the office at'); return; }
       var d = new FormData(f);
       if ((String(d.get('phone')).match(/\d/g) || []).length < 10) { msg.textContent = 'Please check the phone number, so we can reach you.'; msg.classList.add('is-bad'); f.querySelector('input[name=phone]').focus(); return; }
       var o = {};
