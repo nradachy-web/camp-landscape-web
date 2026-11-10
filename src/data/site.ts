@@ -74,6 +74,9 @@ export const APPLY = {
 };
 
 export const TRACKING = {
-  ga4: '',
+  /* The Google tag the WordPress site already uses (Site Kit), so analytics on
+     the new pages land in the same GA4 property as before and the blog and back
+     office pages that stay in WordPress keep reporting there too. */
+  ga4: 'GT-WF4LVPPX',
   host: 'camplandscape.com',
 };
