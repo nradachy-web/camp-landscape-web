@@ -51,14 +51,24 @@ export const SOCIAL = [
 ].filter((s) => s.href);
 
 export const FORM = {
-  /* Web3Forms key. Empty until the form is created and a real test arrives: an
-     empty key shows the phone number instead of pretending to send. */
+  /* Web3Forms key, used by the job application only. Empty until the form is
+     created and a real test arrives: an empty key shows the phone number
+     instead of pretending to send. */
   key: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '',
   endpoint: 'https://api.web3forms.com/submit',
 };
 
-/* Job applications from /careers/. Same Web3Forms key as the estimate form, so
-   they land in the same inbox with their own subject line. */
+/* Estimate requests go into CAMP's own lead intake in its WordPress back office
+   (Sarah, 2026-11-10). Same origin only: the path is relative so it always posts
+   to the host the page came from, and the form only sends on that host. `source`
+   is required by the intake; these are its accepted values. */
+export const LEADS = {
+  endpoint: '/wp-json/cmp/v1/leads',
+  host: 'camplandscape.com',
+  sources: ['Google', 'Facebook', 'Referral', 'Return Customer', 'Other'],
+};
+
+/* Job applications from /careers/, by Web3Forms to ops@ (Sarah, 2026-11-10). */
 export const APPLY = {
   subject: 'New job application from camplandscape.com',
 };

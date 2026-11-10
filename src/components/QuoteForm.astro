@@ -1,12 +1,16 @@
 ---
-/* The estimate request: two short steps, then a real result. It posts to
-   Web3Forms and only shows success when the service confirms it. With no key set
-   (the preview) or on any failure it says so and gives the phone number, because
-   a form that pretends to send is how leads get lost.
+/* The estimate request: two short steps, then a real result. It posts JSON to
+   CAMP's own lead intake in WordPress (/wp-json/cmp/v1/leads, Sarah's system),
+   so a request lands where the office already works, and only shows success
+   when that answers OK. The intake is same origin only, so it sends on
+   camplandscape.com; anywhere else (the preview) or on any failure it says so
+   and gives the phone number, because a form that pretends to send is how
+   leads get lost.
 
-   Without script both steps show and the form posts normally.
-   Web3Forms' free plan rejects file uploads outright, so photos go by text. */
-import { BRAND, FORM } from '../data/site';
+   The intake takes one service from a fixed list, so the first service picked
+   decides it (by its group) and every pick, the property, town, message and
+   page go in notes. No file uploads, so photos go by text. */
+import { BRAND, LEADS } from '../data/site';
 import { SERVICES } from '../data/services';
 import { CITIES } from '../data/cities';
 import { href } from '../lib/paths';
@@ -18,19 +22,20 @@ interface Props {
   kind?: number;
 }
 const { service = '', town = '', kind = 0 } = Astro.props;
-const thanks = `${BRAND.origin}/thank-you/`;
 const id = 'qf';
 const names = CITIES.map((c) => c.name);
 const common = ['Landscape management', 'Landscape installation', 'Irrigation installation', 'Irrigation service and repair', 'Snow and ice removal', 'Retaining walls and steps', 'Sod, seed and grading', 'Fertilizer and weed control', 'Sprinkler winterization'];
 const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'];
+/* Service name to the intake's service value, by the service's group. */
+const BY_GROUP = { build: 'Landscaping', care: 'Lawn Maintenance', water: 'Irrigation', winter: 'Snow/Ice Management' } as const;
+const intake: Record<string, string> = {};
+for (const s of SERVICES) intake[s.name] = BY_GROUP[s.group as keyof typeof BY_GROUP] ?? 'Other';
+for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test(c) ? 'Irrigation' : /snow/i.test(c) ? 'Snow/Ice Management' : /management|fertilizer|weed/i.test(c) ? 'Lawn Maintenance' : 'Landscaping';
 ---
 
-<form class="qf" id={id} action={FORM.endpoint} method="POST" data-key={FORM.key ? '1' : ''} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone}>
-  <input type="hidden" name="access_key" value={FORM.key} />
-  <input type="hidden" name="subject" value="New estimate request from camplandscape.com" />
-  <input type="hidden" name="from_name" value="CAMP Landscape website" />
-  <input type="hidden" name="redirect" value={thanks} />
+<form class="qf" id={id} action={LEADS.endpoint} method="POST" data-host={LEADS.host} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone} data-intake={JSON.stringify(intake)}>
   <input type="checkbox" name="botcheck" class="sr" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <noscript><p class="small">This form needs JavaScript. Call or text us at <a href={BRAND.phoneHref}>{BRAND.phone}</a> instead.</p></noscript>
 
   <fieldset class="qf__step" data-step="1">
     <legend class="qf__legend"><span class="fine muted">Step 1 of 2</span> What do you need?</legend>
@@ -78,6 +83,13 @@ const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'
       <label class="qf__field"><span>Phone</span><input name="phone" type="tel" required autocomplete="tel" inputmode="tel" /></label>
       <label class="qf__field"><span>Email <em>optional</em></span><input name="email" type="email" autocomplete="email" /></label>
     </div>
+    <label class="qf__field">
+      <span>How did you hear about us? <em>optional</em></span>
+      <select name="source">
+        <option value="">Choose one</option>
+        {LEADS.sources.map((x) => <option>{x}</option>)}
+      </select>
+    </label>
     <label class="qf__field"><span>Tell us about the property <em>optional</em></span><textarea name="message" rows="3" placeholder="Size, what you have now, and what you want handled"></textarea></label>
     <div class="qf__row">
       <button class="qf__back" type="button">Back</button>
@@ -117,26 +129,56 @@ const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'
     function call(text) {
       msg.innerHTML = text + ' <a href="' + f.dataset.tel + '">' + f.dataset.phone + '</a>.';
     }
+    /* An ad click or tagged link, kept 90 days by Tracking. */
+    function tags() { try { return JSON.parse(decodeURIComponent((document.cookie.match(/(?:^|;\s*)camp_src=([^;]+)/) || [])[1] || '{}')) || {}; } catch (err) { return {}; } }
+    function source(picked, t) {
+      if (picked) return picked;
+      var u = String(t.utm_source || '').toLowerCase();
+      if (t.gclid || t.gbraid || t.wbraid || /google/.test(u)) return 'Google';
+      if (/facebook|^fb$|instagram|^ig$|meta/.test(u)) return 'Facebook';
+      return 'Other';
+    }
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       clear();
-      if (!f.dataset.key) { call('Online requests open when this site goes live. For now, call or text us at'); return; }
+      if (location.hostname.replace(/^www\./, '') !== f.dataset.host) { call('Online requests open when this site goes live. For now, call or text us at'); return; }
       var d = new FormData(f), picked = d.getAll('services');
+      if (d.get('botcheck')) return;
       if ((String(d.get('phone')).match(/\d/g) || []).length < 10) { msg.textContent = 'Please check the phone number, so we can reach you.'; msg.classList.add('is-bad'); f.querySelector('input[name=phone]').focus(); return; }
       if (d.get('other_service')) picked.push(d.get('other_service'));
-      var o = {};
-      d.forEach(function (v, k) { if (k !== 'services' && k !== 'other_service') o[k] = v; });
-      o.services = picked.join(', ') || 'Not chosen';
-      o.subject = 'New estimate request: ' + o.services + (o.town ? ' in ' + o.town : '');
-      o.page = location.pathname;
-      try { var s = JSON.parse(decodeURIComponent((document.cookie.match(/(?:^|;\s*)hd_src=([^;]+)/) || [])[1] || '{}')); Object.keys(s).forEach(function (k) { o[k] = s[k]; }); } catch (err) {}
+      var map = {}; try { map = JSON.parse(f.dataset.intake); } catch (err) {}
+      var name = String(d.get('name') || '').trim().split(/\s+/), t = tags(), kind = String(d.get('property_type') || '');
+      var town = String(d.get('town') || '').trim(), note = String(d.get('message') || '').trim();
+      var lines = [
+        'Website estimate request (' + location.pathname + ')',
+        'Services: ' + (picked.join(', ') || 'Not chosen'),
+        'Property: ' + (kind || 'Not chosen'),
+        town ? 'Town: ' + town : '',
+        note ? 'Message: ' + note : '',
+        t.gclid ? 'Google Ads click: ' + t.gclid : '',
+        t.utm_campaign ? 'Campaign: ' + t.utm_campaign : '',
+      ].filter(Boolean);
+      var o = {
+        first_name: name[0] || '',
+        last_name: name.slice(1).join(' '),
+        phone: String(d.get('phone')),
+        email: String(d.get('email') || ''),
+        type: kind === 'A home' ? 'Residential' : 'Commercial',
+        contact_method: 'Phone',
+        address: town,
+        service: (picked[0] && map[picked[0]]) || 'Other',
+        notes: lines.join('\n'),
+        source: source(String(d.get('source') || ''), t),
+      };
+      if (!o.email) delete o.email;
+      if (!o.address) delete o.address;
       send.disabled = true; send.textContent = 'Sending';
-      fetch(f.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(o) })
-        .then(function (r) { return r.json(); })
+      fetch(f.getAttribute('action'), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(o) })
+        .then(function (r) { if (!r.ok) throw new Error('status ' + r.status); return r.json().catch(function () { return {}; }); })
         .then(function (j) {
-          if (!j.success) throw new Error('rejected');
+          if (j && j.success === false) throw new Error('rejected');
           /* counted on the thank-you page, once; nothing personal goes to Google */
-          try { sessionStorage.setItem('hd_lead', JSON.stringify({ lead_source: f.dataset.from || 'estimate_form', services: o.services, town: o.town || '', form_page: location.pathname })); } catch (err) {}
+          try { sessionStorage.setItem('hd_lead', JSON.stringify({ lead_source: d.get('lead_source') || 'estimate_form', services: picked.join(', ') || 'Not chosen', town: town, form_page: location.pathname })); } catch (err) {}
           location.href = f.dataset.thanks;
         })
         .catch(function () {
