@@ -7,10 +7,16 @@
    and gives the phone number, because a form that pretends to send is how
    leads get lost.
 
+   Backup lane (2026-11-10): the intake refuses anyone who is not already a
+   customer (its /leads handler creates the customer through /customers, which
+   needs a signed in office user), so when it does not answer OK the same
+   request goes to ops@ by Web3Forms with the intake's error in the subject.
+   Remove the backup once the intake accepts new people.
+
    The intake takes one service from a fixed list, so the first service picked
    decides it (by its group) and every pick, the property, town, message and
    page go in notes. No file uploads, so photos go by text. */
-import { BRAND, LEADS } from '../data/site';
+import { BRAND, FORM, LEADS } from '../data/site';
 import { SERVICES } from '../data/services';
 import { CITIES } from '../data/cities';
 import { href } from '../lib/paths';
@@ -33,7 +39,7 @@ for (const s of SERVICES) intake[s.name] = BY_GROUP[s.group as keyof typeof BY_G
 for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test(c) ? 'Irrigation' : /snow/i.test(c) ? 'Snow/Ice Management' : /management|fertilizer|weed/i.test(c) ? 'Lawn Maintenance' : 'Landscaping';
 ---
 
-<form class="qf" id={id} action={LEADS.endpoint} method="POST" data-host={LEADS.host} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone} data-intake={JSON.stringify(intake)}>
+<form class="qf" id={id} action={LEADS.endpoint} method="POST" data-host={LEADS.host} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone} data-intake={JSON.stringify(intake)} data-w3={FORM.endpoint} data-key={FORM.key}>
   <input type="checkbox" name="botcheck" class="sr" tabindex="-1" autocomplete="off" aria-hidden="true" />
   <noscript><p class="small">This form needs JavaScript. Call or text us at <a href={BRAND.phoneHref}>{BRAND.phone}</a> instead.</p></noscript>
 
@@ -173,20 +179,46 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
       if (!o.email) delete o.email;
       if (!o.address) delete o.address;
       send.disabled = true; send.textContent = 'Sending';
+      function done() {
+        /* counted on the thank-you page, once; nothing personal goes to Google */
+        try { sessionStorage.setItem('hd_lead', JSON.stringify({ lead_source: d.get('lead_source') || 'estimate_form', services: picked.join(', ') || 'Not chosen', town: town, form_page: location.pathname })); } catch (err) {}
+        location.href = f.dataset.thanks;
+      }
+      function failed() {
+        send.disabled = false; send.textContent = 'Send my request';
+        call('That did not go through. Please call or text us at');
+        msg.classList.add('is-bad');
+        track('estimate_error', { form_page: location.pathname });
+      }
+      /* Backup lane: the same request to ops@ by email, flagged for hand entry. */
+      function backup(why) {
+        if (!f.dataset.key) { failed(); return; }
+        var b = {
+          access_key: f.dataset.key,
+          subject: 'Website estimate request: ' + o.first_name + ' ' + o.last_name + ' (' + o.type + ', ' + o.service + ') NOT in the office system',
+          from_name: 'CAMP Landscape website',
+          note: 'The office system did not accept this request (' + why + '). Please add it by hand.',
+          name: (o.first_name + ' ' + o.last_name).trim(),
+          phone: o.phone,
+          email: o.email || '',
+          type: o.type,
+          service: o.service,
+          source: o.source,
+          details: o.notes,
+        };
+        fetch(f.dataset.w3, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(b) })
+          .then(function (r) { return r.json(); })
+          .then(function (j) { if (!j.success) throw new Error('rejected'); track('estimate_backup', { form_page: location.pathname }); done(); })
+          .catch(failed);
+      }
       fetch(f.getAttribute('action'), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(o) })
-        .then(function (r) { if (!r.ok) throw new Error('status ' + r.status); return r.json().catch(function () { return {}; }); })
-        .then(function (j) {
-          if (j && j.success === false) throw new Error('rejected');
-          /* counted on the thank-you page, once; nothing personal goes to Google */
-          try { sessionStorage.setItem('hd_lead', JSON.stringify({ lead_source: d.get('lead_source') || 'estimate_form', services: picked.join(', ') || 'Not chosen', town: town, form_page: location.pathname })); } catch (err) {}
-          location.href = f.dataset.thanks;
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            if (!r.ok || (j && j.success === false)) throw new Error('status ' + r.status + (j && j.code ? ' ' + j.code : ''));
+            done();
+          });
         })
-        .catch(function () {
-          send.disabled = false; send.textContent = 'Send my request';
-          call('That did not go through. Please call or text us at');
-          msg.classList.add('is-bad');
-          track('estimate_error', { form_page: location.pathname });
-        });
+        .catch(function (err) { backup(String((err && err.message) || 'no answer')); });
     });
   })();
 </script>
