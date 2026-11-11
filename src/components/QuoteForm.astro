@@ -7,18 +7,25 @@
    and gives the phone number, because a form that pretends to send is how
    leads get lost.
 
-   Backup lane (2026-11-10): the intake refuses anyone who is not already a
-   customer (its /leads handler creates the customer through /customers, which
-   needs a signed in office user), so when it does not answer OK the same
-   request goes to ops@ by Web3Forms with the intake's error in the subject.
-   Remove the backup once the intake accepts new people.
+   Backup lane: when the intake does not answer OK the same request goes to
+   ops@ by Web3Forms with the intake's error in the subject, for hand entry.
+   It was added 2026-11-10 because the intake refused anyone who was not
+   already a customer; that was a bug in its /leads handler and is fixed as of
+   2026-11-11, so the backup is now what it sounds like -- a net for when the
+   office system is down, not the normal path.
+
+   The address is a real one: Google Places autocomplete fills it and hands
+   over a latitude and longitude, the same shape the office's own lead form
+   sends, so a request arrives ready to map and schedule instead of naming
+   only a town. The key for that is not in this repo (this repo is public);
+   the page asks WordPress for it on first use, and with no key the field is
+   an ordinary text box that still sends what was typed.
 
    The intake takes one service from a fixed list, so the first service picked
-   decides it (by its group) and every pick, the property, town, message and
-   page go in notes. No file uploads, so photos go by text. */
+   decides it (by its group) and every pick, the property, address, message
+   and page go in notes. No file uploads, so photos go by text. */
 import { BRAND, FORM, LEADS } from '../data/site';
 import { SERVICES } from '../data/services';
-import { CITIES } from '../data/cities';
 import { href } from '../lib/paths';
 
 interface Props {
@@ -29,8 +36,7 @@ interface Props {
 }
 const { service = '', town = '', kind = 0 } = Astro.props;
 const id = 'qf';
-const names = CITIES.map((c) => c.name);
-const common = ['Landscape management', 'Landscape installation', 'Irrigation installation', 'Irrigation service and repair', 'Snow and ice removal', 'Retaining walls and steps', 'Sod, seed and grading', 'Fertilizer and weed control', 'Sprinkler winterization'];
+const common =['Landscape management', 'Landscape installation', 'Irrigation installation', 'Irrigation service and repair', 'Snow and ice removal', 'Retaining walls and steps', 'Sod, seed and grading', 'Fertilizer and weed control', 'Sprinkler winterization'];
 const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'];
 /* Service name to the intake's service value, by the service's group. */
 const BY_GROUP = { build: 'Landscaping', care: 'Lawn Maintenance', water: 'Irrigation', winter: 'Snow/Ice Management' } as const;
@@ -75,9 +81,11 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
       </select>
     </label>
     <label class="qf__field">
-      <span>Town</span>
-      <input name="town" list="qf-towns" autocomplete="address-level2" placeholder="Where is the property?" value={town} />
-      <datalist id="qf-towns">{names.map((n) => <option value={n} />)}</datalist>
+      <span>Property address</span>
+      <input name="address" autocomplete="street-address" placeholder="Start typing your address" />
+      <input type="hidden" name="address_lat" />
+      <input type="hidden" name="address_lng" />
+      <input type="hidden" name="town" value={town} />
     </label>
     <button class="btn primary qf__next" type="button">Next</button>
   </fieldset>
@@ -118,9 +126,73 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
     function clear() { msg.textContent = ''; msg.className = 'qf__msg small'; }
     function track(name, params) { if (window.campTrack) window.campTrack(name, params); }
     var started = false;
-    function start() { if (!started) { started = true; track('estimate_start', { form_page: location.pathname }); } }
+    function start() { if (!started) { started = true; track('estimate_start', { form_page: location.pathname }); } places(); }
     f.addEventListener('focusin', start);
     f.addEventListener('change', start);
+
+    /* Address autocomplete, the same Places element the office lead form uses,
+       so both arrive at the intake with a formatted address and a point.
+       Loaded on first touch of the form rather than on page load, so a visitor
+       who never opens the form costs nothing. Every failure -- no key, Maps
+       blocked, the element missing from a future API version -- leaves the
+       plain text box in place, which still sends whatever was typed. */
+    var addr = f.querySelector('input[name=address]');
+    var lat = f.querySelector('input[name=address_lat]');
+    var lng = f.querySelector('input[name=address_lng]');
+    var asked = false;
+    function places() {
+      if (asked || !addr) return;
+      asked = true;
+      fetch('/wp-json/cmp/v1/site-config', { credentials: 'omit', headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          var key = j && j.places_key;
+          if (!key) throw new Error('no key');
+          return new Promise(function (ok, no) {
+            var s = document.createElement('script');
+            s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(key) + '&v=weekly&loading=async';
+            s.async = true;
+            s.onload = ok;
+            s.onerror = no;
+            document.head.appendChild(s);
+          });
+        })
+        .then(function () { return google.maps.importLibrary('places'); })
+        .then(attach)
+        .catch(function () {});
+    }
+    function attach() {
+      if (!window.google || !google.maps.places || !google.maps.places.PlaceAutocompleteElement) return;
+      /* Someone already typing keeps their text: swapping the box now would
+         throw it away, and the element has no way to take it over. */
+      if (addr.value.trim()) return;
+      var el;
+      try {
+        el = new google.maps.places.PlaceAutocompleteElement({ componentRestrictions: { country: 'us' }, types: ['address'] });
+      } catch (err) { return; }
+      el.style.width = '100%';
+      addr.parentNode.insertBefore(el, addr);
+      addr.type = 'hidden';
+      el.addEventListener('gmp-select', function (e) {
+        var p = e.placePrediction;
+        if (!p) return;
+        var place = p.toPlace();
+        place
+          .fetchFields({ fields: ['formattedAddress', 'location'] })
+          .then(function () {
+            if (place.formattedAddress) addr.value = place.formattedAddress;
+            if (place.location) {
+              lat.value = typeof place.location.lat === 'function' ? place.location.lat() : place.location.lat;
+              lng.value = typeof place.location.lng === 'function' ? place.location.lng() : place.location.lng;
+            }
+          })
+          .catch(function () {
+            /* Details lookup failed; the picked line is still better than nothing. */
+            var t = (p.text && p.text.text) || (p.mainText && p.mainText.text) || '';
+            if (t) addr.value = t;
+          });
+      });
+    }
     f.querySelector('.qf__next').addEventListener('click', function () {
       clear(); one.hidden = true; two.hidden = false; two.querySelector('input[name=name]').focus();
       track('estimate_step', { step: 2, form_page: location.pathname });
@@ -155,11 +227,14 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
       var map = {}; try { map = JSON.parse(f.dataset.intake); } catch (err) {}
       var name = String(d.get('name') || '').trim().split(/\s+/), t = tags(), kind = String(d.get('property_type') || '');
       var town = String(d.get('town') || '').trim(), note = String(d.get('message') || '').trim();
+      /* The typed or picked address. The town still rides along from a town
+         page, as the fallback when nobody filled the address in. */
+      var where = String(d.get('address') || '').trim();
       var lines = [
         'Website estimate request (' + location.pathname + ')',
         'Services: ' + (picked.join(', ') || 'Not chosen'),
         'Property: ' + (kind || 'Not chosen'),
-        town ? 'Town: ' + town : '',
+        where ? 'Address: ' + where : town ? 'Town: ' + town : '',
         note ? 'Message: ' + note : '',
         t.gclid ? 'Google Ads click: ' + t.gclid : '',
         t.utm_campaign ? 'Campaign: ' + t.utm_campaign : '',
@@ -171,13 +246,16 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
         email: String(d.get('email') || ''),
         type: kind === 'A home' ? 'Residential' : 'Commercial',
         contact_method: 'Phone',
-        address: town,
+        address: where || town,
+        address_lat: String(d.get('address_lat') || ''),
+        address_lng: String(d.get('address_lng') || ''),
         service: (picked[0] && map[picked[0]]) || 'Other',
         notes: lines.join('\n'),
         source: source(String(d.get('source') || ''), t),
       };
       if (!o.email) delete o.email;
       if (!o.address) delete o.address;
+      if (!o.address_lat) { delete o.address_lat; delete o.address_lng; }
       send.disabled = true; send.textContent = 'Sending';
       function done() {
         /* counted on the thank-you page, once; nothing personal goes to Google */
