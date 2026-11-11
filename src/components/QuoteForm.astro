@@ -61,7 +61,14 @@ const startService = intake[service] || (SERVICE_OPTIONS.includes(service) ? ser
 const startType = kind === 0 ? 'Residential' : 'Commercial';
 ---
 
-<form class="qf" id={id} action={LEADS.endpoint} method="POST" data-host={LEADS.host} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone} data-intake={JSON.stringify(intake)} data-w3={FORM.endpoint} data-key={FORM.key}>
+<!-- novalidate, deliberately: the script below owns validation. Step 1 is
+     hidden while step 2 is open, and a browser refuses to submit a form with
+     an empty required field it cannot scroll to -- it blocks with "an invalid
+     form control is not focusable" and no visible message, which would make
+     the Send button simply stop working. The address input also turns into a
+     hidden one when Places takes over, which is the same trap. The required
+     attributes stay for screen readers; only the native blocking is off. -->
+<form class="qf" id={id} action={LEADS.endpoint} method="POST" novalidate data-host={LEADS.host} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone} data-intake={JSON.stringify(intake)} data-w3={FORM.endpoint} data-key={FORM.key}>
   <input type="checkbox" name="botcheck" class="sr" tabindex="-1" autocomplete="off" aria-hidden="true" />
   <noscript><p class="small">This form needs JavaScript. Call or text us at <a href={BRAND.phoneHref}>{BRAND.phone}</a> instead.</p></noscript>
 
@@ -69,11 +76,11 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     <legend class="qf__legend"><span class="fine muted">Step 1 of 2</span> What do you need?</legend>
     <div class="qf__group">
       <span class="qf__label">Type</span>
-      <div class="qf__kind" role="radiogroup" aria-label="Type">
+      <div class="qf__kind" role="radiogroup" aria-label="Type" aria-required="true">
         {
           TYPES.map((t) => (
             <label class="qf__chip">
-              <input type="radio" name="type" value={t} checked={t === startType} />
+              <input type="radio" name="type" value={t} checked={t === startType} required />
               <span>{t}</span>
             </label>
           ))
@@ -82,11 +89,11 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     </div>
     <div class="qf__group">
       <span class="qf__label">Service needed</span>
-      <div class="qf__chips" role="radiogroup" aria-label="Service needed">
+      <div class="qf__chips" role="radiogroup" aria-label="Service needed" aria-required="true">
         {
           SERVICE_OPTIONS.map((s) => (
             <label class="qf__chip">
-              <input type="radio" name="service" value={s} checked={s === startService} />
+              <input type="radio" name="service" value={s} checked={s === startService} required />
               <span>{s}</span>
             </label>
           ))
@@ -95,7 +102,7 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     </div>
     <label class="qf__field">
       <span>Service address</span>
-      <input name="address" autocomplete="street-address" placeholder="Start typing your address" />
+      <input name="address" autocomplete="street-address" placeholder="Start typing your address" required />
       <input type="hidden" name="address_lat" />
       <input type="hidden" name="address_lng" />
       <input type="hidden" name="town" value={town} />
@@ -110,7 +117,7 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
       <span class="qf__label">Name</span>
       <div class="qf__two">
         <input name="first_name" required autocomplete="given-name" aria-label="First name" placeholder="First name" />
-        <input name="last_name" autocomplete="family-name" aria-label="Last name" placeholder="Last name" />
+        <input name="last_name" required autocomplete="family-name" aria-label="Last name" placeholder="Last name" />
       </div>
     </div>
     <div class="qf__two">
@@ -125,11 +132,11 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     </div>
     <div class="qf__group">
       <span class="qf__label">Preferred contact method</span>
-      <div class="qf__chips" role="radiogroup" aria-label="Preferred contact method">
+      <div class="qf__chips" role="radiogroup" aria-label="Preferred contact method" aria-required="true">
         {
           CONTACT_METHODS.map((m, i) => (
             <label class="qf__chip">
-              <input type="radio" name="contact_method" value={m} checked={i === 0} />
+              <input type="radio" name="contact_method" value={m} checked={i === 0} required />
               <span>{m}</span>
             </label>
           ))
@@ -138,11 +145,11 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     </div>
     <div class="qf__group">
       <span class="qf__label">How did you hear about us?</span>
-      <div class="qf__chips" role="radiogroup" aria-label="How did you hear about us">
+      <div class="qf__chips" role="radiogroup" aria-label="How did you hear about us" aria-required="true">
         {
           SOURCES.map((x) => (
             <label class="qf__chip">
-              <input type="radio" name="source" value={x} />
+              <input type="radio" name="source" value={x} required />
               <span>{x}</span>
             </label>
           ))
@@ -266,29 +273,41 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
       if (location.hostname.replace(/^www\./, '') !== f.dataset.host) { call('Online requests open when this site goes live. For now, call or text us at'); return; }
       var d = new FormData(f);
       if (d.get('botcheck')) return;
-      /* Every question the office form makes compulsory, in the order someone
+      /* Every answer is compulsory except the notes, in the order someone
          reads them, so the first thing missing is the first thing complained
-         about. The intake checks the same things and would refuse anyway. */
+         about. Both radio groups that arrive pre-answered are still listed:
+         they are only ever empty if a default is dropped later, and silently
+         posting nothing would be worse than a message nobody sees. */
       var need = [
+        ['type', 'Please choose residential or commercial.', 'input[name=type]'],
         ['service', 'Please choose the service you need.', 'input[name=service]'],
         ['address', 'Please add the service address.', 'input[name=address]'],
         ['first_name', 'Please add your first name.', 'input[name=first_name]'],
+        ['last_name', 'Please add your last name.', 'input[name=last_name]'],
+        ['phone', 'Please add a phone number, so we can reach you.', 'input[name=phone]'],
         ['email', 'Please add your email, so we can confirm.', 'input[name=email]'],
+        ['contact_method', 'Please choose how you would rather be contacted.', 'input[name=contact_method]'],
         ['source', 'Please tell us how you heard about us.', 'input[name=source]'],
       ];
-      for (var n = 0; n < need.length; n++) {
-        if (!String(d.get(need[n][0]) || '').trim()) {
-          msg.textContent = need[n][1];
-          msg.classList.add('is-bad');
-          var miss = f.querySelector(need[n][2]);
-          /* Step 1's fields are hidden once you are on step 2; show it again
-             rather than complaining about something nobody can see. */
-          if (miss && one.contains(miss) && one.hidden) { two.hidden = true; one.hidden = false; }
-          if (miss && miss.type !== 'hidden') miss.focus();
-          return;
-        }
+      function complain(text, sel) {
+        msg.textContent = text;
+        msg.classList.add('is-bad');
+        var miss = f.querySelector(sel);
+        /* Step 1's fields are hidden once you are on step 2; show it again
+           rather than complaining about something nobody can see. */
+        if (miss && one.contains(miss) && one.hidden) { two.hidden = true; one.hidden = false; }
+        /* The address input goes type=hidden when Places takes over, so focus
+           the element standing in for it. */
+        if (miss && miss.type === 'hidden' && miss.previousElementSibling) miss.previousElementSibling.focus();
+        else if (miss) miss.focus();
       }
-      if ((String(d.get('phone')).match(/\d/g) || []).length < 10) { msg.textContent = 'Please check the phone number, so we can reach you.'; msg.classList.add('is-bad'); f.querySelector('input[name=phone]').focus(); return; }
+      for (var n = 0; n < need.length; n++) {
+        if (!String(d.get(need[n][0]) || '').trim()) { complain(need[n][1], need[n][2]); return; }
+      }
+      if ((String(d.get('phone')).match(/\d/g) || []).length < 10) { complain('Please check the phone number, so we can reach you.', 'input[name=phone]'); return; }
+      /* Not a full address check, just the shape, so a typo does not cost the
+         lead its only reply address. */
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(d.get('email')).trim())) { complain('Please check the email address.', 'input[name=email]'); return; }
       var t = tags();
       var town = String(d.get('town') || '').trim(), note = String(d.get('notes') || '').trim();
       var where = String(d.get('address') || '').trim();
