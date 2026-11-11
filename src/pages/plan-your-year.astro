@@ -213,12 +213,22 @@ const seasonOf = (m: number) => PLAN.find((s) => s.months.includes(m))!.id;
       var text = 'Season plan from the website' + (kind ? ' for ' + kind.value.toLowerCase() : '') + ':\n' + Object.keys(bySeason).map(function (s) { return s + ': ' + bySeason[s].join(', '); }).join('\n');
       var f = document.getElementById('qf');
       if (f) {
-        var t = f.querySelector('textarea[name=message]');
+        var t = f.querySelector('textarea[name=notes]');
         if (t) t.value = text;
-        var services = {};
-        list.forEach(function (i) { services[i.dataset.service] = true; });
-        f.querySelectorAll('input[name=services]').forEach(function (c) { if (services[c.value]) c.checked = true; });
-        if (kind) f.querySelectorAll('input[name=property_type]').forEach(function (r) { r.checked = r.value === kind.value; });
+        /* The form takes one service from the intake's five, not a basket of
+           site service names, so translate through the map it publishes and
+           tick the first one the plan mentions. The full list is in the note
+           above either way, so nothing picked is lost. */
+        var map = {};
+        try { map = JSON.parse(f.dataset.intake); } catch (err) {}
+        var want = '';
+        for (var n = 0; n < list.length && !want; n++) want = map[list[n].dataset.service] || '';
+        if (want) f.querySelectorAll('input[name=service]').forEach(function (r) { if (r.value === want) r.checked = true; });
+        /* A home is Residential; a business or a community is Commercial. */
+        if (kind) {
+          var isHome = kind.value === 'A home';
+          f.querySelectorAll('input[name=type]').forEach(function (r) { r.checked = r.value === (isHome ? 'Residential' : 'Commercial'); });
+        }
         var lead = f.querySelector('input[name=lead_source]');
         if (!lead) { lead = document.createElement('input'); lead.type = 'hidden'; lead.name = 'lead_source'; f.appendChild(lead); }
         lead.value = 'season_plan';

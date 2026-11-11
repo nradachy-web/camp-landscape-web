@@ -36,13 +36,29 @@ interface Props {
 }
 const { service = '', town = '', kind = 0 } = Astro.props;
 const id = 'qf';
-const common =['Landscape management', 'Landscape installation', 'Irrigation installation', 'Irrigation service and repair', 'Snow and ice removal', 'Retaining walls and steps', 'Sod, seed and grading', 'Fertilizer and weed control', 'Sprinkler winterization'];
-const KINDS = ['A home', 'A business or office', 'An apartment community or HOA'];
-/* Service name to the intake's service value, by the service's group. */
+/* The office's own lead form asks these, in these words, with these options,
+   and the intake stores them as they arrive. Keeping the two identical means a
+   lead reads the same whichever form it came through, and nothing has to be
+   translated on the way in. */
+const TYPES = ['Residential', 'Commercial'];
+const SERVICE_OPTIONS = ['Irrigation', 'Landscaping', 'Snow/Ice Management', 'Lawn Maintenance', 'Other'];
+const CONTACT_METHODS = ['Phone', 'Email', 'Text'];
+const SOURCES = ['Google', 'Facebook', 'Referral', 'Return Customer', 'Other'];
+
+/* Any service name on the site to one of the five the intake accepts, by the
+   service's group. The form no longer offers these longer names, but two
+   callers still speak them: a page that preselects a service, and the Send
+   this plan button on /plan-your-year/, which reads this map off the form. */
 const BY_GROUP = { build: 'Landscaping', care: 'Lawn Maintenance', water: 'Irrigation', winter: 'Snow/Ice Management' } as const;
+const extra = ['Landscape management', 'Landscape installation', 'Irrigation installation', 'Irrigation service and repair', 'Snow and ice removal', 'Retaining walls and steps', 'Sod, seed and grading', 'Fertilizer and weed control', 'Sprinkler winterization'];
 const intake: Record<string, string> = {};
 for (const s of SERVICES) intake[s.name] = BY_GROUP[s.group as keyof typeof BY_GROUP] ?? 'Other';
-for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test(c) ? 'Irrigation' : /snow/i.test(c) ? 'Snow/Ice Management' : /management|fertilizer|weed/i.test(c) ? 'Lawn Maintenance' : 'Landscaping';
+for (const c of extra) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test(c) ? 'Irrigation' : /snow/i.test(c) ? 'Snow/Ice Management' : /management|fertilizer|weed/i.test(c) ? 'Lawn Maintenance' : 'Landscaping';
+
+/* A page asking for a service preselects the one the intake would file it
+   under. kind 0 is a home; 1 and 2 are both somebody's business. */
+const startService = intake[service] || (SERVICE_OPTIONS.includes(service) ? service : '');
+const startType = kind === 0 ? 'Residential' : 'Commercial';
 ---
 
 <form class="qf" id={id} action={LEADS.endpoint} method="POST" data-host={LEADS.host} data-thanks={href('/thank-you/')} data-tel={BRAND.phoneHref} data-phone={BRAND.phone} data-intake={JSON.stringify(intake)} data-w3={FORM.endpoint} data-key={FORM.key}>
@@ -51,60 +67,88 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
 
   <fieldset class="qf__step" data-step="1">
     <legend class="qf__legend"><span class="fine muted">Step 1 of 2</span> What do you need?</legend>
-    <div class="qf__kind" role="radiogroup" aria-label="What kind of property">
-      {
-        KINDS.map((k, i) => (
-          <label class="qf__chip">
-            <input type="radio" name="property_type" value={k} checked={i === kind} />
-            <span>{k}</span>
-          </label>
-        ))
-      }
-    </div>
-    <ul class="qf__chips">
-      {
-        common.map((c) => (
-          <li>
+    <div class="qf__group">
+      <span class="qf__label">Type</span>
+      <div class="qf__kind" role="radiogroup" aria-label="Type">
+        {
+          TYPES.map((t) => (
             <label class="qf__chip">
-              <input type="checkbox" name="services" value={c} checked={c === service} />
-              <span>{c}</span>
+              <input type="radio" name="type" value={t} checked={t === startType} />
+              <span>{t}</span>
             </label>
-          </li>
-        ))
-      }
-    </ul>
+          ))
+        }
+      </div>
+    </div>
+    <div class="qf__group">
+      <span class="qf__label">Service needed</span>
+      <div class="qf__chips" role="radiogroup" aria-label="Service needed">
+        {
+          SERVICE_OPTIONS.map((s) => (
+            <label class="qf__chip">
+              <input type="radio" name="service" value={s} checked={s === startService} />
+              <span>{s}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
     <label class="qf__field">
-      <span>Something else?</span>
-      <select name="other_service">
-        <option value="">Choose a service</option>
-        {SERVICES.filter((s) => !common.includes(s.name)).map((s) => <option selected={s.name === service}>{s.name}</option>)}
-      </select>
-    </label>
-    <label class="qf__field">
-      <span>Property address</span>
+      <span>Service address</span>
       <input name="address" autocomplete="street-address" placeholder="Start typing your address" />
       <input type="hidden" name="address_lat" />
       <input type="hidden" name="address_lng" />
       <input type="hidden" name="town" value={town} />
     </label>
+    <label class="qf__field"><span>Additional notes <em>optional</em></span><textarea name="notes" rows="3" placeholder="Size, what you have now, and what you want handled"></textarea></label>
     <button class="btn primary qf__next" type="button">Next</button>
   </fieldset>
 
   <fieldset class="qf__step" data-step="2">
     <legend class="qf__legend"><span class="fine muted">Step 2 of 2</span> How do we reach you?</legend>
-    <label class="qf__field"><span>Name</span><input name="name" required autocomplete="name" /></label>
-    <div class="qf__two">
-      <label class="qf__field"><span>Phone</span><input name="phone" type="tel" required autocomplete="tel" inputmode="tel" /></label>
-      <label class="qf__field"><span>Email <em>optional</em></span><input name="email" type="email" autocomplete="email" /></label>
+    <div class="qf__group">
+      <span class="qf__label">Name</span>
+      <div class="qf__two">
+        <input name="first_name" required autocomplete="given-name" aria-label="First name" placeholder="First name" />
+        <input name="last_name" autocomplete="family-name" aria-label="Last name" placeholder="Last name" />
+      </div>
     </div>
-    <label class="qf__field">
-      <span>How did you hear about us? <em>optional</em></span>
-      <select name="source">
-        <option value="">Choose one</option>
-        {LEADS.sources.map((x) => <option>{x}</option>)}
-      </select>
-    </label>
-    <label class="qf__field"><span>Tell us about the property <em>optional</em></span><textarea name="message" rows="3" placeholder="Size, what you have now, and what you want handled"></textarea></label>
+    <div class="qf__two">
+      <label class="qf__field">
+        <span>Phone</span>
+        <span class="qf__tel">
+          <span class="qf__tel-pre" aria-hidden="true">+1</span>
+          <input name="phone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(555) 123-4567" />
+        </span>
+      </label>
+      <label class="qf__field"><span>Email</span><input name="email" type="email" required autocomplete="email" placeholder="your@email.com" /></label>
+    </div>
+    <div class="qf__group">
+      <span class="qf__label">Preferred contact method</span>
+      <div class="qf__chips" role="radiogroup" aria-label="Preferred contact method">
+        {
+          CONTACT_METHODS.map((m, i) => (
+            <label class="qf__chip">
+              <input type="radio" name="contact_method" value={m} checked={i === 0} />
+              <span>{m}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+    <div class="qf__group">
+      <span class="qf__label">How did you hear about us?</span>
+      <div class="qf__chips" role="radiogroup" aria-label="How did you hear about us">
+        {
+          SOURCES.map((x) => (
+            <label class="qf__chip">
+              <input type="radio" name="source" value={x} />
+              <span>{x}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
     <div class="qf__row">
       <button class="qf__back" type="button">Back</button>
       <button class="btn primary qf__send" type="submit">Send my request</button>
@@ -194,7 +238,7 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
       });
     }
     f.querySelector('.qf__next').addEventListener('click', function () {
-      clear(); one.hidden = true; two.hidden = false; two.querySelector('input[name=name]').focus();
+      clear(); one.hidden = true; two.hidden = false; two.querySelector('input[name=first_name]').focus();
       track('estimate_step', { step: 2, form_page: location.pathname });
     });
     f.querySelector('.qf__back').addEventListener('click', function () {
@@ -220,36 +264,55 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
       e.preventDefault();
       clear();
       if (location.hostname.replace(/^www\./, '') !== f.dataset.host) { call('Online requests open when this site goes live. For now, call or text us at'); return; }
-      var d = new FormData(f), picked = d.getAll('services');
+      var d = new FormData(f);
       if (d.get('botcheck')) return;
+      /* Every question the office form makes compulsory, in the order someone
+         reads them, so the first thing missing is the first thing complained
+         about. The intake checks the same things and would refuse anyway. */
+      var need = [
+        ['service', 'Please choose the service you need.', 'input[name=service]'],
+        ['address', 'Please add the service address.', 'input[name=address]'],
+        ['first_name', 'Please add your first name.', 'input[name=first_name]'],
+        ['email', 'Please add your email, so we can confirm.', 'input[name=email]'],
+        ['source', 'Please tell us how you heard about us.', 'input[name=source]'],
+      ];
+      for (var n = 0; n < need.length; n++) {
+        if (!String(d.get(need[n][0]) || '').trim()) {
+          msg.textContent = need[n][1];
+          msg.classList.add('is-bad');
+          var miss = f.querySelector(need[n][2]);
+          /* Step 1's fields are hidden once you are on step 2; show it again
+             rather than complaining about something nobody can see. */
+          if (miss && one.contains(miss) && one.hidden) { two.hidden = true; one.hidden = false; }
+          if (miss && miss.type !== 'hidden') miss.focus();
+          return;
+        }
+      }
       if ((String(d.get('phone')).match(/\d/g) || []).length < 10) { msg.textContent = 'Please check the phone number, so we can reach you.'; msg.classList.add('is-bad'); f.querySelector('input[name=phone]').focus(); return; }
-      if (d.get('other_service')) picked.push(d.get('other_service'));
-      var map = {}; try { map = JSON.parse(f.dataset.intake); } catch (err) {}
-      var name = String(d.get('name') || '').trim().split(/\s+/), t = tags(), kind = String(d.get('property_type') || '');
-      var town = String(d.get('town') || '').trim(), note = String(d.get('message') || '').trim();
-      /* The typed or picked address. The town still rides along from a town
-         page, as the fallback when nobody filled the address in. */
+      var t = tags();
+      var town = String(d.get('town') || '').trim(), note = String(d.get('notes') || '').trim();
       var where = String(d.get('address') || '').trim();
+      var service = String(d.get('service') || '');
+      /* The answers go to the intake in its own fields. Notes carry only what
+         it has nowhere to put: which page, the ad click, the campaign. */
       var lines = [
+        note,
         'Website estimate request (' + location.pathname + ')',
-        'Services: ' + (picked.join(', ') || 'Not chosen'),
-        'Property: ' + (kind || 'Not chosen'),
-        where ? 'Address: ' + where : town ? 'Town: ' + town : '',
-        note ? 'Message: ' + note : '',
+        !where && town ? 'Town: ' + town : '',
         t.gclid ? 'Google Ads click: ' + t.gclid : '',
         t.utm_campaign ? 'Campaign: ' + t.utm_campaign : '',
       ].filter(Boolean);
       var o = {
-        first_name: name[0] || '',
-        last_name: name.slice(1).join(' '),
+        first_name: String(d.get('first_name') || '').trim(),
+        last_name: String(d.get('last_name') || '').trim(),
         phone: String(d.get('phone')),
         email: String(d.get('email') || ''),
-        type: kind === 'A home' ? 'Residential' : 'Commercial',
-        contact_method: 'Phone',
+        type: String(d.get('type') || 'Residential'),
+        contact_method: String(d.get('contact_method') || 'Phone'),
         address: where || town,
         address_lat: String(d.get('address_lat') || ''),
         address_lng: String(d.get('address_lng') || ''),
-        service: (picked[0] && map[picked[0]]) || 'Other',
+        service: service,
         notes: lines.join('\n'),
         source: source(String(d.get('source') || ''), t),
       };
@@ -259,7 +322,7 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
       send.disabled = true; send.textContent = 'Sending';
       function done() {
         /* counted on the thank-you page, once; nothing personal goes to Google */
-        try { sessionStorage.setItem('hd_lead', JSON.stringify({ lead_source: d.get('lead_source') || 'estimate_form', services: picked.join(', ') || 'Not chosen', town: town, form_page: location.pathname })); } catch (err) {}
+        try { sessionStorage.setItem('hd_lead', JSON.stringify({ lead_source: d.get('lead_source') || 'estimate_form', services: service || 'Not chosen', town: town, form_page: location.pathname })); } catch (err) {}
         location.href = f.dataset.thanks;
       }
       function failed() {
@@ -345,9 +408,59 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
     gap: 0.45rem;
   }
 
-  .qf__kind {
-    padding-bottom: 0.9rem;
-    border-bottom: 1px solid var(--line);
+  /* A question whose answer is a row of chips rather than a box to type in.
+     Same label type as .qf__field so the form reads as one column. */
+  .qf__group {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  .qf__label {
+    font-size: 0.9375rem;
+    font-weight: 560;
+  }
+
+  .qf__label em,
+  .qf__field em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  /* The +1 sits inside the field's border, so the pair reads as one control. */
+  .qf__tel {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    border: 1px solid #8a8676;
+    border-radius: var(--r-sm);
+    background: #fff;
+  }
+
+  .qf__tel-pre {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.1rem 0 0.8rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .qf__tel input {
+    border: 0;
+    border-radius: 0;
+    background: none;
+    min-width: 0;
+  }
+
+  .qf__tel:focus-within {
+    outline: 2px solid var(--action);
+    outline-offset: 1px;
+    border-color: var(--action);
+  }
+
+  .qf__tel input:focus-visible {
+    outline: 0;
   }
 
   .qf__chip {
@@ -409,9 +522,12 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
     color: var(--muted);
   }
 
+  /* .qf__two > input is the first/last name pair, which has one shared label
+     above it rather than one each. */
   .qf__field input,
   .qf__field select,
-  .qf__field textarea {
+  .qf__field textarea,
+  .qf__two > input {
     width: 100%;
     min-height: 3rem;
     padding: 0.65rem 0.8rem;
@@ -433,7 +549,8 @@ for (const c of common) if (!intake[c]) intake[c] = /irrigation|sprinkler/i.test
     resize: vertical;
   }
 
-  .qf__field :focus-visible {
+  .qf__field :focus-visible,
+  .qf__two > input:focus-visible {
     outline: 2px solid var(--action);
     outline-offset: 1px;
     border-color: var(--action);
