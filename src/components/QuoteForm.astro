@@ -14,12 +14,13 @@
    2026-11-11, so the backup is now what it sounds like -- a net for when the
    office system is down, not the normal path.
 
-   The address is a real one: Google Places autocomplete fills it and hands
-   over a latitude and longitude, the same shape the office's own lead form
-   sends, so a request arrives ready to map and schedule instead of naming
-   only a town. The key for that is not in this repo (this repo is public);
-   the page asks WordPress for it on first use, and with no key the field is
-   an ordinary text box that still sends what was typed.
+   The address is a real one: this page asks Google Places for suggestions and
+   draws them itself, then takes a latitude and longitude from the one picked,
+   so a request arrives ready to map and schedule instead of naming only a
+   town. Not Google's own widget -- see the note by that code for why. The key
+   is not in this repo (this repo is public); the page asks WordPress for it on
+   first use, and with no key the field is an ordinary text box that still
+   sends what was typed.
 
    The intake takes one service from a fixed list, so the first service picked
    decides it (by its group) and every pick, the property, address, message
@@ -100,13 +101,19 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
         }
       </div>
     </div>
-    <label class="qf__field">
-      <span>Service address</span>
-      <input name="address" autocomplete="street-address" placeholder="Start typing your address" required />
+    <div class="qf__field">
+      <label for="qf-address">Service address</label>
+      <div class="qf__ac">
+        {/* autocomplete=off so the browser's own address dropdown does not
+            cover ours. The list is a sibling, not inside the label, because
+            clicking something inside a label re-focuses the label's input. */}
+        <input id="qf-address" name="address" required autocomplete="off" placeholder="Start typing your address" role="combobox" aria-expanded="false" aria-controls="qf-address-list" aria-autocomplete="list" />
+        <ul class="qf__ac-list" id="qf-address-list" role="listbox" aria-label="Address suggestions" hidden></ul>
+      </div>
       <input type="hidden" name="address_lat" />
       <input type="hidden" name="address_lng" />
       <input type="hidden" name="town" value={town} />
-    </label>
+    </div>
     <label class="qf__field"><span>Additional notes <em>optional</em></span><textarea name="notes" rows="3" placeholder="Size, what you have now, and what you want handled"></textarea></label>
     <button class="btn primary qf__next" type="button">Next</button>
   </fieldset>
@@ -181,68 +188,145 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     f.addEventListener('focusin', start);
     f.addEventListener('change', start);
 
-    /* Address autocomplete, the same Places element the office lead form uses,
-       so both arrive at the intake with a formatted address and a point.
-       Loaded on first touch of the form rather than on page load, so a visitor
-       who never opens the form costs nothing. Every failure -- no key, Maps
-       blocked, the element missing from a future API version -- leaves the
-       plain text box in place, which still sends whatever was typed. */
+    /* Address suggestions, asked for by this page rather than by Google's own
+       widget, and drawn into the list below the box.
+       ---
+       The widget was the obvious way and it was the wrong one. Its options are
+       not the old Autocomplete's: componentRestrictions and types are refused,
+       the constructor throws, and the only honest thing a catch can do is put
+       the plain box back -- which looks exactly like autocomplete being
+       broken. Worse, it replaces our input with its own, so an address nobody
+       clicked a suggestion for never reaches the form at all, and a required
+       field no one can satisfy is a form that cannot be sent.
+       ---
+       Doing the two calls ourselves keeps our input the only thing that
+       matters: whatever is typed is what gets sent, a pick merely tidies it up
+       and adds the point. The key is restricted by HTTP referrer, so these
+       calls work from this domain and nowhere else. One session token spans a
+       run of keystrokes and the pick that ends it, which is how this is billed
+       -- a new one starts after each pick. */
     var addr = f.querySelector('input[name=address]');
     var lat = f.querySelector('input[name=address_lat]');
     var lng = f.querySelector('input[name=address_lng]');
-    var asked = false;
+    var box = f.querySelector('#qf-address-list');
+    var AC = 'https://places.googleapis.com/v1/places';
+    /* A town, a county, a zip code: real places, useless as a service address.
+       Businesses stay -- a property manager may know the name of a business
+       park and not its number. */
+    var REGIONISH = /^(political|locality|sublocality[\w]*|administrative_area_level_\d|country|postal_code[\w]*|neighborhood|route)$/;
+    var key = '', token = '', items = [], at = -1, timer = 0, asked = false;
+
+    function uuid() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0;
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      });
+    }
+    /* The key is not in this repo: this repo is public. WordPress holds it. */
     function places() {
-      if (asked || !addr) return;
+      if (asked) return;
       asked = true;
       fetch('/wp-json/cmp/v1/site-config', { credentials: 'omit', headers: { Accept: 'application/json' } })
         .then(function (r) { return r.json(); })
-        .then(function (j) {
-          var key = j && j.places_key;
-          if (!key) throw new Error('no key');
-          return new Promise(function (ok, no) {
-            var s = document.createElement('script');
-            s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(key) + '&v=weekly&loading=async';
-            s.async = true;
-            s.onload = ok;
-            s.onerror = no;
-            document.head.appendChild(s);
-          });
-        })
-        .then(function () { return google.maps.importLibrary('places'); })
-        .then(attach)
+        .then(function (j) { key = (j && j.places_key) || ''; })
         .catch(function () {});
     }
-    function attach() {
-      if (!window.google || !google.maps.places || !google.maps.places.PlaceAutocompleteElement) return;
-      /* Someone already typing keeps their text: swapping the box now would
-         throw it away, and the element has no way to take it over. */
-      if (addr.value.trim()) return;
-      var el;
-      try {
-        el = new google.maps.places.PlaceAutocompleteElement({ componentRestrictions: { country: 'us' }, types: ['address'] });
-      } catch (err) { return; }
-      el.style.width = '100%';
-      addr.parentNode.insertBefore(el, addr);
-      addr.type = 'hidden';
-      el.addEventListener('gmp-select', function (e) {
-        var p = e.placePrediction;
-        if (!p) return;
-        var place = p.toPlace();
-        place
-          .fetchFields({ fields: ['formattedAddress', 'location'] })
-          .then(function () {
-            if (place.formattedAddress) addr.value = place.formattedAddress;
-            if (place.location) {
-              lat.value = typeof place.location.lat === 'function' ? place.location.lat() : place.location.lat;
-              lng.value = typeof place.location.lng === 'function' ? place.location.lng() : place.location.lng;
-            }
-          })
-          .catch(function () {
-            /* Details lookup failed; the picked line is still better than nothing. */
-            var t = (p.text && p.text.text) || (p.mainText && p.mainText.text) || '';
-            if (t) addr.value = t;
-          });
+    function hide() {
+      box.hidden = true;
+      box.innerHTML = '';
+      items = []; at = -1;
+      addr.setAttribute('aria-expanded', 'false');
+    }
+    function draw() {
+      box.innerHTML = '';
+      items.forEach(function (s, i) {
+        var li = document.createElement('li');
+        li.className = 'qf__ac-item';
+        li.id = 'qf-ac-' + i;
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', i === at ? 'true' : 'false');
+        li.textContent = s.text;
+        /* mousedown, not click: blur would close the list first. */
+        li.addEventListener('mousedown', function (e) { e.preventDefault(); pick(i); });
+        box.appendChild(li);
       });
+      box.hidden = !items.length;
+      addr.setAttribute('aria-expanded', items.length ? 'true' : 'false');
+    }
+    function mark(n) {
+      at = n;
+      [].forEach.call(box.children, function (li, i) {
+        li.setAttribute('aria-selected', i === at ? 'true' : 'false');
+        li.classList.toggle('is-on', i === at);
+      });
+      if (at >= 0) addr.setAttribute('aria-activedescendant', 'qf-ac-' + at);
+      else addr.removeAttribute('aria-activedescendant');
+    }
+    function pick(i) {
+      var s = items[i];
+      if (!s) return;
+      addr.value = s.text;
+      var used = token;
+      hide();
+      /* Tidy the line into a full formatted address and take the point with
+         it. If this call fails the typed line stands, which is still a real
+         answer -- it just arrives without coordinates. */
+      fetch(AC + '/' + encodeURIComponent(s.id) + '?fields=formattedAddress,location&sessionToken=' + encodeURIComponent(used), {
+        credentials: 'omit',
+        headers: { 'X-Goog-Api-Key': key },
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (p) {
+          if (p && p.formattedAddress) addr.value = p.formattedAddress;
+          if (p && p.location) { lat.value = p.location.latitude; lng.value = p.location.longitude; }
+        })
+        .catch(function () {})
+        .then(function () { token = ''; });
+    }
+    function ask(text) {
+      if (!key || text.length < 4) { hide(); return; }
+      if (!token) token = uuid();
+      fetch(AC + ':autocomplete', {
+        method: 'POST',
+        credentials: 'omit',
+        headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': key },
+        body: JSON.stringify({ input: text, includedRegionCodes: ['us'], sessionToken: token }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          /* Stale answer: they have typed on since. */
+          if (addr.value.trim() !== text) return;
+          items = ((j && j.suggestions) || [])
+            .map(function (s) { return s.placePrediction; })
+            .filter(function (p) {
+              return p && p.placeId && !(p.types || []).some(function (t) { return REGIONISH.test(t); });
+            })
+            .slice(0, 5)
+            .map(function (p) { return { id: p.placeId, text: p.text && p.text.text }; })
+            .filter(function (s) { return s.text; });
+          at = -1;
+          draw();
+        })
+        .catch(function () { hide(); });
+    }
+    if (addr && box) {
+      addr.addEventListener('input', function () {
+        /* Typing moves off the place that was picked, so the old point is no
+           longer this address. */
+        lat.value = ''; lng.value = '';
+        var text = addr.value.trim();
+        clearTimeout(timer);
+        timer = setTimeout(function () { ask(text); }, 250);
+      });
+      addr.addEventListener('keydown', function (e) {
+        if (box.hidden || !items.length) return;
+        if (e.key === 'ArrowDown') { e.preventDefault(); mark((at + 1) % items.length); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); mark(at <= 0 ? items.length - 1 : at - 1); }
+        else if (e.key === 'Enter' && at >= 0) { e.preventDefault(); pick(at); }
+        else if (e.key === 'Escape') { hide(); }
+      });
+      addr.addEventListener('blur', function () { setTimeout(hide, 120); });
     }
     f.querySelector('.qf__next').addEventListener('click', function () {
       clear(); one.hidden = true; two.hidden = false; two.querySelector('input[name=first_name]').focus();
@@ -251,8 +335,11 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     f.querySelector('.qf__back').addEventListener('click', function () {
       clear(); two.hidden = true; one.hidden = false; one.querySelector('input').focus();
     });
-    /* Enter in step 1 means Next, including the Go key on a phone. */
+    /* Enter in step 1 means Next, including the Go key on a phone -- unless
+       something nearer the key already dealt with it, which is how Enter on a
+       highlighted address suggestion picks it instead of skipping the step. */
     one.addEventListener('keydown', function (e) {
+      if (e.defaultPrevented) return;
       if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') { e.preventDefault(); f.querySelector('.qf__next').click(); }
     });
     function call(text) {
@@ -296,10 +383,7 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
         /* Step 1's fields are hidden once you are on step 2; show it again
            rather than complaining about something nobody can see. */
         if (miss && one.contains(miss) && one.hidden) { two.hidden = true; one.hidden = false; }
-        /* The address input goes type=hidden when Places takes over, so focus
-           the element standing in for it. */
-        if (miss && miss.type === 'hidden' && miss.previousElementSibling) miss.previousElementSibling.focus();
-        else if (miss) miss.focus();
+        if (miss) miss.focus();
       }
       for (var n = 0; n < need.length; n++) {
         if (!String(d.get(need[n][0]) || '').trim()) { complain(need[n][1], need[n][2]); return; }
@@ -445,6 +529,44 @@ const startType = kind === 0 ? 'Residential' : 'Commercial';
     font-style: normal;
     font-weight: 400;
     color: var(--muted);
+  }
+
+  /* The address box and its suggestions. The list is absolute so it covers
+     what is under it instead of pushing the form around as you type. */
+  .qf__ac {
+    position: relative;
+    min-width: 0;
+  }
+
+  .qf__ac-list {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 0.25rem);
+    right: 0;
+    left: 0;
+    max-height: 15rem;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.25rem;
+    border: 1px solid #8a8676;
+    border-radius: var(--r-sm);
+    background: #fff;
+    box-shadow: 0 10px 28px rgb(14 18 15 / 18%);
+    list-style: none;
+  }
+
+  .qf__ac-item {
+    padding: 0.6rem 0.65rem;
+    border-radius: calc(var(--r-sm) - 2px);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.3;
+    cursor: pointer;
+  }
+
+  .qf__ac-item:hover,
+  .qf__ac-item.is-on {
+    background: var(--paper);
   }
 
   /* The +1 sits inside the field's border, so the pair reads as one control. */
