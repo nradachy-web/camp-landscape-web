@@ -2,8 +2,10 @@
    whole sentences, so this one finds the stock phrases that make pages read alike.
      node scripts/phrases.mjs [words=5] [minPages=12] */
 import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-const ROOT = new URL('..', import.meta.url).pathname;
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+// fileURLToPath, not .pathname, so a checkout path containing a space resolves.
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const [n = 5, min = 12] = process.argv.slice(2).map(Number);
 const strings = (x, o = []) => (typeof x === 'string' ? o.push(x) : Array.isArray(x) ? x.forEach((y) => strings(y, o)) : x && typeof x === 'object' && Object.values(x).forEach((y) => strings(y, o)), o);
 const seen = new Map();

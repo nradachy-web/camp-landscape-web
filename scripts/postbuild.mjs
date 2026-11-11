@@ -3,9 +3,13 @@
    2. check every page against the house rules and fail the build on a miss.
    Run by `npm run build`. */
 import { readdirSync, readFileSync, rmSync, statSync, existsSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIST = new URL('../dist/', import.meta.url).pathname;
+// fileURLToPath, not .pathname: a checkout under a directory with a space in
+// its name gives a URL whose pathname is still percent-encoded, and every
+// readdirSync below then misses by ENOENT.
+const DIST = resolve(dirname(fileURLToPath(import.meta.url)), '../dist') + '/';
 const BASE = (process.env.BASE_PATH || '/').replace(/\/$/, '');
 
 const walk = (dir) =>
