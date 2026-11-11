@@ -2,8 +2,8 @@
 #
 # PREVIEW: served at https://nradachy-web.github.io/camp-landscape-web/ with
 # BASE_PATH set, which makes every page noindex and robots.txt disallow all.
-# LAUNCH: set the repository variable BASE_PATH to / and SITE_URL as in
-# docs/LAUNCH.md, add public/CNAME, then point DNS.
+# The live site (camplandscape.com) is NOT deployed from here: it is a
+# production build uploaded to CAMP's Hostinger. See README.md.
 name: Deploy
 
 on:
